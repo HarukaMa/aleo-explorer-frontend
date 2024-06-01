@@ -242,5 +242,4 @@ fabric.properties
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-wrangler.toml
 .wrangler

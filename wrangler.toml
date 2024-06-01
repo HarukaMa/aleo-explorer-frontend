@@ -1,0 +1,7 @@
+[[hyperdrive]]
+binding = "db_testnet"
+id = "317fbf48aa3e49b6a4c7f9f4b23ad2bf"
+
+[[hyperdrive]]
+binding = "db_canary"
+id = "c96e75f8c283431ca9a4a42e8efe244c"
