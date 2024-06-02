@@ -41,6 +41,7 @@ export class API {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${this.api_token}`,
+          "User-Agent": "Aleoscan/0.0 (+https://aleoscan.io)",
         },
         body: body ? JSON.stringify(body) : undefined,
       })
