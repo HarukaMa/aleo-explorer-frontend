@@ -5,7 +5,7 @@
 
 <style lang="scss">
 
-  @import '/static/global';
+  @import '../../static/styles/variables';
 
   .nav-link-menu-item {
     padding: 0.5rem;

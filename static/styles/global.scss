@@ -1,33 +1,31 @@
 
-@use "inter-ui/default" with (
+@use "../../node_modules/inter-ui/default" as inter-default with (
   $inter-font-display: swap,
   $inter-font-path: 'inter-ui/web'
 );
 
-@use "inter-ui/variable" with (
+@use "../../node_modules/inter-ui/variable" as inter-variable with (
   $inter-font-display: swap,
   $inter-font-path: 'inter-ui/variable'
 );
 
 @import "variables";
 
-@include default.all;
-@include variable.all;
+@import "@fontsource-variable/montserrat";
+@import "@fontsource/montserrat/600";
+
+@include inter-default.all;
+@include inter-variable.all;
 
 :root {
   font-family: "Inter", system-ui;
   font-feature-settings: "ss02", "cv01", "cv10";
+  padding: 0 1rem;
+  font-size: 16px;
 }
 
 @supports (font-variation-settings: normal) {
   :root { font-family: "InterVariable", system-ui; }
-}
-
-/* rem reference */
-
-html {
-    font-size: 16px;
-    padding: 0 1rem;
 }
 
 /* utilities */
@@ -38,14 +36,4 @@ html {
 
 .tnum {
     font-feature-settings: "ss02", "cv01", "tnum";
-}
-
-/* icons */
-
-.chevron {
-    height: 1rem;
-    width: 1rem;
-    background-color: black;
-    -webkit-mask-image: $chevron-icon;
-    mask-image: $chevron-icon;
 }

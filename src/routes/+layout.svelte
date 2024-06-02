@@ -1,11 +1,16 @@
 <style lang="scss">
 
-  @import '/static/global';
+  @import 'static/styles/global';
+
+  .container {
+    max-width: 1136px;
+    margin: 0 auto;
+  }
 
 </style>
 
-<script>
-  import Nav from "./Nav.svelte";
+<script lang="ts">
+  import Nav from "$lib/Nav.svelte";
 </script>
 
 <Nav />
@@ -16,4 +21,3 @@
 
   </div>
 </div>
-

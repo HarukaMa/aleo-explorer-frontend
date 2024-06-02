@@ -1,6 +1,6 @@
 <style lang="scss">
 
-  @import '/static/global';
+  @import '../../static/styles/variables';
 
   /* top bar related */
 
@@ -27,7 +27,8 @@
     justify-content: center;
     align-items: center;
     border: 1px solid $grey-100;
-    border-radius: 0.75rem;
+    border-radius: 1.5rem;
+    background: white;
   }
 
   .title-network-indicator-name {
@@ -61,6 +62,14 @@
     }
   }
 
+  .chevron {
+    height: 1rem;
+    width: 1rem;
+    background-color: black;
+    -webkit-mask-image: $chevron-icon;
+    mask-image: $chevron-icon;
+  }
+
   .nav-link:hover {
     color: $blue-500;
 
@@ -87,6 +96,7 @@
     width: 11.25rem;
     border-radius: 1rem;
     box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.07);
+    background: white;
   }
 
 </style>
