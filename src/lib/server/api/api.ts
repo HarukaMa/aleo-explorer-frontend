@@ -40,7 +40,7 @@ export class API {
         method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${this.api_token}`,
+          Authorization: `Token ${this.api_token}`,
         },
         body: body ? JSON.stringify(body) : undefined,
       })
