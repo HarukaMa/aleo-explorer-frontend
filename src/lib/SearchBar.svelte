@@ -21,6 +21,7 @@
     background: white;
     border-radius: 1rem;
     border: 2px solid $grey-100;
+    transition: border 0.2s ease-out;
 
     .search-icon {
       height: 1.5rem;
@@ -30,6 +31,7 @@
 
     &:focus-within {
       border-color: $blue-500;
+      transition: all 0.2s ease-out;
     }
   }
 
