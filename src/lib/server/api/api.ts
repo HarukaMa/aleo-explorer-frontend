@@ -55,7 +55,7 @@ export class API {
       if (e instanceof Error) {
         throw new APIError(`Cannot connect to upstream API server: ${e.message}`)
       }
-      throw new APIError("Unknown error")
+      throw new APIError(`Unknown error: ${e}`)
     }
   }
 

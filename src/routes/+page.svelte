@@ -44,4 +44,4 @@
   <SearchBar homepage />
 </div>
 
-{JSON.stringify(data.data)}
+{JSON.stringify(data.recent_blocks)}

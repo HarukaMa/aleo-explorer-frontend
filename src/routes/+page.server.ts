@@ -1,14 +1,14 @@
 import type { PageServerLoad } from "./$types"
-import { test } from "$lib/server/api/test"
 import { error } from "@sveltejs/kit"
-import { APIError } from "$lib/server/api/api"
+import { API, APIError } from "$lib/server/api/api"
+import "$lib/server/api/block"
 
 export const load: PageServerLoad = async () => {
   try {
-    const res = await test()
-    console.log(res)
+    const recent_blocks = await API.instance.recent_blocks()
+    console.log(recent_blocks)
     return {
-      data: res,
+      recent_blocks: recent_blocks,
     }
   } catch (err) {
     console.error(err)

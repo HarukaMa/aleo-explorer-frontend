@@ -10,7 +10,11 @@
 </style>
 
 <script lang="ts">
-  import Nav from "$lib/Nav.svelte";
+  import Nav from "$lib/Nav.svelte"
+
+  export let data
+
+  console.log(data.sync_info)
 </script>
 
 <Nav />
