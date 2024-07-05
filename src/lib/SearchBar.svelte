@@ -4,6 +4,10 @@
 
   let input: HTMLInputElement;
 
+  function focus_search() {
+    input.focus();
+  }
+
 </script>
 
 <style lang="scss">
@@ -14,7 +18,8 @@
     display: inline-flex;
     height: 4rem;
     width: 100%;
-    padding-inline: 1rem 0.75rem;
+    box-sizing: border-box;
+    padding: 0.5rem 0.75rem 0.5rem 1rem;
     align-items: center;
     gap: 0.5rem;
     flex-shrink: 0;
@@ -55,10 +60,7 @@
     }
   }
 
-  button,
-  input,
-  select,
-  textarea {
+  input {
     font-family: inherit;
     font-size: inherit;
   }
@@ -76,7 +78,7 @@
 </style>
 
 {#if homepage}
-  <div class="home-search-bar-container">
+  <div class="home-search-bar-container" on:click={focus_search} aria-hidden="true">
     <div class="search-icon"></div>
     <form action="/search">
       <input name="q" type="text" placeholder="Search for address, transaction, validator..." bind:this={input} />
@@ -86,7 +88,7 @@
     </div>
   </div>
 {:else}
-
+  <div>Not implemented!</div>
 {/if}
 
 <svelte:window
@@ -95,6 +97,10 @@
       e.preventDefault()
       e.stopPropagation()
       input.focus()
+    } else if (e.key === "Escape" && input.contains(document.activeElement)) {
+      e.preventDefault()
+      e.stopPropagation()
+      input.blur()
     }
   }}
 />

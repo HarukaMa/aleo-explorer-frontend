@@ -19,6 +19,7 @@
 
 :root {
   font-family: "Inter", system-ui;
+  // ss02: disambiguation; cv01: better "1"; cv10: better "G"
   font-feature-settings: "ss02", "cv01", "cv10";
   padding: 0 1rem;
   font-size: 16px;
@@ -30,10 +31,14 @@
 
 /* utilities */
 
+// contextual alternates
+// we don't want "x" shown as multiplication and other ligatures,
+// but we might want better heights of some symbols.
 .no-calt {
     font-feature-settings: "calt" 0;
 }
 
+// for all-numerical data, we want monospaced numbers
 .tnum {
     font-feature-settings: "ss02", "cv01", "tnum";
 }
