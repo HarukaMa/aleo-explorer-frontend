@@ -1,6 +1,6 @@
 import { API } from "$lib/server/api/api"
 
-export async function recent_blocks(this: API) {
+export async function recent_blocks(this: API): Promise<object> {
   return await this.get("/block/recent")
 }
 

@@ -1,12 +1,17 @@
 <script lang="ts">
   import home_bg from "$lib/assets/images/home_bg.svg"
   import SearchBar from "$lib/SearchBar.svelte"
+  import { time_display } from "$lib/stores"
 
   export let data
 
-  const summary_data = [
+  const block_time = new Date(data.summary.latest_timestamp * 1000)
+
+
+  $: summary_data = [
     [
-      { name: "Recent Blocks", value: data.recent_blocks.length },
+      { name: "Latest block", value: data.summary.latest_height },
+      { name: "Block time", value: block_time },
     ],
     [
       { name: "Recent Transactions", value: data.sync_info.explorer_height },

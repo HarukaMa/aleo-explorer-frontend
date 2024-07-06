@@ -124,6 +124,7 @@
   ]
 
   const proving_routes = [
+    { name: "Incentive dashboard", path: "/incentive" },
     { name: "Calculator", path: "/calculator" },
   ]
 

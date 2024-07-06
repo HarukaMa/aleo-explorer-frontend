@@ -89,23 +89,37 @@
 <script lang="ts">
   import Nav from "$lib/Nav.svelte"
   import { env } from "$env/dynamic/public"
-  import { timezone_local, plausible_opt_out } from "$lib/stores"
+  import { time_display, plausible_opt_out, TimeMode } from "$lib/stores"
 
   export let data
 
   console.log(data.sync_info)
 
-  let current_timezone: string
+  let time_display_mode: string
   $: {
-    if ($timezone_local) {
-      current_timezone = "Local"
-    } else {
-      current_timezone = "UTC"
+    switch ($time_display) {
+      case TimeMode.UTC:
+        time_display_mode = "UTC"
+        break
+      case TimeMode.Local:
+        time_display_mode = "Local"
+        break
+      case TimeMode.Relative:
+        time_display_mode = "Relative"
+        break
     }
   }
 
   function switch_timezone() {
-    timezone_local.update((prev) => !prev)
+    time_display.update((prev) => {
+      if (prev === TimeMode.UTC) {
+        return TimeMode.Local
+      } else if (prev === TimeMode.Local) {
+        return TimeMode.Relative
+      } else {
+        return TimeMode.UTC
+      }
+    })
   }
 
   let analytic_notices: string[] = []
@@ -128,10 +142,6 @@
     } else {
       toggle_text = "Opt out"
     }
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("plausible_ignore", JSON.stringify($plausible_opt_out))
-      console.log("Plausible opt out:", $plausible_opt_out)
-    }
   }
 
 
@@ -152,9 +162,9 @@
         </div>
         <div id="footer-settings">
           <div id="footer-settings-timezone">
-            <div>Timezone display</div>
+            <div>Time display</div>
             <div>
-              <button on:click="{switch_timezone}">{current_timezone}</button>
+              <button on:click="{switch_timezone}">{time_display_mode}</button>
             </div>
           </div>
         </div>
@@ -164,13 +174,13 @@
 
       <div id="footer-row">
         <div id="footer-links">
-          <a href="#">FAQ</a>
-          <a href="#">Feedback</a>
-          <a href="#">Privacy Policy</a>
+          <a href="/faq">FAQ</a>
+          <a href="/feedback">Feedback</a>
+          <a href="/privacy">Privacy Policy</a>
         </div>
         <div id="footer-external-links">
-          <a href="#">GitHub</a>
-          <a href="#">Twitter (X)</a>
+          <a href="https://github.com/HarukaMa/aleo-explorer" target="_blank">GitHub</a>
+          <a href="https://x.com/Aleo_Scan" target="_blank">Twitter (X)</a>
         </div>
       </div>
 

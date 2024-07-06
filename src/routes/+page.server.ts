@@ -6,9 +6,10 @@ import "$lib/server/api/block"
 export const load: PageServerLoad = async () => {
   try {
     const recent_blocks = await API.instance.recent_blocks()
-    console.log(recent_blocks)
+    const summary = await API.instance.summary()
     return {
       recent_blocks: recent_blocks,
+      summary: summary,
     }
   } catch (err) {
     console.error(err)
