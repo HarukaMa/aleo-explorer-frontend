@@ -11,7 +11,6 @@
 @import "variables";
 
 @import "@fontsource-variable/montserrat";
-@import "@fontsource/montserrat/600";
 
 @include inter-default.all;
 @include inter-variable.all;
@@ -42,4 +41,8 @@
 // for all-numerical data, we want monospaced numbers
 .tnum {
   font-feature-settings: "cv05", "cv08", "cv01", "tnum";
+}
+
+:global(body) {
+  font-size: 0.875rem;
 }
