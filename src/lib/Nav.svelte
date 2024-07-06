@@ -102,40 +102,42 @@
 </style>
 
 <script lang="ts">
-  import {PUBLIC_NETWORK} from "$env/static/public";
-  import NavItem from "./NavItem.svelte";
+  import { PUBLIC_NETWORK } from "$env/static/public"
+  import NavItem from "./NavItem.svelte"
 
-  const networks: {[key: string]: string} = {
+  const networks: { [key: string]: string } = {
     testnet: "Testnet Beta",
-    canary: "Canary Net"
+    canary: "Canary Net",
   }
 
-  let network = networks[PUBLIC_NETWORK];
+  let network = networks[PUBLIC_NETWORK]
   if (!network) {
-    network = "Unknown Network";
+    network = "Unknown Network"
   }
 
   const blockchain_routes = [
-    {name: "Blocks", path: "/blocks"},
-    {name: "Validators", path: "/validators"},
-    {name: "Programs", path: "/programs"},
-    {name: "Transactions", path: "/transactions"},
-    {name: "Nodes", path: "/nodes"}
-  ];
+    { name: "Blocks", path: "/blocks" },
+    { name: "Validators", path: "/validators" },
+    { name: "Programs", path: "/programs" },
+    { name: "Transactions", path: "/transactions" },
+    { name: "Nodes", path: "/nodes" },
+  ]
 
   const proving_routes = [
-    {name: "Calculator", path: "/calculator"}
-  ];
+    { name: "Calculator", path: "/calculator" },
+  ]
 
   const developers_routes = [
-    {name: "Tools", path: "/tools"},
-    {name: "API", path: "/api/docs"},
-  ];
+    { name: "Tools", path: "/tools" },
+    { name: "API", path: "/api/docs" },
+  ]
 
 </script>
 
 <nav>
-  <a href="/"><div class="title-logo"></div></a>
+  <a href="/">
+    <div class="title-logo"></div>
+  </a>
   <div class="title-network-indicator-container">
     <span class="title-network-indicator-name">{network}</span>
   </div>
@@ -145,7 +147,7 @@
       <span class="chevron"></span>
 
       <div class="nav-link-menu">
-        {#each blockchain_routes as {name, path}}
+        {#each blockchain_routes as { name, path }}
           <NavItem name={name} path={path} />
         {/each}
       </div>
@@ -156,7 +158,7 @@
       <span class="chevron"></span>
 
       <div class="nav-link-menu">
-        {#each proving_routes as {name, path}}
+        {#each proving_routes as { name, path }}
           <NavItem name={name} path={path} />
         {/each}
       </div>
@@ -167,7 +169,7 @@
       <span class="chevron"></span>
 
       <div class="nav-link-menu">
-        {#each developers_routes as {name, path}}
+        {#each developers_routes as { name, path }}
           <NavItem name={name} path={path} />
         {/each}
       </div>

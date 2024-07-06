@@ -1,11 +1,11 @@
 <script lang="ts">
 
-  export let homepage: boolean = false;
+  export let homepage: boolean = false
 
-  let input: HTMLInputElement;
+  let input: HTMLInputElement
 
   function focus_search() {
-    input.focus();
+    input.focus()
   }
 
 </script>

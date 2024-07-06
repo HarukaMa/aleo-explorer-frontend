@@ -51,16 +51,21 @@
     gap: 1.75rem;
   }
 
+  #footer-settings button, #footer-analytics button {
+    all: unset;
+    color: $blue-500;
+    text-decoration-line: none;
+    line-height: 1.25rem;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
   #footer-settings-timezone {
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
-
-    a {
-      color: $blue-500;
-      text-decoration-line: none;
-      line-height: 1.25rem;
-    }
   }
 
   .footer-line {
@@ -79,16 +84,29 @@
     }
 
   }
-
 </style>
 
 <script lang="ts">
   import Nav from "$lib/Nav.svelte"
-  import { env } from "$env/dynamic/public";
+  import { env } from "$env/dynamic/public"
+  import { timezone_local, plausible_opt_out } from "$lib/stores"
 
   export let data
 
   console.log(data.sync_info)
+
+  let current_timezone: string
+  $: {
+    if ($timezone_local) {
+      current_timezone = "Local"
+    } else {
+      current_timezone = "UTC"
+    }
+  }
+
+  function switch_timezone() {
+    timezone_local.update((prev) => !prev)
+  }
 
   let analytic_notices: string[] = []
   if (env.PUBLIC_HAS_CLOUDFLARE) {
@@ -98,6 +116,25 @@
     analytic_notices.push("Contains self-hosted Plausible analytics.")
   }
   const analytic_notice = analytic_notices.join(" ")
+
+  function toggle_plausible_opt_out() {
+    plausible_opt_out.update((prev) => !prev)
+  }
+
+  let toggle_text: string
+  $: {
+    if ($plausible_opt_out) {
+      toggle_text = "Opt in"
+    } else {
+      toggle_text = "Opt out"
+    }
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("plausible_ignore", JSON.stringify($plausible_opt_out))
+      console.log("Plausible opt out:", $plausible_opt_out)
+    }
+  }
+
+
 </script>
 
 <Nav />
@@ -110,12 +147,15 @@
       <div id="footer-row">
         <div id="footer-logo-copyright">
           <div id="footer-logo"></div>
-          <div>Aleo Explorer made by Haruka and contributors. <div class="copyleft">&copy;</div> 2022-{(new Date()).getFullYear()}</div>
+          <div>Aleo Explorer made by Haruka and contributors. <span class="copyleft">&copy;</span>
+            2022-{(new Date()).getFullYear()}</div>
         </div>
         <div id="footer-settings">
           <div id="footer-settings-timezone">
             <div>Timezone display</div>
-            <div><a href="#">UTC</a></div>
+            <div>
+              <button on:click="{switch_timezone}">{current_timezone}</button>
+            </div>
           </div>
         </div>
       </div>
@@ -138,6 +178,11 @@
 
     </div>
 
-    <div id="footer-analytics">{ analytic_notice }</div>
+    <div id="footer-analytics">
+      { analytic_notice }
+      {#if env.PUBLIC_HAS_PLAUSIBLE}
+        <button on:click="{toggle_plausible_opt_out}">{toggle_text}</button>
+      {/if}
+    </div>
   </footer>
 </div>

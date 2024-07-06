@@ -1,8 +1,8 @@
 <script lang="ts">
-  import home_bg from "$lib/assets/images/home_bg.svg";
-  import SearchBar from "$lib/SearchBar.svelte";
+  import home_bg from "$lib/assets/images/home_bg.svg"
+  import SearchBar from "$lib/SearchBar.svelte"
 
-  export let data;
+  export let data
 
 </script>
 
@@ -28,7 +28,9 @@
   }
 
   @supports (font-variation-settings: normal) {
-    .big-title { font-family: "Montserrat Variable", system-ui; }
+    .big-title {
+      font-family: "Montserrat Variable", system-ui;
+    }
   }
 
   .search-bar {
@@ -42,6 +44,7 @@
 
 <div class="search-bar">
   <SearchBar homepage />
+  
 </div>
 
 {JSON.stringify(data.recent_blocks)}
