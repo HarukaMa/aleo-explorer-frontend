@@ -1,3 +1,8 @@
+@use "../../node_modules/inter-ui/default" as inter-default with (
+  $inter-font-display: swap,
+  $inter-font-path: 'inter-ui/web'
+);
+
 @use "../../node_modules/inter-ui/variable" as inter-variable with (
   $inter-font-display: swap,
   $inter-font-path: 'inter-ui/variable'
@@ -7,14 +12,21 @@
 
 @import "@fontsource-variable/montserrat";
 
+@include inter-default.all;
 @include inter-variable.all;
 
 :root {
-  font-family: "InterVariable", system-ui;
+  font-family: "Inter", system-ui;
   // cv05, cv08: disambiguation; cv01: better "1"; cv10: better "G"
   font-feature-settings: "cv05", "cv08", "cv01", "cv10";
   padding: 0 1rem;
   font-size: 16px;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: "InterVariable", system-ui;
+  }
 }
 
 /* utilities */

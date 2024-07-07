@@ -37,6 +37,7 @@
 
   #footer-logo {
     background-image: $mono-logo;
+    background-repeat: no-repeat;
     height: 32px;
     width: 32px;
   }

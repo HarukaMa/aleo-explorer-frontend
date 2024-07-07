@@ -116,5 +116,3 @@
 
   </div>
 </div>
-
-{JSON.stringify(data.recent_blocks)}
