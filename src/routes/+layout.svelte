@@ -89,11 +89,54 @@
 <script lang="ts">
   import Nav from "$lib/Nav.svelte"
   import { env } from "$env/dynamic/public"
-  import { time_display, plausible_opt_out, TimeMode } from "$lib/stores"
+  import { TimeMode } from "$lib/types"
+  import { browser } from "$app/environment"
+  import { writable, type Writable } from "svelte/store"
+  import { getCookie } from "$lib/utils.js"
+  import { setContext } from "svelte"
 
   export let data
 
-  console.log(data.sync_info)
+  let time_display_value: TimeMode
+  if (browser) {
+    const storage_value = getCookie("time_display") || localStorage.getItem("time_display")
+    // noinspection JSIncompatibleTypesComparison
+    if (storage_value !== null && ["UTC", "Local", "Relative"].includes(storage_value)) {
+      // @ts-expect-error
+      time_display_value = TimeMode[storage_value]
+    } else {
+      time_display_value = TimeMode.UTC
+    }
+  } else {
+    if (data.time_display !== undefined && ["UTC", "Local", "Relative"].includes(data.time_display)) {
+      // @ts-expect-error
+      time_display_value = TimeMode[data.time_display]
+    } else {
+      time_display_value = TimeMode.UTC
+    }
+  }
+
+  export const time_display: Writable<TimeMode> = writable(time_display_value)
+
+  let plausible_opt_out_value: boolean
+  if (browser) {
+    plausible_opt_out_value = (getCookie("plausible_opt_out") || localStorage.getItem("plausible_opt_out")) === "true"
+  } else {
+    plausible_opt_out_value = data.plausible_opt_out === "true"
+  }
+
+  export const plausible_opt_out: Writable<boolean> = writable(plausible_opt_out_value)
+
+  time_display.subscribe((value) => {
+    if (!browser) return
+    localStorage.setItem("time_display", TimeMode[value])
+    document.cookie = `time_display=${TimeMode[value]};`
+  })
+  plausible_opt_out.subscribe((value) => {
+    if (!browser) return
+    localStorage.setItem("plausible_opt_out", value.toString())
+    document.cookie = `plausible_opt_out=${value};`
+  })
 
   let time_display_mode: string
   $: {
@@ -144,7 +187,7 @@
     }
   }
 
-
+  setContext("time_display", time_display)
 </script>
 
 <Nav />

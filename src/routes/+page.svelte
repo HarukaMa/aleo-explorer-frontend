@@ -1,7 +1,6 @@
 <script lang="ts">
   import home_bg from "$lib/assets/images/home_bg.svg"
   import SearchBar from "$lib/SearchBar.svelte"
-  import { time_display } from "$lib/stores"
 
   export let data
 
