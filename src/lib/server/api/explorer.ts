@@ -1,4 +1,6 @@
 import { API } from "$lib/server/api/api"
+import { APIBase } from "$lib/server/api/base"
+import type { APIBaseMixin } from "$lib/utils"
 
 type SyncInfo = {
   out_of_sync: boolean
@@ -18,20 +20,18 @@ type Summary = {
   participation_rate: number
 }
 
-export async function sync_info(this: API): Promise<SyncInfo> {
-  return await this.get("/sync")
-}
+export function APIExplorer<TBase extends APIBaseMixin>(Base: TBase) {
+  return class extends Base {
+    constructor(...args: never[]) {
+      super(...args)
+    }
 
-export async function summary(this: API): Promise<Summary> {
-  return await this.get("/summary")
-}
+    public async sync_info(this: API): Promise<SyncInfo> {
+      return await super.get("/sync")
+    }
 
-declare module "$lib/server/api/api" {
-  interface API {
-    sync_info: typeof sync_info
-    summary: typeof summary
+    public async summary(this: API): Promise<Summary> {
+      return await super.get("/summary")
+    }
   }
 }
-
-API.prototype.sync_info = sync_info
-API.prototype.summary = summary

@@ -1,13 +1,14 @@
 import { API } from "$lib/server/api/api"
+import type { APIBaseMixin, Constructor } from "$lib/utils"
 
-export async function recent_blocks(this: API): Promise<object> {
-  return await this.get("/block/recent")
-}
+export function APIBlock<TBase extends APIBaseMixin>(Base: TBase) {
+  return class extends Base {
+    constructor(...args: never[]) {
+      super(...args)
+    }
 
-declare module "$lib/server/api/api" {
-  interface API {
-    recent_blocks: typeof recent_blocks
+    public async recent_blocks(this: API): Promise<object> {
+      return await super.get("/block/recent")
+    }
   }
 }
-
-API.prototype.recent_blocks = recent_blocks
