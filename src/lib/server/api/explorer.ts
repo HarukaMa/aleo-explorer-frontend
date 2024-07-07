@@ -1,5 +1,4 @@
 import { API } from "$lib/server/api/api"
-import { APIBase } from "$lib/server/api/base"
 import type { APIBaseMixin } from "$lib/utils"
 
 type SyncInfo = {
@@ -22,7 +21,8 @@ type Summary = {
 
 export function APIExplorer<TBase extends APIBaseMixin>(Base: TBase) {
   return class extends Base {
-    constructor(...args: never[]) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    constructor(...args: any[]) {
       super(...args)
     }
 
