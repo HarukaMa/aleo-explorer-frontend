@@ -1,0 +1,47 @@
+<style lang="scss">
+
+  .formatted-number {
+    display: inline-flex;
+    font-weight: 700;
+  }
+
+  .thousands-separator {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+</style>
+
+<script lang="ts">
+  export let number: number | bigint
+  export let precision: number = 0
+  export let unit: string | null = null
+
+  let integer_part: string
+  let decimal_part: string
+  if (typeof number === "bigint") {
+    integer_part = number.toString()
+    decimal_part = ""
+  } else {
+    const [int, dec] = number.toFixed(precision).split(".")
+    integer_part = int
+    decimal_part = dec
+  }
+  const integer_parts = integer_part.split("").reverse().join("").match(/.{1,3}/g)?.map((x) => x.split("").reverse().join("")).reverse() || []
+
+</script>
+
+<span class="formatted-number tnum">
+  {#each integer_parts as part, i}
+    {#if i > 0}
+      <span class="thousands-separator">,</span>
+    {/if}
+    {part}
+  {/each}
+  {#if decimal_part}
+    <span class="decimal-separator">.</span>
+    {decimal_part}
+  {/if}
+  {#if unit}
+    <span class="unit">&nbsp;{unit}</span>
+  {/if}
+</span>

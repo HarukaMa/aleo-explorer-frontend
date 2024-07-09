@@ -1,6 +1,6 @@
 <style lang="scss">
 
-  @import '../../static/styles/variables';
+  @import '../../../static/styles/variables';
 
   /* top bar related */
 

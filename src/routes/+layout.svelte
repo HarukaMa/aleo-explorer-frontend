@@ -88,7 +88,7 @@
 </style>
 
 <script lang="ts">
-  import Nav from "$lib/Nav.svelte"
+  import Nav from "$lib/components/Nav.svelte"
   import { env } from "$env/dynamic/public"
   import { TimeMode } from "$lib/types"
   import { browser } from "$app/environment"

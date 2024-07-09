@@ -1,19 +1,32 @@
 <script lang="ts">
   import home_bg from "$lib/assets/images/home_bg.svg"
-  import SearchBar from "$lib/SearchBar.svelte"
+  import SearchBar from "$lib/components/SearchBar.svelte"
+  import Number from "$lib/components/Number.svelte"
+  import { getContext } from "svelte"
+  import type { Writable } from "svelte/store"
+  import { TimeMode } from "$lib/types"
+  import { format_time } from "$lib/time_format"
 
   export let data
 
   const block_time = new Date(data.summary.latest_timestamp * 1000)
-
+  const time_display: Writable<TimeMode> = getContext("time_display")
 
   $: summary_data = [
     [
-      { name: "Latest block", value: data.summary.latest_height },
-      { name: "Block time", value: block_time },
+      { name: "Latest block", value: { number: data.summary.latest_height } },
+      { name: "Block time", value: format_time(block_time, $time_display) },
+      { name: "Active validators", value: data.summary.validators },
+      { name: "Validator participation rate (1h)", value: (data.summary.participation_rate * 100).toFixed(2) + "%" },
     ],
     [
-      { name: "Recent Transactions", value: data.sync_info.explorer_height },
+      {
+        name: "Epoch",
+        value: `${Math.floor(data.summary.latest_height / 360)} (${data.summary.latest_height % 360}/360)`,
+      },
+      { name: "Proof target", value: { number: data.summary.proof_target } },
+      { name: "Coinbase target", value: { number: data.summary.coinbase_target } },
+      { name: "Puzzle solving rate (15m)", value: { number: data.summary.network_speed, precision: 2, unit: "s/s" } },
     ],
   ]
 
@@ -104,7 +117,11 @@
         {#each column as row}
           <div class="row">
             <div>{row.name}</div>
-            <div>{row.value}</div>
+            {#if typeof row.value === "object"}
+              <Number {...row.value} />
+            {:else}
+              <div>{row.value}</div>
+            {/if}
           </div>
         {/each}
       </div>

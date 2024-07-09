@@ -12,7 +12,7 @@
 
 <style lang="scss">
 
-  @import "static/styles/variables";
+  @import "../../../static/styles/variables";
 
   .home-search-bar-container {
     display: inline-flex;

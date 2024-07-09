@@ -1,11 +1,11 @@
 <script lang="ts">
-  export let name: string;
-  export let path: string;
+  export let name: string
+  export let path: string
 </script>
 
 <style lang="scss">
 
-  @import '../../static/styles/variables';
+  @import '../../../static/styles/variables';
 
   .nav-link-menu-item {
     padding: 0.5rem;

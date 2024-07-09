@@ -1,8 +1,3 @@
-@use "../../node_modules/inter-ui/default" as inter-default with (
-  $inter-font-display: swap,
-  $inter-font-path: 'inter-ui/web'
-);
-
 @use "../../node_modules/inter-ui/variable" as inter-variable with (
   $inter-font-display: swap,
   $inter-font-path: 'inter-ui/variable'
@@ -12,21 +7,14 @@
 
 @import "@fontsource-variable/montserrat";
 
-@include inter-default.all;
 @include inter-variable.all;
 
 :root {
-  font-family: "Inter", system-ui;
+  font-family: "InterVariable", system-ui;
   // cv05, cv08: disambiguation; cv01: better "1"; cv10: better "G"
   font-feature-settings: "cv05", "cv08", "cv01", "cv10";
   padding: 0 1rem;
   font-size: 16px;
-}
-
-@supports (font-variation-settings: normal) {
-  :root {
-    font-family: "InterVariable", system-ui;
-  }
 }
 
 /* utilities */
@@ -34,13 +22,13 @@
 // contextual alternates
 // we don't want "x" shown as multiplication and other ligatures,
 // but we might want better heights of some symbols.
-.no-calt {
+:global(.no-calt) {
   font-feature-settings: "calt" 0;
 }
 
 // for all-numerical data, we want monospaced numbers
-.tnum {
-  font-feature-settings: "cv05", "cv08", "cv01", "tnum";
+:global(.tnum) {
+  font-feature-settings: "tnum";
 }
 
 :global(body) {
