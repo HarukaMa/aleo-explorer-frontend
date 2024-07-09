@@ -2,20 +2,17 @@
   import home_bg from "$lib/assets/images/home_bg.svg"
   import SearchBar from "$lib/components/SearchBar.svelte"
   import Number from "$lib/components/Number.svelte"
-  import { getContext } from "svelte"
-  import type { Writable } from "svelte/store"
-  import { TimeMode } from "$lib/types"
-  import { format_time } from "$lib/time_format"
+  import { current_time_mode, format_time } from "$lib/time_mode.svelte"
 
-  export let data
+  let { data } = $props()
 
   const block_time = new Date(data.summary.latest_timestamp * 1000)
-  const time_display: Writable<TimeMode> = getContext("time_display")
+  const time_mode = current_time_mode()
 
-  $: summary_data = [
+  let summary_data = $derived([
     [
       { name: "Latest block", value: { number: data.summary.latest_height } },
-      { name: "Block time", value: format_time(block_time, $time_display) },
+      { name: "Block time", value: format_time(block_time, time_mode.value) },
       { name: "Active validators", value: data.summary.validators },
       { name: "Validator participation rate (1h)", value: (data.summary.participation_rate * 100).toFixed(2) + "%" },
     ],
@@ -28,7 +25,7 @@
       { name: "Coinbase target", value: { number: data.summary.coinbase_target } },
       { name: "Puzzle solving rate (15m)", value: { number: data.summary.network_speed, precision: 2, unit: "s/s" } },
     ],
-  ]
+  ])
 
 </script>
 

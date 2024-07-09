@@ -1,11 +1,13 @@
 <script lang="ts">
 
-  export let homepage: boolean = false
+  let { homepage = false } = $props()
 
-  let input: HTMLInputElement
+  let input: HTMLInputElement | undefined = $state(undefined)
 
   function focus_search() {
-    input.focus()
+    if (input) {
+      input.focus()
+    }
   }
 
 </script>
@@ -78,7 +80,7 @@
 </style>
 
 {#if homepage}
-  <div class="home-search-bar-container" on:click={focus_search} aria-hidden="true">
+  <div class="home-search-bar-container" onclick={focus_search} aria-hidden="true">
     <div class="search-icon"></div>
     <form action="/search">
       <input name="q" type="text" placeholder="Search for address, transaction, validator..." bind:this={input} />

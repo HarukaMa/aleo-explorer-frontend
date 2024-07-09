@@ -1,4 +1,29 @@
-import { TimeMode } from "$lib/types"
+import { getContext, hasContext, setContext } from "svelte"
+
+export enum TimeMode {
+  UTC,
+  Local,
+  Relative,
+}
+
+export const current_time_mode = (init?: TimeMode) => {
+  let mode = $state(init)
+  if (hasContext("time_mode")) {
+    return getContext<{ value: TimeMode }>("time_mode")
+  } else if (init === undefined) {
+    throw new Error("No initial value provided")
+  }
+  const state = {
+    get value() {
+      return mode!
+    },
+    set value(value: TimeMode) {
+      mode = value
+    },
+  }
+  setContext("time_mode", state)
+  return state
+}
 
 export function format_time(date: Date, mode: TimeMode) {
   switch (mode) {

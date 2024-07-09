@@ -90,34 +90,33 @@
 <script lang="ts">
   import Nav from "$lib/components/Nav.svelte"
   import { env } from "$env/dynamic/public"
-  import { TimeMode } from "$lib/types"
+  import { current_time_mode, TimeMode } from "$lib/time_mode.svelte"
   import { browser } from "$app/environment"
-  import { writable, type Writable } from "svelte/store"
   import { getCookie } from "$lib/utils.js"
   import { setContext } from "svelte"
 
-  export let data
+  let { data, children } = $props()
 
-  let time_display_value: TimeMode
+  let stored_time_mode: TimeMode
   if (browser) {
     const storage_value = getCookie("time_display") || localStorage.getItem("time_display")
     // noinspection JSIncompatibleTypesComparison
     if (storage_value !== null && ["UTC", "Local", "Relative"].includes(storage_value)) {
       // @ts-expect-error
-      time_display_value = TimeMode[storage_value]
+      stored_time_mode = TimeMode[storage_value]
     } else {
-      time_display_value = TimeMode.UTC
+      stored_time_mode = TimeMode.UTC
     }
   } else {
     if (data.time_display !== undefined && ["UTC", "Local", "Relative"].includes(data.time_display)) {
       // @ts-expect-error
-      time_display_value = TimeMode[data.time_display]
+      stored_time_mode = TimeMode[data.time_display]
     } else {
-      time_display_value = TimeMode.UTC
+      stored_time_mode = TimeMode.UTC
     }
   }
 
-  export const time_display: Writable<TimeMode> = writable(time_display_value)
+  let time_mode = current_time_mode(stored_time_mode)
 
   let plausible_opt_out_value: boolean
   if (browser) {
@@ -126,44 +125,39 @@
     plausible_opt_out_value = data.plausible_opt_out === "true"
   }
 
-  export const plausible_opt_out: Writable<boolean> = writable(plausible_opt_out_value)
+  let plausible_opt_out = $state(plausible_opt_out_value)
 
-  time_display.subscribe((value) => {
+  $effect(() => {
     if (!browser) return
-    localStorage.setItem("time_display", TimeMode[value])
-    document.cookie = `time_display=${TimeMode[value]};`
-  })
-  plausible_opt_out.subscribe((value) => {
-    if (!browser) return
-    localStorage.setItem("plausible_opt_out", value.toString())
-    document.cookie = `plausible_opt_out=${value};`
+    localStorage.setItem("time_display", TimeMode[time_mode.value])
+    document.cookie = `time_display=${TimeMode[time_mode.value]};`
   })
 
-  let time_display_mode: string
-  $: {
-    switch ($time_display) {
+  $effect(() => {
+    if (!browser) return
+    localStorage.setItem("plausible_opt_out", plausible_opt_out.toString())
+    document.cookie = `plausible_opt_out=${plausible_opt_out.toString()};`
+  })
+
+  let time_display_mode: string = $derived.by(() => {
+    switch (time_mode.value) {
       case TimeMode.UTC:
-        time_display_mode = "UTC"
-        break
+        return "UTC"
       case TimeMode.Local:
-        time_display_mode = "Local"
-        break
+        return "Local"
       case TimeMode.Relative:
-        time_display_mode = "Relative"
-        break
+        return "Relative"
     }
-  }
+  })
 
   function switch_timezone() {
-    time_display.update((prev) => {
-      if (prev === TimeMode.UTC) {
-        return TimeMode.Local
-      } else if (prev === TimeMode.Local) {
-        return TimeMode.Relative
-      } else {
-        return TimeMode.UTC
-      }
-    })
+    if (time_mode.value === TimeMode.UTC) {
+      time_mode.value = TimeMode.Local
+    } else if (time_mode.value === TimeMode.Local) {
+      time_mode.value = TimeMode.Relative
+    } else {
+      time_mode.value = TimeMode.UTC
+    }
   }
 
   let analytic_notices: string[] = []
@@ -176,25 +170,24 @@
   const analytic_notice = analytic_notices.join(" ")
 
   function toggle_plausible_opt_out() {
-    plausible_opt_out.update((prev) => !prev)
+    plausible_opt_out = !plausible_opt_out
   }
 
-  let toggle_text: string
-  $: {
-    if ($plausible_opt_out) {
-      toggle_text = "Opt in"
+  let toggle_text: string = $derived.by(() => {
+    if (plausible_opt_out) {
+      return "Opt in"
     } else {
-      toggle_text = "Opt out"
+      return "Opt out"
     }
-  }
+  })
 
-  setContext("time_display", time_display)
+  setContext("time_mode", time_mode)
 </script>
 
 <Nav />
 
 <div class="container">
-  <slot></slot>
+  {@render children()}
   <footer>
     <div id="footer-column">
 
@@ -208,7 +201,7 @@
           <div id="footer-settings-timezone">
             <div>Time display</div>
             <div>
-              <button on:click="{switch_timezone}">{time_display_mode}</button>
+              <button onclick="{switch_timezone}">{time_display_mode}</button>
             </div>
           </div>
         </div>
@@ -235,7 +228,7 @@
     <div id="footer-analytics">
       { analytic_notice }
       {#if env.PUBLIC_HAS_PLAUSIBLE}
-        <button on:click="{toggle_plausible_opt_out}">{toggle_text}</button>
+        <button onclick="{toggle_plausible_opt_out}">{toggle_text}</button>
       {/if}
     </div>
   </footer>

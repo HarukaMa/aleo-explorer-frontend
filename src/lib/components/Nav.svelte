@@ -110,10 +110,7 @@
     canary: "Canary Net",
   }
 
-  let network = networks[PUBLIC_NETWORK]
-  if (!network) {
-    network = "Unknown Network"
-  }
+  let network = networks[PUBLIC_NETWORK] || "Unknown Network"
 
   const blockchain_routes = [
     { name: "Blocks", path: "/blocks" },

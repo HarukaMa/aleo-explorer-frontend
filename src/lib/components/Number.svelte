@@ -12,12 +12,16 @@
 </style>
 
 <script lang="ts">
-  export let number: number | bigint
-  export let precision: number = 0
-  export let unit: string | null = null
+  interface Number {
+    number: number | bigint
+    precision?: number
+    unit?: string
+  }
 
-  let integer_part: string
-  let decimal_part: string
+  let { number, precision = 0, unit }: Number = $props()
+
+  let integer_part: string = $state("")
+  let decimal_part: string = $state("")
   if (typeof number === "bigint") {
     integer_part = number.toString()
     decimal_part = ""
@@ -26,7 +30,7 @@
     integer_part = int
     decimal_part = dec
   }
-  const integer_parts = integer_part.split("").reverse().join("").match(/.{1,3}/g)?.map((x) => x.split("").reverse().join("")).reverse() || []
+  const integer_parts = $derived(integer_part.split("").reverse().join("").match(/.{1,3}/g)?.map((x) => x.split("").reverse().join("")).reverse() || [])
 
 </script>
 

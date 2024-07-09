@@ -1,6 +1,10 @@
 <script lang="ts">
-  export let name: string
-  export let path: string
+  interface NavItem {
+    name: string
+    path: string
+  }
+
+  let { name, path }: NavItem = $props()
 </script>
 
 <style lang="scss">
