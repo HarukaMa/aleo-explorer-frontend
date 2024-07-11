@@ -29,6 +29,7 @@
 // for all-numerical data, we want monospaced numbers
 :global(.tnum) {
   font-feature-settings: "cv05", "cv08", "cv01", "cv10", "tnum";
+  letter-spacing: -0.5px;
 }
 
 :global(body) {
