@@ -134,7 +134,7 @@
     proof_target: block.proof_target,
     coinbase_target: block.coinbase_target,
     block_reward: block.block_reward,
-    puzzle_reward: block.coinbase_reward,
+    puzzle_reward: Math.floor(block.coinbase_reward * 2 / 3),
     puzzle_solutions: block.partial_solution_count,
   }))
 
