@@ -1,9 +1,5 @@
 <style lang="scss">
 
-  .formatted-number {
-    font-weight: 700;
-  }
-
   .thousands-separator {
     user-select: none;
     -webkit-user-select: none;

@@ -8,7 +8,7 @@ export function APIBlock<TBase extends APIBaseMixin>(Base: TBase) {
       super(...args)
     }
 
-    public async recent_blocks(this: API): Promise<object> {
+    public async recent_blocks(this: API): Promise<object[]> {
       return await super.get("/block/recent")
     }
   }
