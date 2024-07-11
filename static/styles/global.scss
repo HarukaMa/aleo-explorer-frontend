@@ -23,12 +23,12 @@
 // we don't want "x" shown as multiplication and other ligatures,
 // but we might want better heights of some symbols.
 :global(.no-calt) {
-  font-feature-settings: "calt" 0;
+  font-feature-settings: "cv05", "cv08", "cv01", "cv10", "calt" 0;
 }
 
 // for all-numerical data, we want monospaced numbers
 :global(.tnum) {
-  font-feature-settings: "tnum";
+  font-feature-settings: "cv05", "cv08", "cv01", "cv10", "tnum";
 }
 
 :global(body) {

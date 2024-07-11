@@ -29,7 +29,7 @@
     gap: 8rem;
     margin-right: 4rem;
 
-    :global(.formatted-number), :global(.epoch) {
+    :global(.formatted-number), :global(.epoch), :global(.time) {
       font-weight: 700;
     }
   }
@@ -83,20 +83,17 @@
   import home_bg from "$lib/assets/images/home_bg.svg"
   import SearchBar from "$lib/components/SearchBar.svelte"
   import Number from "$lib/components/Number.svelte"
-  import { current_time_mode, format_time } from "$lib/time_mode.svelte"
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
   import Epoch from "$lib/components/Epoch.svelte"
   import AleoCredit from "$lib/components/AleoCredit.svelte"
+  import Time from "$lib/components/Time.svelte"
 
   let { data } = $props()
-
-  const block_time = new Date(data.summary.latest_timestamp * 1000)
-  const time_mode = current_time_mode()
 
   let summary_data = $derived([
     [
       { name: "Latest block", value: renderComponent(Number, { number: data.summary.latest_height }) },
-      { name: "Block time", value: format_time(block_time, time_mode.value) },
+      { name: "Block time", value: renderComponent(Time, { timestamp: data.summary.latest_timestamp }) },
       { name: "Active validators", value: data.summary.validators },
       { name: "Validator participation rate (1h)", value: (data.summary.participation_rate * 100).toFixed(2) + "%" },
     ],
@@ -155,7 +152,7 @@
     {
       accessorKey: "timestamp",
       header: "Timestamp",
-      cell: info => format_time(new Date(info.getValue() * 1000), time_mode.value),
+      cell: info => renderComponent(Time, { timestamp: info.getValue() }),
     },
     {
       accessorKey: "transactions",
