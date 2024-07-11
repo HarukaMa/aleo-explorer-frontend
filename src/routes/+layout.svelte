@@ -100,7 +100,6 @@
   let stored_time_mode: TimeMode
   if (browser) {
     const storage_value = getCookie("time_display") || localStorage.getItem("time_display")
-    // noinspection JSIncompatibleTypesComparison
     if (storage_value !== null && ["UTC", "Local", "Relative"].includes(storage_value)) {
       // @ts-expect-error
       stored_time_mode = TimeMode[storage_value]
