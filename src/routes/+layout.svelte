@@ -60,6 +60,7 @@
 
     &:hover {
       cursor: pointer;
+      text-decoration: underline;
     }
   }
 
@@ -200,7 +201,7 @@
           <div id="footer-settings-timezone">
             <div>Time display</div>
             <div>
-              <button onclick="{switch_timezone}">{time_display_mode}</button>
+              <button class="a" onclick="{switch_timezone}">{time_display_mode}</button>
             </div>
           </div>
         </div>
@@ -227,7 +228,7 @@
     <div id="footer-analytics">
       { analytic_notice }
       {#if env.PUBLIC_HAS_PLAUSIBLE}
-        <button onclick="{toggle_plausible_opt_out}">{toggle_text}</button>
+        <button class="a" onclick="{toggle_plausible_opt_out}">{toggle_text}</button>
       {/if}
     </div>
   </footer>

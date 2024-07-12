@@ -31,6 +31,7 @@
 
     :global(.formatted-number), :global(.epoch), :global(.time) {
       font-weight: 700;
+      letter-spacing: -0.25px;
     }
   }
 
@@ -74,6 +75,7 @@
 
   table {
     width: 100%;
+    margin-top: 2.5rem;
   }
 
 </style>
@@ -87,6 +89,7 @@
   import Epoch from "$lib/components/Epoch.svelte"
   import AleoCredit from "$lib/components/AleoCredit.svelte"
   import Time from "$lib/components/Time.svelte"
+  import Link from "$lib/components/Link.svelte"
 
   let { data } = $props()
 
@@ -113,7 +116,6 @@
 
   type Block = {
     height: number,
-    epoch: number,
     timestamp: number,
     transactions: number,
     proof_target: number,
@@ -125,7 +127,6 @@
   $inspect(data.recent_blocks)
   const table_data: Block[] = data.recent_blocks.map((block: any) => ({
     height: block.height,
-    epoch: block.height, // custom formatting from height
     timestamp: block.timestamp,
     transactions: block.transaction_count,
     proof_target: block.proof_target,
@@ -139,15 +140,11 @@
     {
       accessorKey: "height",
       header: "Height",
-      cell: info => renderComponent(Number, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "epoch",
-      header: "Epoch",
-      cell: info => {
-        const height: number = info.getValue()
-        return renderComponent(Epoch, { height: height })
-      },
+      cell: info => renderComponent(Link, {
+        href: `/block/${info.getValue()}`,
+        child_component: Number,
+        number: info.getValue(),
+      }),
     },
     {
       accessorKey: "timestamp",

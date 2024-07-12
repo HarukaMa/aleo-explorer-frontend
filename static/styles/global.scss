@@ -35,3 +35,37 @@
 :global(body) {
   font-size: 0.875rem;
 }
+
+:global(table) {
+  border-collapse: collapse;
+
+  :global(thead) {
+    color: $grey-600;
+    text-align: left;
+    height: 2rem;
+
+    :global(tr) {
+      border-bottom: 1px solid $grey-100;
+
+      :global(th) {
+        font-weight: normal;
+        padding: 0 1rem;
+      }
+    }
+  }
+
+  :global(tbody) {
+    :global(tr) {
+      height: 3rem;
+      border-bottom: 1px solid $grey-100;
+
+      &:hover {
+        background-color: $grey-25;
+      }
+
+      :global(td) {
+        padding: 0 1rem;
+      }
+    }
+  }
+}
