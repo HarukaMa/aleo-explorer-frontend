@@ -35,7 +35,7 @@
     "type": "module",
     "dependencies": {
         "@fontsource-variable/montserrat": "^5.0.19",
-        "@tanstack/svelte-table": "alpha",
-        "inter-ui": "^4.0.2"
+        "@fontsource/source-sans-3": "^5.0.20",
+        "@tanstack/svelte-table": "alpha"
     }
 }

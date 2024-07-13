@@ -1,16 +1,10 @@
-@use "../../node_modules/inter-ui/variable" as inter-variable with (
-  $inter-font-display: swap,
-  $inter-font-path: 'inter-ui/variable'
-);
-
 @import "variables";
 
 @import "@fontsource-variable/montserrat";
-
-@include inter-variable.all;
+@import "@fontsource/source-sans-3";
 
 :root {
-  font-family: "InterVariable", system-ui;
+  font-family: "Source Sans 3", system-ui;
   // cv05, cv08: disambiguation; cv01: better "1"; cv10: better "G"
   font-feature-settings: "cv05", "cv08", "cv01", "cv10";
   padding: 0 1rem;
@@ -29,7 +23,7 @@
 // for all-numerical data, we want monospaced numbers
 :global(.tnum) {
   font-feature-settings: "cv05", "cv08", "cv01", "cv10", "tnum";
-  letter-spacing: -0.5px;
+  //letter-spacing: -0.5px;
 }
 
 :global(body) {

@@ -11,12 +11,12 @@ importers:
       '@fontsource-variable/montserrat':
         specifier: ^5.0.19
         version: 5.0.19
+      '@fontsource/source-sans-3':
+        specifier: ^5.0.20
+        version: 5.0.20
       '@tanstack/svelte-table':
         specifier: alpha
         version: 9.0.0-alpha.10(svelte@5.0.0-next.179)
-      inter-ui:
-        specifier: ^4.0.2
-        version: 4.0.2
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20240620.0
@@ -427,6 +427,9 @@ packages:
 
   '@fontsource-variable/montserrat@5.0.19':
     resolution: {integrity: sha512-vOlVjdGock2yBOeBbg5qexPa1TJM/PS8Nx9YlF6DFEtFf/Y5ayDbZRvV/WPj8W2vk7/aDxUEtTAp/Qp8wK9hNQ==}
+
+  '@fontsource/source-sans-3@5.0.20':
+    resolution: {integrity: sha512-4eKMsvsz0sP3G4bQVrudJI3Cs/fVUafpKAP6kZZE2LZIqd8vieCDTl0A2p3su9fBgySv4wl5sTe5+2rdXjbkBQ==}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -1048,10 +1051,6 @@ packages:
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
-
-  inter-ui@4.0.2:
-    resolution: {integrity: sha512-YmfzwEtzuVzEenQwSB/tmmqi/A0a2GnFk4mG4ZFULXiO5DNk0fJWiO3o9i1sdVKuMVGx9iiNQnCq8ghWZJVVHw==}
-    engines: {node: '>=16.0.0'}
 
   is-binary-path@2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
@@ -1867,6 +1866,8 @@ snapshots:
 
   '@fontsource-variable/montserrat@5.0.19': {}
 
+  '@fontsource/source-sans-3@5.0.20': {}
+
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
@@ -2547,8 +2548,6 @@ snapshots:
       wrappy: 1.0.2
 
   inherits@2.0.4: {}
-
-  inter-ui@4.0.2: {}
 
   is-binary-path@2.1.0:
     dependencies:
