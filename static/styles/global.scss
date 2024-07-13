@@ -1,10 +1,10 @@
 @import "variables";
 
 @import "@fontsource-variable/montserrat";
-@import "@fontsource/source-sans-3";
+@import "@fontsource-variable/source-sans-3";
 
 :root {
-  font-family: "Source Sans 3", system-ui;
+  font-family: "Source Sans 3 Variable", system-ui;
   // cv05, cv08: disambiguation; cv01: better "1"; cv10: better "G"
   font-feature-settings: "cv05", "cv08", "cv01", "cv10";
   padding: 0 1rem;
@@ -12,19 +12,6 @@
 }
 
 /* utilities */
-
-// contextual alternates
-// we don't want "x" shown as multiplication and other ligatures,
-// but we might want better heights of some symbols.
-:global(.no-calt) {
-  font-feature-settings: "cv05", "cv08", "cv01", "cv10", "calt" 0;
-}
-
-// for all-numerical data, we want monospaced numbers
-:global(.tnum) {
-  font-feature-settings: "cv05", "cv08", "cv01", "cv10", "tnum";
-  //letter-spacing: -0.5px;
-}
 
 :global(body) {
   font-size: 0.875rem;

@@ -31,7 +31,7 @@
 
     :global(.formatted-number), :global(.epoch), :global(.time) {
       font-weight: 700;
-      //letter-spacing: -0.25px;
+      //letter-spacing: -0.01rem;
     }
   }
 
