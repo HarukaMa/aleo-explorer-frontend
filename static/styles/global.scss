@@ -1,10 +1,10 @@
 @import "variables";
 
 @import "@fontsource-variable/montserrat";
-@import "@fontsource-variable/source-sans-3";
+@import "@fontsource-variable/open-sans";
 
 :root {
-  font-family: "Source Sans 3 Variable", system-ui;
+  font-family: "Open Sans Variable", system-ui;
   // cv05, cv08: disambiguation; cv01: better "1"; cv10: better "G"
   font-feature-settings: "cv05", "cv08", "cv01", "cv10";
   padding: 0 1rem;
