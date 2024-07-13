@@ -9,11 +9,11 @@ type SyncInfo = {
   reference_height: number
 }
 
-type Summary = {
+export type Summary = {
   latest_height: number
   latest_timestamp: number
-  proof_target: bigint
-  coinbase_target: bigint
+  proof_target: number
+  coinbase_target: number
   network_speed: number
   validators: number
   participation_rate: number

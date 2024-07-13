@@ -14,12 +14,25 @@
 
   let { height }: Epoch = $props()
 
+  let last_height = height
+
   let epoch = $derived(Math.floor(height / 360))
   let epoch_progress = $derived(height % 360)
 
+  let span: HTMLSpanElement
+  $effect(() => {
+    if (last_height !== height) {
+      last_height = height
+      span.classList.add("flash")
+      setTimeout(() => {
+        span.classList.remove("flash")
+      }, 1000)
+    }
+  })
+
 </script>
 
-<span class="epoch tnum">
+<span class="epoch" bind:this={span}>
   {epoch}
   <span class="epoch-progress">
     ({epoch_progress}/360)

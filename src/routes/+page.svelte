@@ -90,26 +90,33 @@
   import AleoCredit from "$lib/components/AleoCredit.svelte"
   import Time from "$lib/components/Time.svelte"
   import Link from "$lib/components/Link.svelte"
+  import { browser } from "$app/environment"
 
   let { data } = $props()
 
+  let summary = $state(data.summary)
+  let recent_blocks = $state(data.recent_blocks)
+
   let summary_data = $derived([
     [
-      { name: "Latest block", value: renderComponent(Number, { number: data.summary.latest_height }) },
-      { name: "Block time", value: renderComponent(Time, { timestamp: data.summary.latest_timestamp }) },
-      { name: "Active validators", value: data.summary.validators },
-      { name: "Validator participation rate (1h)", value: (data.summary.participation_rate * 100).toFixed(2) + "%" },
+      { name: "Latest block", value: { component: Number, props: { number: summary.latest_height } } },
+      { name: "Block time", value: { component: Time, props: { timestamp: summary.latest_timestamp } } },
+      { name: "Active validators", value: { component: Number, props: { number: summary.validators } } },
+      {
+        name: "Validator participation rate (1h)",
+        value: { component: Number, props: { number: (summary.participation_rate * 100), precision: 2, unit: "%" } },
+      },
     ],
     [
       {
         name: "Epoch",
-        value: renderComponent(Epoch, { height: data.summary.latest_height }),
+        value: { component: Epoch, props: { height: summary.latest_height } },
       },
-      { name: "Proof target", value: renderComponent(Number, { number: data.summary.proof_target }) },
-      { name: "Coinbase target", value: renderComponent(Number, { number: data.summary.coinbase_target }) },
+      { name: "Proof target", value: { component: Number, props: { number: summary.proof_target } } },
+      { name: "Coinbase target", value: { component: Number, props: { number: summary.coinbase_target } } },
       {
         name: "Puzzle solving rate (15m)",
-        value: renderComponent(Number, { number: data.summary.network_speed, precision: 2, unit: "s/s" }),
+        value: { component: Number, props: { number: summary.network_speed, precision: 2, unit: " s/s" } },
       },
     ],
   ])
@@ -124,8 +131,8 @@
     puzzle_reward: number,
     puzzle_solutions: number
   }
-  $inspect(data.recent_blocks)
-  const table_data: Block[] = data.recent_blocks.map((block: any) => ({
+
+  let table_data: Block[] = $derived(recent_blocks.map((block: any) => ({
     height: block.height,
     timestamp: block.timestamp,
     transactions: block.transaction_count,
@@ -134,7 +141,7 @@
     block_reward: block.block_reward,
     puzzle_reward: Math.floor(block.coinbase_reward * 2 / 3),
     puzzle_solutions: block.partial_solution_count,
-  }))
+  })))
 
   const columns: ColumnDef<Block>[] = [
     {
@@ -183,11 +190,32 @@
     },
   ]
 
-  const table = createTable<Block>({
+  const table = $derived(createTable<Block>({
     data: table_data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
+  }))
+
+  if (browser) {
+    let requesting = false
+    const interval = setInterval(async () => {
+      if (requesting) return
+      requesting = true
+      const response = await fetch("/api/index_update?" + new URLSearchParams({ last_block: table_data[0].height.toString() }))
+      requesting = false
+      if (!response.ok) {
+        console.error("Failed to fetch new data")
+        return
+      }
+      const new_data = await response.json()
+      summary = new_data.summary
+      recent_blocks = new_data.recent_blocks.concat(recent_blocks).slice(0, 10)
+    }, 5000)
+    $effect(() => {
+      return () => clearInterval(interval)
+    })
+  }
+
 </script>
 
 

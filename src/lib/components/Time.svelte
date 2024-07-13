@@ -6,6 +6,8 @@
 
   let { timestamp }: { timestamp: number } = $props()
 
+  let prev_timestamp = timestamp
+
   let date = $derived(format_time(new Date(timestamp * 1000), time_mode.value))
 
   let span: HTMLSpanElement
@@ -15,6 +17,15 @@
       span.classList.remove("tnum")
     } else {
       span.classList.add("tnum")
+    }
+  })
+  $effect(() => {
+    if (prev_timestamp !== timestamp) {
+      prev_timestamp = timestamp
+      span.classList.add("flash")
+      setTimeout(() => {
+        span.classList.remove("flash")
+      }, 1000)
     }
   })
 
