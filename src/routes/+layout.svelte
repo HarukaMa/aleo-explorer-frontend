@@ -52,7 +52,7 @@
     gap: 1.75rem;
   }
 
-  #footer-settings button, #footer-analytics button {
+  #footer-settings button, #footer-logo-copyright button {
     all: unset;
     color: $blue-500;
     text-decoration-line: none;
@@ -82,7 +82,11 @@
 
     a {
       color: black;
-      text-decoration-line: none;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
   }
@@ -194,8 +198,14 @@
       <div id="footer-row">
         <div id="footer-logo-copyright">
           <div id="footer-logo"></div>
-          <div>Aleo Explorer made by Haruka and contributors. <span class="copyleft">&copy;</span>
-            2022-{(new Date()).getFullYear()}</div>
+          <div>AleoScan - Aleo Explorer <span class="copyleft">&copy;</span>
+            {(new Date()).getFullYear()}
+            <br>
+            { analytic_notice }
+            {#if env.PUBLIC_HAS_PLAUSIBLE}
+              <button class="a" onclick="{toggle_plausible_opt_out}">{toggle_text}</button>
+            {/if}
+          </div>
         </div>
         <div id="footer-settings">
           <div id="footer-settings-timezone">
@@ -221,15 +231,6 @@
         </div>
       </div>
 
-      <div class="footer-line"></div>
-
-    </div>
-
-    <div id="footer-analytics">
-      { analytic_notice }
-      {#if env.PUBLIC_HAS_PLAUSIBLE}
-        <button class="a" onclick="{toggle_plausible_opt_out}">{toggle_text}</button>
-      {/if}
     </div>
   </footer>
 </div>

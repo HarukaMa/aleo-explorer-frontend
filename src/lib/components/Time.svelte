@@ -1,6 +1,6 @@
 <script lang="ts">
 
-  import { current_time_mode, format_time, TimeMode } from "$lib/time_mode.svelte"
+  import { current_time_mode, format_time } from "$lib/time_mode.svelte"
 
   const time_mode = current_time_mode()
 
@@ -12,13 +12,6 @@
 
   let span: HTMLSpanElement
 
-  $effect(() => {
-    if (time_mode.value == TimeMode.Relative) {
-      span.classList.remove("tnum")
-    } else {
-      span.classList.add("tnum")
-    }
-  })
   $effect(() => {
     if (prev_timestamp !== timestamp) {
       prev_timestamp = timestamp

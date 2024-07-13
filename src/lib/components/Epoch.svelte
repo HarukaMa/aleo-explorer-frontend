@@ -2,8 +2,8 @@
   @import "/static/styles/variables";
 
   .epoch-progress {
-    font-size: 0.75rem;
-    color: $grey-400;
+    font-weight: 400;
+    color: $grey-600;
   }
 </style>
 

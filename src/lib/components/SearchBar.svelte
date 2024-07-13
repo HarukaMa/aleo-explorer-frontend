@@ -29,6 +29,7 @@
     border-radius: 1rem;
     border: 2px solid $grey-100;
     transition: border 0.2s ease-out;
+    font-size: 1rem;
 
     .search-icon {
       height: 1.5rem;
