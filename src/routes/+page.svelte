@@ -199,7 +199,7 @@
   if (browser) {
     let requesting = false
     const interval = setInterval(async () => {
-      if (requesting) return
+      if (requesting || document.hidden) return
       requesting = true
       const response = await fetch("/api/index_update?" + new URLSearchParams({ last_block: table_data[0].height.toString() }))
       requesting = false
