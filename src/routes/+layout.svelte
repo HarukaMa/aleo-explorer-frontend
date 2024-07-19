@@ -3,7 +3,7 @@
   @import 'static/styles/global';
 
   .container {
-    max-width: 1136px;
+    max-width: 1620px;
     margin: 0 auto;
   }
 
@@ -187,6 +187,10 @@
 
   setContext("time_mode", time_mode)
 </script>
+
+{#if data.sync_info.out_of_sync}
+  a
+{/if}
 
 <Nav />
 

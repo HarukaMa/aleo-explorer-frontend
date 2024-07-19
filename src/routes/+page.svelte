@@ -78,6 +78,12 @@
     margin-top: 2.5rem;
   }
 
+  .spacer {
+    margin: 2rem auto 0;
+    display: flex;
+    justify-content: center;
+  }
+
 </style>
 
 
@@ -91,6 +97,8 @@
   import Time from "$lib/components/Time.svelte"
   import Link from "$lib/components/Link.svelte"
   import { browser } from "$app/environment"
+  import ButtonLink from "$lib/components/Button.svelte"
+  import { ButtonLinkClass } from "$lib/types"
 
   let { data } = $props()
 
@@ -225,47 +233,51 @@
 
 <div class="search-bar">
   <SearchBar homepage />
+</div>
 
-  <div id="summary">
-    {#each summary_data as column}
-      <div class="column">
-        {#each column as row}
-          <div class="row">
-            <div>{row.name}</div>
-            {#if row.value instanceof Object}
-              <svelte:component this={row.value.component} {...row.value.props} />
-            {:else}
-              <div>{row.value}</div>
-            {/if}
-          </div>
+<div id="summary">
+  {#each summary_data as column}
+    <div class="column">
+      {#each column as row}
+        <div class="row">
+          <div>{row.name}</div>
+          {#if row.value instanceof Object}
+            <svelte:component this={row.value.component} {...row.value.props} />
+          {:else}
+            <div>{row.value}</div>
+          {/if}
+        </div>
+      {/each}
+    </div>
+  {/each}
+</div>
+
+<div id="blocks">
+  <header>Blocks</header>
+  <table>
+    <thead>
+    {#each table.getHeaderGroups() as header_group}
+      <tr>
+        {#each header_group.headers as header}
+          <th>{header.column.columnDef.header}</th>
         {/each}
-      </div>
+      </tr>
     {/each}
-  </div>
+    </thead>
+    <tbody>
+    {#each table.getRowModel().rows as row}
+      <tr>
+        {#each row.getVisibleCells() as cell}
+          <td>
+            <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+          </td>
+        {/each}
+      </tr>
+    {/each}
+    </tbody>
+  </table>
+</div>
 
-  <div id="blocks">
-    <header>Blocks</header>
-    <table>
-      <thead>
-      {#each table.getHeaderGroups() as header_group}
-        <tr>
-          {#each header_group.headers as header}
-            <th>{header.column.columnDef.header}</th>
-          {/each}
-        </tr>
-      {/each}
-      </thead>
-      <tbody>
-      {#each table.getRowModel().rows as row}
-        <tr>
-          {#each row.getVisibleCells() as cell}
-            <td>
-              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-            </td>
-          {/each}
-        </tr>
-      {/each}
-      </tbody>
-    </table>
-  </div>
+<div class="spacer">
+  <ButtonLink href="/blocks" content="See all" cls={ButtonLinkClass.Secondary} />
 </div>

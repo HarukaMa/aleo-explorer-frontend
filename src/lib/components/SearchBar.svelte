@@ -81,7 +81,7 @@
 </style>
 
 {#if homepage}
-  <div class="home-search-bar-container" onclick={focus_search} aria-hidden="true">
+  <div class="home-search-bar-container" onclick={focus_search} onkeydown={focus_search} role="button" tabindex="0">
     <div class="search-icon"></div>
     <form action="/search">
       <input name="q" type="text" placeholder="Search for address, transaction, validator..." bind:this={input} />
@@ -96,14 +96,16 @@
 
 <svelte:window
   on:keydown={e => {
-    if (e.key === "/" && !input.contains(document.activeElement)) {
-      e.preventDefault()
-      e.stopPropagation()
-      input.focus()
-    } else if (e.key === "Escape" && input.contains(document.activeElement)) {
-      e.preventDefault()
-      e.stopPropagation()
-      input.blur()
+    if (input) {
+      if (e.key === "/" && !input.contains(document.activeElement)) {
+        e.preventDefault()
+        e.stopPropagation()
+        input.focus()
+      } else if (e.key === "Escape" && input.contains(document.activeElement)) {
+        e.preventDefault()
+        e.stopPropagation()
+        input.blur()
+      }
     }
   }}
 />

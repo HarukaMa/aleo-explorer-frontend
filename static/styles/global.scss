@@ -19,6 +19,8 @@
 
 :global(table) {
   border-collapse: collapse;
+  overflow-x: auto;
+  min-width: 1100px;
 
   :global(thead) {
     color: $grey-600;

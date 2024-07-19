@@ -6,7 +6,7 @@
 
   nav {
     display: flex;
-    max-width: 1136px;
+    //max-width: 1136px;
     margin: 0 auto;
     height: 4.5rem;
     align-items: center;
