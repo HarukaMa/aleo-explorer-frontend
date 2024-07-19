@@ -7,6 +7,7 @@ type SyncInfo = {
   explorer_height: number
   node_height: number
   reference_height: number
+  last_timestamp: number
 }
 
 export type Summary = {

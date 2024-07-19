@@ -95,10 +95,11 @@
 <script lang="ts">
   import Nav from "$lib/components/Nav.svelte"
   import { env } from "$env/dynamic/public"
-  import { current_time_mode, TimeMode } from "$lib/time_mode.svelte"
+  import { current_time_mode, format_time_relative, TimeMode } from "$lib/time_mode.svelte"
   import { browser } from "$app/environment"
   import { getCookie } from "$lib/utils.js"
   import { setContext } from "svelte"
+  import TopBanner from "$lib/components/TopBanner.svelte"
 
   let { data, children } = $props()
 
@@ -189,7 +190,14 @@
 </script>
 
 {#if data.sync_info.out_of_sync}
-  a
+  <TopBanner>
+    {#snippet content()}
+      <div>
+        The explorer is out of date. The last block synced
+        was {format_time_relative(new Date(data.sync_info.last_timestamp * 1000))}.
+      </div>
+    {/snippet}
+  </TopBanner>
 {/if}
 
 <Nav />
