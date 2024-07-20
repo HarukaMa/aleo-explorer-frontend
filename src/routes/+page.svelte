@@ -98,7 +98,7 @@
   import Link from "$lib/components/Link.svelte"
   import { browser } from "$app/environment"
   import ButtonLink from "$lib/components/Button.svelte"
-  import { ButtonLinkClass } from "$lib/types"
+  import { type BlockList, ButtonLinkClass } from "$lib/types"
 
   let { data } = $props()
 
@@ -129,18 +129,7 @@
     ],
   ])
 
-  type Block = {
-    height: number,
-    timestamp: number,
-    transactions: number,
-    proof_target: number,
-    coinbase_target: number,
-    block_reward: number,
-    puzzle_reward: number,
-    puzzle_solutions: number
-  }
-
-  let table_data: Block[] = $derived(recent_blocks.map((block: any) => ({
+  let table_data: BlockList[] = $derived(recent_blocks.map((block: any) => ({
     height: block.height,
     timestamp: block.timestamp,
     transactions: block.transaction_count,
@@ -151,7 +140,7 @@
     puzzle_solutions: block.partial_solution_count,
   })))
 
-  const columns: ColumnDef<Block>[] = [
+  const columns: ColumnDef<BlockList>[] = [
     {
       accessorKey: "height",
       header: "Height",
@@ -198,7 +187,7 @@
     },
   ]
 
-  const table = $derived(createTable<Block>({
+  const table = $derived(createTable<BlockList>({
     data: table_data,
     columns,
     getCoreRowModel: getCoreRowModel(),

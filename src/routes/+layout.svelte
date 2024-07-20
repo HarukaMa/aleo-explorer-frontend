@@ -98,7 +98,7 @@
   import { current_time_mode, format_time_relative, TimeMode } from "$lib/time_mode.svelte"
   import { browser } from "$app/environment"
   import { getCookie } from "$lib/utils.js"
-  import { setContext } from "svelte"
+  import { setContext, type Snippet } from "svelte"
   import TopBanner from "$lib/components/TopBanner.svelte"
 
   let { data, children } = $props()
@@ -187,6 +187,15 @@
   })
 
   setContext("time_mode", time_mode)
+
+  let before_container: Snippet | undefined = $state()
+
+  // noinspection JSUnusedGlobalSymbols
+  setContext("before_container", {
+    set snippet(value: Snippet) {
+      before_container = value
+    },
+  })
 </script>
 
 {#if data.sync_info.out_of_sync}
@@ -201,6 +210,10 @@
 {/if}
 
 <Nav />
+
+{#if before_container}
+  {@render before_container()}
+{/if}
 
 <div class="container">
   {@render children()}

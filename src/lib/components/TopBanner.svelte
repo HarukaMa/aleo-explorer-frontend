@@ -28,7 +28,9 @@
 </style>
 
 <script lang="ts">
-  let { content }: { content: any } = $props()
+  import type { Snippet } from "svelte"
+
+  let { content }: { content: Snippet } = $props()
 </script>
 
 <div class="banner">

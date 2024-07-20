@@ -7,6 +7,12 @@ type IndexUpdate = {
   recent_blocks: object[]
 }
 
+type Blocks = {
+  blocks: object[]
+  total_blocks: number
+  total_pages: number
+}
+
 export function APIBlock<TBase extends APIBaseMixin>(Base: TBase) {
   return class extends Base {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,6 +26,16 @@ export function APIBlock<TBase extends APIBaseMixin>(Base: TBase) {
 
     public async index_update(this: API, last_block: string): Promise<IndexUpdate> {
       return await super.get("/block/index_update", { last_block: last_block })
+    }
+
+    public async blocks(this: API, page: string | null): Promise<Blocks> {
+      let params
+      if (page) {
+        params = { p: page }
+      } else {
+        params = {}
+      }
+      return await super.get("/blocks", params)
     }
   }
 }

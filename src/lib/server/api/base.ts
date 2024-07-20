@@ -40,7 +40,7 @@ export class APIBase {
         return await response.json()
       } else {
         // noinspection ExceptionCaughtLocallyJS
-        throw new Error(`Upstream API request failed: ${response.status} ${response.statusText}`)
+        throw new Error(`Upstream API request failed: ${response.status}: ${(await response.json())["error"]}`)
       }
     } catch (e) {
       if (e instanceof Error) {
