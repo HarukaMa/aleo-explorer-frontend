@@ -24,6 +24,8 @@
     size = "32px"
     background_size = "20px"
   }
+
+  let button_type: "submit" | "button" = href ? "submit" : "button"
   $effect(() => {
     console.log(content)
   })
@@ -93,7 +95,7 @@
   <button class={cls} class:small disabled={disabled} formaction={href} onclick={action}
           style:background-image={background_image}
           style:background-size={background_size} style:height={size} style:width={size}
-          type="button">
+          type={button_type}>
     {#if typeof content === "string"}
       {content}
     {:else}
