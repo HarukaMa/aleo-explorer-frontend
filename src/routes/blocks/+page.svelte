@@ -119,7 +119,7 @@
 
   async function set_page(page: number) {
     table.setPageIndex(page - 1)
-    const response = await fetch(`/api/blocks?page=${page}`)
+    const response = await fetch(`/api/blocks?p=${page}`)
     if (!response.ok) {
       throw new Error("Failed to fetch data")
     }
