@@ -40,7 +40,7 @@
       span.classList.add("flash")
       setTimeout(() => {
         span.classList.remove("flash")
-      }, 1000)
+      }, 600)
     }
   })
   const integer_parts = $derived(integer_part.split("").reverse().join("").match(/.{1,3}/g)?.map((x) => x.split("").reverse().join("")).reverse() || [])

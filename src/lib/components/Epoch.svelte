@@ -26,7 +26,7 @@
       span.classList.add("flash")
       setTimeout(() => {
         span.classList.remove("flash")
-      }, 1000)
+      }, 600)
     }
   })
 
