@@ -26,9 +26,6 @@
   }
 
   let button_type: "submit" | "button" = href ? "submit" : "button"
-  $effect(() => {
-    console.log(content)
-  })
 </script>
 
 <style lang="scss">

@@ -119,6 +119,15 @@
 
   async function set_page(page: number) {
     table.setPageIndex(page - 1)
+    const response = await fetch(`/api/blocks?page=${page}`)
+    if (!response.ok) {
+      throw new Error("Failed to fetch data")
+    }
+    const data = await response.json()
+    blocks = data.blocks
+    total_blocks = data.total_blocks
+    total_pages = data.total_pages
+
     const current_params = new URLSearchParams(location.search)
     current_params.set("page", page.toString())
     const new_url = `${location.pathname}?${current_params.toString()}`

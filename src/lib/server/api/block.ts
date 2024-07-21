@@ -28,10 +28,10 @@ export function APIBlock<TBase extends APIBaseMixin>(Base: TBase) {
       return await super.get("/block/index_update", { last_block: last_block })
     }
 
-    public async blocks(this: API, page: string | null): Promise<Blocks> {
+    public async blocks(this: API, page: string | number | null): Promise<Blocks> {
       let params
       if (page) {
-        params = { p: page }
+        params = { p: page.toString() }
       } else {
         params = {}
       }

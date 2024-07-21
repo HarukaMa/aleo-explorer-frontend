@@ -21,18 +21,6 @@
     return options
   })
 
-  function p(p: number) {
-    set_page(p)
-    console.log(page_options)
-    console.log(page)
-    console.log(total_pages)
-  }
-
-  $effect(() => {
-    console.log("effect")
-    console.log(page)
-  })
-
 </script>
 
 
@@ -50,20 +38,20 @@
 
 <div class="table-nav">
   {#if page !== 1}
-    <Button cls={ButtonLinkClass.Ghost} action={() => p(1)} icon="first-page-icon" />
-    <Button cls={ButtonLinkClass.Ghost} action={() => p(page - 1)} icon="prev-page-icon" />
+    <Button cls={ButtonLinkClass.Ghost} action={() => set_page(1)} icon="first-page-icon" />
+    <Button cls={ButtonLinkClass.Ghost} action={() => set_page(page - 1)} icon="prev-page-icon" />
   {/if}
   {#each page_options as option}
     {#if option === page}
       <Button cls={ButtonLinkClass.Secondary} action={() => null} content={option.toString()}
               small={true} />
     {:else}
-      <Button cls={ButtonLinkClass.Ghost} action={() => p(option)} content={option.toString()} small={true} />
+      <Button cls={ButtonLinkClass.Ghost} action={() => set_page(option)} content={option.toString()} small={true} />
     {/if}
   {/each}
   {#if page !== total_pages}
-    <Button cls={ButtonLinkClass.Ghost} action={() => p(page + 1)} icon="next-page-icon" />
-    <Button cls={ButtonLinkClass.Ghost} action={() => p(total_pages)} icon="last-page-icon" />
+    <Button cls={ButtonLinkClass.Ghost} action={() => set_page(page + 1)} icon="next-page-icon" />
+    <Button cls={ButtonLinkClass.Ghost} action={() => set_page(total_pages)} icon="last-page-icon" />
   {/if}
 
 </div>
