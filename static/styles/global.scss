@@ -27,6 +27,11 @@
   font-feature-settings: "cv05", "cv08", "cv01", "cv10";
   padding: 0 1rem;
   font-size: 16px;
+
+  --first-page-icon: #{$first-page-icon};
+  --prev-page-icon: #{$prev-page-icon};
+  --next-page-icon: #{$next-page-icon};
+  --last-page-icon: #{$last-page-icon};
 }
 
 /* utilities */

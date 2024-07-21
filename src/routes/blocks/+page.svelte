@@ -1,12 +1,20 @@
 <script lang="ts">
 
-  import type { BeforeContainerState, BlockList } from "$lib/types"
-  import { type ColumnDef, createTable, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
+  import { type BeforeContainerState, type BlockList } from "$lib/types"
+  import {
+    type ColumnDef,
+    createTable,
+    FlexRender,
+    getCoreRowModel,
+    renderComponent,
+    type Updater,
+  } from "@tanstack/svelte-table"
   import Link from "$lib/components/Link.svelte"
   import Time from "$lib/components/Time.svelte"
   import Number from "$lib/components/Number.svelte"
   import AleoCredit from "$lib/components/AleoCredit.svelte"
   import { getContext } from "svelte"
+  import TableNav from "$lib/components/TableNav.svelte"
 
   let { data } = $props()
 
@@ -74,11 +82,30 @@
     },
   ]
 
+  type PaginationState = { pageIndex: number, pageSize: number }
+
+  let pagination: PaginationState = $state({
+    pageIndex: data.page - 1,
+    pageSize: 20,
+  })
+
   const table = $derived(createTable<BlockList>({
     data: table_data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+    rowCount: total_blocks,
+    pageCount: total_pages,
+    state: { pagination },
+    onPaginationChange: onPaginationChange,
   }))
+
+  async function onPaginationChange(updaterOrValue: Updater<PaginationState>) {
+    if (updaterOrValue instanceof Function) {
+      updaterOrValue = updaterOrValue(pagination)
+    }
+    pagination = updaterOrValue
+  }
 
   let header_data = $derived([
     { name: "Total blocks", value: { component: Number, props: { number: total_blocks } } },
@@ -89,6 +116,14 @@
 
   let before_container_state: BeforeContainerState = getContext("before_container")
   before_container_state.snippet = before_container
+
+  async function set_page(page: number) {
+    table.setPageIndex(page - 1)
+    const current_params = new URLSearchParams(location.search)
+    current_params.set("page", page.toString())
+    const new_url = `${location.pathname}?${current_params.toString()}`
+    history.replaceState({}, "", new_url)
+  }
 
   $effect(() => {
     return () => {
@@ -132,9 +167,6 @@
       .info-data {
         display: flex;
         flex-direction: column;
-        font-size: 1rem;
-        font-weight: 500;
-        font-family: "Montserrat Variable", sans-serif;
 
         .info-data-title {
           font-family: "Open Sans Variable", system-ui;
@@ -149,7 +181,11 @@
         }
       }
     }
+  }
 
+  table {
+    width: 100%;
+    margin-top: 2.5rem;
   }
 
 </style>
@@ -173,3 +209,30 @@
     </div>
   </div>
 {/snippet}
+
+<table>
+  <thead>
+  {#each table.getHeaderGroups() as header_group}
+    <tr>
+      {#each header_group.headers as header}
+        <th>{header.column.columnDef.header}</th>
+      {/each}
+    </tr>
+  {/each}
+  </thead>
+  <tbody>
+  {#each table.getRowModel().rows as row}
+    <tr>
+      {#each row.getVisibleCells() as cell}
+        <td>
+          <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+        </td>
+      {/each}
+    </tr>
+  {/each}
+  </tbody>
+</table>
+
+{#key pagination}
+  <TableNav page={pagination.pageIndex + 1} set_page={set_page} total_pages={total_pages} />
+{/key}

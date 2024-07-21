@@ -9,11 +9,24 @@
     action?: MouseEventHandler<any>
     cls: ButtonLinkClass
     disabled?: boolean
-    content: string | Component<any>
+    content?: string | Component<any>
+    icon?: string
+    small?: boolean
   }
 
-  let { href, action, cls, disabled = false, content, ...props }: Button = $props()
+  let { href, action, cls, disabled = false, content = "", icon, small = false, ...props }: Button = $props()
 
+  let background_image: string | undefined = $state(undefined)
+  let size: string | undefined = $state(undefined)
+  let background_size: string | undefined = $state(undefined)
+  if (icon) {
+    background_image = `var(--${icon})`
+    size = "32px"
+    background_size = "20px"
+  }
+  $effect(() => {
+    console.log(content)
+  })
 </script>
 
 <style lang="scss">
@@ -23,7 +36,6 @@
     all: unset;
     box-sizing: border-box;
     padding: 0.5rem 1rem;
-    height: 2.5rem;
     display: inline-flex;
     gap: 0.5rem;
     border-radius: 0.5rem;
@@ -32,19 +44,40 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    &.small {
+      font-weight: normal;
+      font-size: 0.875rem;
+      line-height: 1rem;
+      padding: 0.5rem 0.75rem;
+    }
 
     &.secondary {
-      background: white;
+      background-color: white;
       border: 1px solid $grey-200;
       color: black;
 
       &:hover {
-        background: $grey-25;
+        background-color: $grey-25;
+      }
+    }
+
+    &.ghost {
+      color: black;
+
+      &:hover {
+        background-color: $grey-50;
+      }
+
+      &:active {
+        background-color: $grey-100;
       }
     }
 
     &[disabled] {
-      background: $grey-100;
+      background-color: $grey-100;
       color: $grey-300;
       cursor: not-allowed;
 
@@ -57,7 +90,10 @@
 </style>
 
 <form>
-  <button class={cls} disabled={disabled} formaction={href} onclick={action}>
+  <button class={cls} class:small disabled={disabled} formaction={href} onclick={action}
+          style:background-image={background_image}
+          style:background-size={background_size} style:height={size} style:width={size}
+          type="button">
     {#if typeof content === "string"}
       {content}
     {:else}

@@ -72,10 +72,8 @@ export function format_time_relative(date: Date) {
     return `${Math.floor(hours)} hours ago`
   } else if (days < 2) {
     return "yesterday"
-  } else if (days < 7) {
+  } else if (days < 30) {
     return `${Math.floor(days)} days ago`
-  } else if (months < 2) {
-    return "last week"
   } else if (months < 12) {
     return `${Math.floor(months)} months ago`
   } else if (years < 2) {

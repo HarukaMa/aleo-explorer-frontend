@@ -5,10 +5,11 @@ import { APIError } from "$lib/server/api/base"
 
 export const load: PageServerLoad = async ({ url }) => {
   try {
-    const page = url.searchParams.get("page")
-    const blocks = await API.instance.blocks(page)
+    const page = parseInt(url.searchParams.get("page") || "1") || 1
+    const blocks = await API.instance.blocks(page.toString())
     return {
-      blocks: blocks,
+      page,
+      blocks,
     }
   } catch (err) {
     console.log(err)
