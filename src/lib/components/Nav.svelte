@@ -106,6 +106,7 @@
   import NavItem from "./NavItem.svelte"
 
   const networks: { [key: string]: string } = {
+    mainnet: "Mainnet",
     testnet: "Testnet Beta",
     canary: "Canary Net",
   }

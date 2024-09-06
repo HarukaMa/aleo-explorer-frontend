@@ -8,19 +8,23 @@
 </style>
 
 <script lang="ts">
+  import Decimal from "decimal.js"
+
   interface Number {
-    number: number | bigint
+    number: number | bigint | string
     precision?: number
     unit?: string
   }
 
   let { number, precision = 0, unit }: Number = $props()
 
-  let prev_number = $state<number | bigint>(number)
+  let prev_number = $state<number | bigint | string>(number)
 
   let integer_part = $derived.by(() => {
     if (typeof number === "bigint") {
       return number.toString()
+    } else if (typeof number === "string") {
+      return new Decimal(number).floor().toString()
     } else {
       return number.toFixed(precision).split(".")[0]
     }
@@ -29,6 +33,12 @@
   let decimal_part = $derived.by(() => {
     if (typeof number === "bigint") {
       return ""
+    } else if (typeof number === "string") {
+      const n = new Decimal(number)
+      if (n.isInteger()) {
+        return ""
+      }
+      return new Decimal(number).mod(1).toString().slice(2, precision + 2)
     } else {
       return number.toFixed(precision).split(".")[1]
     }

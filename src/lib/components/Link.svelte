@@ -4,10 +4,12 @@
 
   interface Link {
     href: string
-    child_component: Component<any>
+    ChildComponent: Component<any>
+
+    [key: string]: any
   }
 
-  let { href, child_component, ...rest }: Link = $props()
+  let { href, ChildComponent, ...rest }: Link = $props()
 
 </script>
 
@@ -26,5 +28,5 @@
 </style>
 
 <a href={href}>
-  <svelte:component this={child_component} {...rest} />
+  <ChildComponent {...rest} />
 </a>

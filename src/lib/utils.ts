@@ -15,3 +15,18 @@ export function getCookie(name: string) {
   )
   return matches ? decodeURIComponent(matches[1]) : undefined
 }
+
+export function server_timing(
+  setHeaders: (headers: Record<string, string>) => void,
+  name: string,
+  fn: (...args: unknown[]) => unknown | Promise<unknown>,
+) {
+  const start = performance.now()
+  let result: unknown
+  if (typeof performance === "function") {
+    result = fn()
+  } else {
+  }
+  setHeaders({ "Server-Timing": `${name};dur=${performance.now() - start}` })
+  return result
+}

@@ -2,7 +2,7 @@
   import Number from "$lib/components/Number.svelte"
 
   interface AleoCredit {
-    suffix: boolean
+    suffix?: boolean
     number: number
   }
 

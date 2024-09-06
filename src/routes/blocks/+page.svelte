@@ -35,13 +35,13 @@
     puzzle_solutions: block.partial_solution_count,
   })))
 
-  const columns: ColumnDef<BlockList>[] = [
+  const columns: ColumnDef<BlockList, any>[] = [
     {
       accessorKey: "height",
       header: "Height",
       cell: info => renderComponent(Link, {
         href: `/block/${info.getValue()}`,
-        child_component: Number,
+        ChildComponent: Number,
         number: info.getValue(),
       }),
     },
@@ -89,16 +89,26 @@
     pageSize: 20,
   })
 
-  const table = $derived(createTable<BlockList>({
-    data: table_data,
+  const table = createTable<BlockList>({
+    get data() {
+      return table_data
+    },
     columns,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
-    rowCount: total_blocks,
-    pageCount: total_pages,
-    state: { pagination },
+    get rowCount() {
+      return total_blocks
+    },
+    get pageCount() {
+      return total_pages
+    },
+    get state() {
+      return {
+        pagination,
+      }
+    },
     onPaginationChange: onPaginationChange,
-  }))
+  })
 
   async function onPaginationChange(updaterOrValue: Updater<PaginationState>) {
     if (updaterOrValue instanceof Function) {
@@ -208,7 +218,7 @@
           <div class="info-data-title">{data.name}</div>
           <div class="info-data-value">
             {#if data.value instanceof Object}
-              <svelte:component this={data.value.component} {...data.value.props} />
+              <data.value.component {...data.value.props} />
             {:else}
               {data.value}
             {/if}

@@ -105,6 +105,8 @@
   let summary = $state(data.summary)
   let recent_blocks = $state(data.recent_blocks)
 
+  console.log(summary)
+
   let summary_data = $derived([
     [
       { name: "Latest block", value: { component: Number, props: { number: summary.latest_height } } },
@@ -140,13 +142,13 @@
     puzzle_solutions: block.partial_solution_count,
   })))
 
-  const columns: ColumnDef<BlockList>[] = [
+  const columns: ColumnDef<BlockList, any>[] = [
     {
       accessorKey: "height",
       header: "Height",
       cell: info => renderComponent(Link, {
         href: `/block/${info.getValue()}`,
-        child_component: Number,
+        ChildComponent: Number,
         number: info.getValue(),
       }),
     },
@@ -187,11 +189,13 @@
     },
   ]
 
-  const table = $derived(createTable<BlockList>({
-    data: table_data,
+  const table = createTable<BlockList>({
+    get data() {
+      return table_data
+    },
     columns,
     getCoreRowModel: getCoreRowModel(),
-  }))
+  })
 
   if (browser) {
     let requesting = false
@@ -231,7 +235,7 @@
         <div class="row">
           <div>{row.name}</div>
           {#if row.value instanceof Object}
-            <svelte:component this={row.value.component} {...row.value.props} />
+            <row.value.component {...row.value.props} />
           {:else}
             <div>{row.value}</div>
           {/if}

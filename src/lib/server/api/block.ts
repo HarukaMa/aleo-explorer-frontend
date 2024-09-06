@@ -37,5 +37,9 @@ export function APIBlock<TBase extends APIBaseMixin>(Base: TBase) {
       }
       return await super.get("/blocks", params)
     }
+
+    public async block(this: API, height: string | number): Promise<any> {
+      return await super.get(`/block/${height}`)
+    }
   }
 }
