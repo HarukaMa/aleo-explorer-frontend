@@ -133,7 +133,7 @@
 
 </script>
 
-<nav data-sveltekit-reload>
+<nav>
   <a href="/">
     <div class="title-logo"></div>
   </a>

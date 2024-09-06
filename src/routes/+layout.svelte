@@ -215,7 +215,7 @@
   {@render before_container()}
 {/if}
 
-<div class="container" data-sveltekit-reload>
+<div class="container">
   {@render children()}
   <footer>
     <div id="footer-column">
