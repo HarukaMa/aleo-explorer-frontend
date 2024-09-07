@@ -158,8 +158,6 @@
   function switch_timezone() {
     if (time_mode.value === TimeMode.UTC) {
       time_mode.value = TimeMode.Local
-    } else if (time_mode.value === TimeMode.Local) {
-      time_mode.value = TimeMode.Relative
     } else {
       time_mode.value = TimeMode.UTC
     }

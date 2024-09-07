@@ -10,4 +10,4 @@
 
 </script>
 
-<Number number={number / 1000000} precision={6} unit={suffix ? "Aleo Credits" : undefined} />
+<Number number={number / 1000000} precision={6} unit={suffix ? " Aleo Credits" : undefined} />

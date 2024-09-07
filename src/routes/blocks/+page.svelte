@@ -158,9 +158,9 @@
   div.header {
     display: flex;
     flex-direction: column;
-    margin: 0 1rem;
+    margin: 0;
     background-color: $blue-50;
-    padding: 1.5rem 0.5rem;
+    padding: 1.5rem 1.5rem;
     border-radius: 1rem;
     box-sizing: border-box;
     gap: 2.5rem;
@@ -173,6 +173,7 @@
     }
 
     .title {
+      padding-left: 1rem;
       font-size: 1.375rem;
       font-weight: 600;
       font-family: "Montserrat Variable", sans-serif;
@@ -212,20 +213,20 @@
 {#snippet before_container()}
   <div class="header">
     <div class="title">Blocks</div>
-    <div class="info">
-      {#each header_data as data}
-        <div class="info-data">
-          <div class="info-data-title">{data.name}</div>
-          <div class="info-data-value">
-            {#if data.value instanceof Object}
-              <data.value.component {...data.value.props} />
-            {:else}
-              {data.value}
-            {/if}
-          </div>
-        </div>
-      {/each}
-    </div>
+    <!--    <div class="info">-->
+    <!--      {#each header_data as data}-->
+    <!--        <div class="info-data">-->
+    <!--          <div class="info-data-title">{data.name}</div>-->
+    <!--          <div class="info-data-value">-->
+    <!--            {#if data.value instanceof Object}-->
+    <!--              <data.value.component {...data.value.props} />-->
+    <!--            {:else}-->
+    <!--              {data.value}-->
+    <!--            {/if}-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      {/each}-->
+    <!--    </div>-->
   </div>
 {/snippet}
 
