@@ -1,3 +1,30 @@
+<!-- Contains code from https://github.com/scosman/sveltekit-navigation-loader/ -->
+<!--
+MIT License
+
+Copyright (c) 2023 Steve Cosman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<!-- Please note that this file is still subject to AGPL nonetheless. -->
+
 <style lang="scss">
 
   @import 'static/styles/global';
@@ -118,6 +145,16 @@
     }
   }
 
+  .navigation-loader {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 4px;
+    z-index: 50;
+    background-color: $blue-500;
+  }
+
 </style>
 
 <script lang="ts">
@@ -128,6 +165,9 @@
   import { getCookie } from "$lib/utils.js"
   import { setContext, type Snippet } from "svelte"
   import TopBanner from "$lib/components/TopBanner.svelte"
+  import { navigating } from "$app/stores"
+  import { expoOut } from "svelte/easing"
+  import { slide } from "svelte/transition"
 
   let { data, children } = $props()
 
@@ -223,6 +263,20 @@
     },
   })
 </script>
+
+{#if $navigating}
+  <!--
+    Loading animation for next page since svelte doesn't show any indicator.
+     - delay 100ms because most page loads are instant, and we don't want to flash
+     - long 12s duration because we don't actually know how long it will take
+     - exponential easing so fast loads (>100ms and <1s) still see enough progress,
+       while slow networks see it moving for a full 12 seconds
+  -->
+  <div
+    class="navigation-loader"
+    in:slide={{ delay: 100, duration: 12000, axis: "x", easing: expoOut }}
+  ></div>
+{/if}
 
 {#if data.sync_info.out_of_sync}
   <TopBanner>
