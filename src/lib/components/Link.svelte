@@ -4,12 +4,13 @@
 
   interface Link {
     href: string
-    ChildComponent: Component<any>
+    ChildComponent?: Component<any>
+    content?: string
 
     [key: string]: any
   }
 
-  let { href, ChildComponent, ...rest }: Link = $props()
+  let { href, ChildComponent, content, ...rest }: Link = $props()
 
 </script>
 
@@ -28,5 +29,9 @@
 </style>
 
 <a href={href}>
-  <ChildComponent {...rest} />
+  {#if ChildComponent}
+    <ChildComponent {ChildComponent} {content} {...rest} />
+  {:else}
+    {content}
+  {/if}
 </a>

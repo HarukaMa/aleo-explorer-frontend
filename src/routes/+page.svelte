@@ -99,6 +99,7 @@
   import { browser } from "$app/environment"
   import ButtonLink from "$lib/components/Button.svelte"
   import { type BlockList, ButtonLinkClass } from "$lib/types"
+  import Decimal from "decimal.js"
 
   let { data } = $props()
 
@@ -175,12 +176,12 @@
     {
       accessorKey: "block_reward",
       header: "Block reward",
-      cell: info => renderComponent(AleoCredit, { number: info.getValue() }),
+      cell: info => renderComponent(AleoCredit, { number: new Decimal(info.getValue()) }),
     },
     {
       accessorKey: "puzzle_reward",
       header: "Puzzle reward",
-      cell: info => renderComponent(AleoCredit, { number: info.getValue() }),
+      cell: info => renderComponent(AleoCredit, { number: new Decimal(info.getValue()) }),
     },
     {
       accessorKey: "puzzle_solutions",

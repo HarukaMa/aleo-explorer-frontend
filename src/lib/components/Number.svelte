@@ -11,20 +11,22 @@
   import Decimal from "decimal.js"
 
   interface Number {
-    number: number | bigint | string
+    number: number | Decimal | bigint | string
     precision?: number
     unit?: string
   }
 
   let { number, precision = 0, unit }: Number = $props()
 
-  let prev_number = $state<number | bigint | string>(number)
+  let prev_number = $state<number | Decimal | bigint | string>(number)
 
   let integer_part = $derived.by(() => {
     if (typeof number === "bigint") {
       return number.toString()
     } else if (typeof number === "string") {
       return new Decimal(number).floor().toString()
+    } else if (number instanceof Decimal) {
+      return number.floor().toString()
     } else {
       return number.toFixed(precision).split(".")[0]
     }
@@ -34,17 +36,12 @@
     if (decimal === undefined) {
       return ""
     }
-    const groups = []
-    let str = decimal
-    while (str.length >= 3) {
-      const group = str.slice(-3)
-      if (group !== "000") {
-        groups.unshift(group)
-      }
-      str = str.slice(0, -3)
+    const groups = decimal.match(/.{1,3}/g)
+    if (groups === null) {
+      return ""
     }
-    if (str !== "000" && str !== "") {
-      groups.unshift(str)
+    while (groups.length > 0 && groups[groups.length - 1] === "000") {
+      groups.pop()
     }
     return groups.join("")
   }
@@ -58,6 +55,11 @@
         return ""
       }
       return trim_zero_decimal(new Decimal(number).mod(1).toString().slice(2, precision + 2))
+    } else if (number instanceof Decimal) {
+      if (number.isInteger()) {
+        return ""
+      }
+      return trim_zero_decimal(number.mod(1).toFixed(precision).slice(2, precision + 2))
     } else {
       return trim_zero_decimal(number.toFixed(precision).split(".")[1])
     }
