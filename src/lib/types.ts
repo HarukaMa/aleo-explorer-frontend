@@ -1,4 +1,5 @@
 import type { Snippet } from "svelte"
+import Decimal from "decimal.js"
 
 export enum ButtonLinkClass {
   Primary = "primary",
@@ -13,8 +14,8 @@ export type BlockList = {
   transactions: number
   proof_target: number
   coinbase_target: number
-  block_reward: number
-  puzzle_reward: number
+  block_reward: Decimal
+  puzzle_reward: Decimal
   puzzle_solutions: number
 }
 

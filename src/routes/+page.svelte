@@ -138,8 +138,8 @@
     transactions: block.transaction_count,
     proof_target: block.proof_target,
     coinbase_target: block.coinbase_target,
-    block_reward: block.block_reward,
-    puzzle_reward: Math.floor(block.coinbase_reward * 2 / 3),
+    block_reward: new Decimal(block.block_reward),
+    puzzle_reward: new Decimal(Math.floor(block.coinbase_reward * 2 / 3)),
     puzzle_solutions: block.partial_solution_count,
   })))
 
@@ -176,12 +176,12 @@
     {
       accessorKey: "block_reward",
       header: "Block reward",
-      cell: info => renderComponent(AleoCredit, { number: new Decimal(info.getValue()) }),
+      cell: info => renderComponent(AleoCredit, { number: info.getValue() }),
     },
     {
       accessorKey: "puzzle_reward",
       header: "Puzzle reward",
-      cell: info => renderComponent(AleoCredit, { number: new Decimal(info.getValue()) }),
+      cell: info => renderComponent(AleoCredit, { number: info.getValue() }),
     },
     {
       accessorKey: "puzzle_solutions",

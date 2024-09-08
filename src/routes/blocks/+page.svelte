@@ -15,6 +15,7 @@
   import AleoCredit from "$lib/components/AleoCredit.svelte"
   import { getContext } from "svelte"
   import TableNav from "$lib/components/TableNav.svelte"
+  import Decimal from "decimal.js"
 
   let { data } = $props()
 
@@ -30,8 +31,8 @@
     transactions: block.transaction_count,
     proof_target: block.proof_target,
     coinbase_target: block.coinbase_target,
-    block_reward: block.block_reward,
-    puzzle_reward: Math.floor(block.coinbase_reward * 2 / 3),
+    block_reward: new Decimal(block.block_reward),
+    puzzle_reward: new Decimal(Math.floor(block.coinbase_reward * 2 / 3)),
     puzzle_solutions: block.partial_solution_count,
   })))
 

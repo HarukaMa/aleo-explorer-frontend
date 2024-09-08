@@ -48,8 +48,6 @@
     }
   }
 
-  $inspect(total_base_fee, total_priority_fee, total_burnt_fee)
-
   let validator_showing = $state(false)
 
   function toggle_validators() {
@@ -123,8 +121,6 @@
       status: status,
     }
   })
-
-  $inspect(transaction_table_data)
 
   const columns: ColumnDef<TransactionList, any>[] = [
     {
