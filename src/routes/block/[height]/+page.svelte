@@ -13,6 +13,8 @@
   import Decimal from "decimal.js"
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
   import Fee from "$lib/components/Fee.svelte"
+  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import Link from "$lib/components/Link.svelte"
 
   let { data } = $props()
   let { block, height } = data
@@ -131,7 +133,7 @@
     {
       accessorKey: "transaction_id",
       header: "Transaction ID",
-      cell: info => info.getValue(),
+      cell: info => renderComponent(SnippetWrapper, { snippet: transaction_id_column, value: info.getValue() }),
     },
     {
       accessorKey: "transitions",
@@ -288,7 +290,19 @@
     width: 100%;
   }
 
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
 </style>
+
+{#snippet transaction_id_column(value)}
+  <span class="mono ellipsis">
+    <Link href="/transaction/{value}" content={value}></Link>
+  </span>
+{/snippet}
 
 {#snippet before_container()}
   <div class="header">

@@ -53,6 +53,7 @@
     font-size: 0.875rem;
     font-weight: 600;
     font-family: "Open Sans Variable", system-ui;
+    color: black;
 
     &.active {
       color: $blue-500;
