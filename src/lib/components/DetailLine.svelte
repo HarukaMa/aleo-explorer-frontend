@@ -47,6 +47,11 @@
       gap: 0.25rem;
       margin: 0.25rem 0;
     }
+
+    .right {
+      word-break: break-all;
+      overflow-wrap: break-word;
+    }
   }
 
 </style>

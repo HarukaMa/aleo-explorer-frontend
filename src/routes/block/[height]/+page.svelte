@@ -9,6 +9,7 @@
   import AleoCredit from "$lib/components/AleoCredit.svelte"
   import Chip from "$lib/components/Chip.svelte"
   import UIAddress from "$lib/components/UIAddress.svelte"
+  import Tabs from "$lib/components/Tabs.svelte"
 
   let { data } = $props()
   let { block, height } = data
@@ -53,6 +54,11 @@
 
   }
 
+  const tab_data = [
+    { title: "Transactions", id: "transactions" },
+    { title: "Block info", id: "block_info" },
+    { title: "Puzzle solutions", id: "solutions" },
+  ]
   let before_container_state: BeforeContainerState = getContext("before_container")
   before_container_state.snippet = before_container
 
@@ -259,3 +265,14 @@
 </div>
 
 
+<Tabs {tab_data}>
+  {#snippet transactions(binds)}
+    <div bind:this={binds.transactions}>A</div>
+  {/snippet}
+  {#snippet block_info(binds)}
+    <div bind:this={binds.block_info}>B</div>
+  {/snippet}
+  {#snippet solutions(binds)}
+    <div bind:this={binds.solutions}>C</div>
+  {/snippet}
+</Tabs>

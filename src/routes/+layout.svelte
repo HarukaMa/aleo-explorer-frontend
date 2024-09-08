@@ -23,7 +23,7 @@
     width: 100%;
   }
 
-  #footer-row {
+  #footer-row, #footer-row-links {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -88,8 +88,36 @@
         text-decoration: underline;
       }
     }
-
   }
+
+  @media (max-width: 768px) {
+    #footer-row {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    #footer-logo-copyright {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    #footer-settings {
+      flex-direction: column;
+    }
+
+    #footer-settings-timezone {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    #footer-links, #footer-external-links {
+      flex-direction: column;
+      gap: 1rem;
+      width: 50%;
+    }
+  }
+
 </style>
 
 <script lang="ts">
@@ -242,7 +270,7 @@
 
       <div class="footer-line"></div>
 
-      <div id="footer-row">
+      <div id="footer-row-links">
         <div id="footer-links">
           <a href="/faq">FAQ</a>
           <a href="/feedback">Feedback</a>
