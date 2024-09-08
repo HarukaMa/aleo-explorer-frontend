@@ -291,7 +291,7 @@
   }
 
   .ellipsis {
-    white-space: nowrap;
+    max-width: 30vw;
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -299,9 +299,9 @@
 </style>
 
 {#snippet transaction_id_column(value)}
-  <span class="mono ellipsis">
+  <div class="mono ellipsis">
     <Link href="/transaction/{value}" content={value}></Link>
-  </span>
+  </div>
 {/snippet}
 
 {#snippet before_container()}

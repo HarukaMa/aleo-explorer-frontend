@@ -63,7 +63,8 @@
 }
 
 :global(.mono) {
-  font-family: Inconsolata, monospace;
+  font-family: "Inconsolata Variable", monospace;
+  font-size: 0.9375rem;
 }
 
 @keyframes flash {
