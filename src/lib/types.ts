@@ -21,3 +21,12 @@ export type BlockList = {
 export type BeforeContainerState = {
   snippet: Snippet | undefined
 }
+
+export type UIAddressDataItem = {
+  name: string
+  tag: string
+  link: string
+  logo: string
+}
+
+export type UIAddressData = { [address: string]: UIAddressDataItem }

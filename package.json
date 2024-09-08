@@ -34,6 +34,7 @@
     },
     "type": "module",
     "dependencies": {
+        "@fontsource-variable/inconsolata": "^5.0.20",
         "@fontsource-variable/montserrat": "^5.0.20",
         "@fontsource-variable/open-sans": "^5.0.30",
         "@tanstack/svelte-table": "alpha",

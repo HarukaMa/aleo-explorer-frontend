@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fontsource-variable/inconsolata':
+        specifier: ^5.0.20
+        version: 5.0.20
       '@fontsource-variable/montserrat':
         specifier: ^5.0.20
         version: 5.0.20
@@ -431,6 +434,9 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@fontsource-variable/inconsolata@5.0.20':
+    resolution: {integrity: sha512-QUncd/bimAgjs1EDgPDcPHmqa4Uy88izYgNFY1dy0O37LcMrf4xZZ4J0P3NZDK/Bc1UVE1FkqN0DeVkiPlxhDg==}
 
   '@fontsource-variable/montserrat@5.0.20':
     resolution: {integrity: sha512-/D+j5M68+GnSbi1A0K+0qnVpnu8O2rd5zsmE7COgD7EK/G9tNEE8emcg7+HkKsyViMmYuQ+t4o0FmB6pU/aBRQ==}
@@ -1875,6 +1881,8 @@ snapshots:
   '@eslint/js@8.57.0': {}
 
   '@fastify/busboy@2.1.1': {}
+
+  '@fontsource-variable/inconsolata@5.0.20': {}
 
   '@fontsource-variable/montserrat@5.0.20': {}
 

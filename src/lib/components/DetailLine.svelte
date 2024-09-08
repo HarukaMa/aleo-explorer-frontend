@@ -27,6 +27,7 @@
     gap: 0.25rem;
     width: 12.5rem;
     align-items: center;
+    flex-shrink: 0;
   }
 
   .label {
@@ -38,6 +39,14 @@
     width: 16px;
     height: 16px;
     background-image: $info-icon;
+  }
+
+  @media (max-width: 768px) {
+    .line {
+      flex-direction: column;
+      gap: 0.25rem;
+      margin: 0.25rem 0;
+    }
   }
 
 </style>

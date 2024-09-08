@@ -30,6 +30,25 @@
     }
   })
 
+  function trim_zero_decimal(decimal: string | undefined) {
+    if (decimal === undefined) {
+      return ""
+    }
+    const groups = []
+    let str = decimal
+    while (str.length >= 3) {
+      const group = str.slice(-3)
+      if (group !== "000") {
+        groups.unshift(group)
+      }
+      str = str.slice(0, -3)
+    }
+    if (str !== "000" && str !== "") {
+      groups.unshift(str)
+    }
+    return groups.join("")
+  }
+
   let decimal_part = $derived.by(() => {
     if (typeof number === "bigint") {
       return ""
@@ -38,11 +57,12 @@
       if (n.isInteger()) {
         return ""
       }
-      return new Decimal(number).mod(1).toString().slice(2, precision + 2)
+      return trim_zero_decimal(new Decimal(number).mod(1).toString().slice(2, precision + 2))
     } else {
-      return number.toFixed(precision).split(".")[1]
+      return trim_zero_decimal(number.toFixed(precision).split(".")[1])
     }
   })
+
   let span: HTMLSpanElement
   $effect(() => {
     if (prev_number !== number) {

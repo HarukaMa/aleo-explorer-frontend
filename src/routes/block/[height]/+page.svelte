@@ -7,6 +7,8 @@
   import Time from "$lib/components/Time.svelte"
   import { format_time, TimeMode } from "$lib/time_mode.svelte.js"
   import AleoCredit from "$lib/components/AleoCredit.svelte"
+  import Chip from "$lib/components/Chip.svelte"
+  import UIAddress from "$lib/components/UIAddress.svelte"
 
   let { data } = $props()
   let { block, height } = data
@@ -23,6 +25,32 @@
     } else if (ratify.type === "puzzle_reward") {
       puzzle_reward = ratify.amount
     }
+  }
+
+  let total_base_fee = 0, total_priority_fee = 0, total_burnt_fee = 0
+
+  for (let tx of block.block.transactions) {
+    if (tx.type === "accepted_execute") {
+      if (tx.transaction.fee !== null) {
+        const fee = tx.transaction.fee
+        total_base_fee += fee.amount[0]
+        total_priority_fee += fee.amount[1]
+      }
+    }
+  }
+
+  let validator_showing = $state(false)
+
+  function toggle_validators() {
+    validator_showing = !validator_showing
+    const toggle = document.getElementById("validator-toggle")
+    if (toggle === null) return
+    if (validator_showing) {
+      toggle.innerText = "(Hide validators)"
+    } else {
+      toggle.innerText = "(Show validators)"
+    }
+
   }
 
   let before_container_state: BeforeContainerState = getContext("before_container")
@@ -117,6 +145,19 @@
     color: $grey-600;
   }
 
+  #validator-toggle {
+    color: $blue-600;
+    cursor: pointer;
+  }
+
+  #validator-list {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
 </style>
 
 {#snippet before_container()}
@@ -138,6 +179,9 @@
     <DetailLine label="Height">
       <Number number={block.block.header.metadata.height} />
     </DetailLine>
+    <DetailLine label="Block hash">
+      <span class="mono">{block.block.block_hash}</span>
+    </DetailLine>
     <DetailLine label="Timestamp">
       { format_time(new Date(block.block.header.metadata.timestamp * 1000), TimeMode.Relative) }
       <!-- @formatter:off -->
@@ -150,7 +194,17 @@
   </div>
   <div class="group">
     <DetailLine label="Validators">
-      {block.validators.length}
+      {block.all_validators.length} <a id="validator-toggle" onclick={toggle_validators}>(Show validators)</a>
+      {#if validator_showing}
+        <div id="validator-list">
+          {#each block.all_validators as validator}
+            <Chip color={block.validators.indexOf(validator) === -1 ? "var(--red-500)" : undefined}
+                  link="/address/{validator}">
+              <UIAddress address={validator} name_data={block.resolved_addresses} short_address={true} />
+            </Chip>
+          {/each}
+        </div>
+      {/if}
     </DetailLine>
   </div>
   <div class="group">
@@ -188,7 +242,20 @@
   </div>
   <div class="group">
     <DetailLine label="Total fee">
-      Placeholder
+      <div class="column">
+        <AleoCredit number={total_base_fee + total_priority_fee} suffix={true}></AleoCredit>
+        <span class="secondary">
+          <AleoCredit number={total_base_fee}></AleoCredit> base
+          {#if total_priority_fee > 0}
+            + <AleoCredit number={total_priority_fee}></AleoCredit> priority
+          {/if}
+          {#if total_burnt_fee > 0}
+            + <AleoCredit number={total_burnt_fee}></AleoCredit> burnt
+          {/if}
+        </span>
+      </div>
     </DetailLine>
   </div>
 </div>
+
+
