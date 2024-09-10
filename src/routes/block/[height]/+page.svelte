@@ -15,6 +15,7 @@
   import Fee from "$lib/components/Fee.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
+  import Callout from "$lib/components/Callout.svelte"
 
   let { data } = $props()
   let { block, height } = data
@@ -285,7 +286,7 @@
     margin-top: 0.5rem;
   }
 
-  table {
+  .tab {
     margin-top: 2rem;
     width: 100%;
   }
@@ -399,35 +400,39 @@
 
 <Tabs {tab_data}>
   {#snippet transactions(binds)}
-    <div bind:this={binds.transactions}>
-      <table>
-        <thead>
-        {#each table.getHeaderGroups() as header_group}
-          <tr>
-            {#each header_group.headers as header}
-              <th>{header.column.columnDef.header}</th>
-            {/each}
-          </tr>
-        {/each}
-        </thead>
-        <tbody>
-        {#each table.getRowModel().rows as row}
-          <tr>
-            {#each row.getVisibleCells() as cell}
-              <td>
-                <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-              </td>
-            {/each}
-          </tr>
-        {/each}
-        </tbody>
-      </table>
+    <div class="tab" bind:this={binds.transactions}>
+      {#if block.block.transactions.length === 0 && block.block.aborted_transaction_ids.length === 0}
+        <Callout title="No transactions" description="This block has no transactions." icon="list-icon" />
+      {:else}
+        <table>
+          <thead>
+          {#each table.getHeaderGroups() as header_group}
+            <tr>
+              {#each header_group.headers as header}
+                <th>{header.column.columnDef.header}</th>
+              {/each}
+            </tr>
+          {/each}
+          </thead>
+          <tbody>
+          {#each table.getRowModel().rows as row}
+            <tr>
+              {#each row.getVisibleCells() as cell}
+                <td>
+                  <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                </td>
+              {/each}
+            </tr>
+          {/each}
+          </tbody>
+        </table>
+      {/if}
     </div>
   {/snippet}
   {#snippet block_info(binds)}
-    <div bind:this={binds.block_info}>B</div>
+    <div class="tab" bind:this={binds.block_info}>B</div>
   {/snippet}
   {#snippet solutions(binds)}
-    <div bind:this={binds.solutions}>C</div>
+    <div class="tab" bind:this={binds.solutions}>C</div>
   {/snippet}
 </Tabs>
