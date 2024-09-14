@@ -100,6 +100,7 @@
   import ButtonLink from "$lib/components/Button.svelte"
   import { type BlockList, ButtonLinkClass } from "$lib/types"
   import Decimal from "decimal.js"
+  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
 
   let { data } = $props()
 
@@ -147,10 +148,9 @@
     {
       accessorKey: "height",
       header: "Height",
-      cell: info => renderComponent(Link, {
-        href: `/block/${info.getValue()}`,
-        ChildComponent: Number,
-        number: info.getValue(),
+      cell: info => renderComponent(SnippetWrapper, {
+        snippet: height_column,
+        value: info.getValue(),
       }),
     },
     {
@@ -220,6 +220,11 @@
 
 </script>
 
+{#snippet height_column(value)}
+  <Link href="/block/{value}">
+    <Number number={value} />
+  </Link>
+{/snippet}
 
 <div class="background" style:--home-bg=url({home_bg})></div>
 
