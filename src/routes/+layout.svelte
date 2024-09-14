@@ -165,11 +165,13 @@ SOFTWARE.
   import { getCookie } from "$lib/utils.js"
   import { setContext, type Snippet } from "svelte"
   import TopBanner from "$lib/components/TopBanner.svelte"
-  import { navigating } from "$app/stores"
+  import { navigating, page } from "$app/stores"
   import { expoOut } from "svelte/easing"
   import { slide } from "svelte/transition"
 
   let { data, children } = $props()
+
+  let is_index = $derived($page.url.pathname === "/")
 
   let stored_time_mode: TimeMode
   if (browser) {
@@ -289,7 +291,7 @@ SOFTWARE.
   </TopBanner>
 {/if}
 
-<Nav />
+<Nav is_index={is_index} />
 
 {#if before_container}
   {@render before_container()}

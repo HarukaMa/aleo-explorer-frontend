@@ -231,7 +231,7 @@
 <div class="big-title">Explore Aleo Blockchain</div>
 
 <div class="search-bar">
-  <SearchBar homepage />
+  <SearchBar is_index />
 </div>
 
 <div id="summary">

@@ -99,11 +99,18 @@
     background: white;
   }
 
+  .search {
+    margin-left: auto;
+  }
+
 </style>
 
 <script lang="ts">
   import { PUBLIC_NETWORK } from "$env/static/public"
   import NavItem from "./NavItem.svelte"
+  import SearchBar from "$lib/components/SearchBar.svelte"
+
+  let { is_index }: { is_index: boolean } = $props()
 
   const networks: { [key: string]: string } = {
     mainnet: "Mainnet",
@@ -174,4 +181,9 @@
       </div>
     </div>
   </div>
+  {#if !is_index}
+    <div class="search">
+      <SearchBar is_index={is_index} />
+    </div>
+  {/if}
 </nav>

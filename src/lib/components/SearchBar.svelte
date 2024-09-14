@@ -1,6 +1,6 @@
 <script lang="ts">
 
-  let { homepage = false } = $props()
+  let { is_index = false } = $props()
 
   let input: HTMLInputElement | undefined = $state(undefined)
 
@@ -41,10 +41,63 @@
       border-color: $blue-500;
       transition: all 0.2s ease-out;
     }
+
+    .keyboard-shortcut {
+      padding: 0.5rem 1.0625rem;
+      border-radius: 0.5rem;
+      background: $grey-50;
+      color: $grey-400;
+      font-weight: 700;
+      font-size: 1rem;
+      line-height: 1.5rem;
+    }
+  }
+
+  .search-bar-container {
+    display: inline-flex;
+    height: 2.5rem;
+    width: 25rem;
+    box-sizing: border-box;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid $grey-100;
+    transition: border 0.2s ease-out;
+    font-size: 0.875rem;
+
+    .search-icon {
+      height: 1rem;
+      width: 1rem;
+      background-image: $search-icon;
+    }
+
+    &:focus-within {
+      border-color: $blue-500;
+      transition: all 0.2s ease-out;
+    }
+
+    .keyboard-shortcut {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      height: 1.5rem;
+      width: 1.5rem;
+      border-radius: 0.25rem;
+      background: $grey-50;
+      color: $grey-400;
+      font-weight: 700;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
   }
 
   form {
-    width: 100%;
+    flex-grow: 1;
+
 
     input {
       padding: 0;
@@ -68,31 +121,19 @@
     font-size: inherit;
   }
 
-  .keyboard-shortcut {
-    padding: 0.5rem 1.0625rem;
-    border-radius: 0.5rem;
-    background: $grey-50;
-    color: $grey-400;
-    font-weight: 700;
-    font-size: 1rem;
-    line-height: 1.5rem;
-  }
-
 </style>
 
-{#if homepage}
-  <div class="home-search-bar-container" onclick={focus_search} onkeydown={focus_search} role="button" tabindex="0">
-    <div class="search-icon"></div>
-    <form action="/search">
-      <input name="q" type="text" placeholder="Search for address, transaction, validator..." bind:this={input} />
-    </form>
-    <div class="keyboard-shortcut">
-      /
-    </div>
+
+<div class={is_index ? "home-search-bar-container" : "search-bar-container"} onclick={focus_search}
+     onkeydown={focus_search} role="button" tabindex="0">
+  <div class="search-icon"></div>
+  <form action="/search">
+    <input bind:this={input} name="q" placeholder="Search for address, transaction, validator..." type="text" />
+  </form>
+  <div class="keyboard-shortcut">
+    /
   </div>
-{:else}
-  <div>Not implemented!</div>
-{/if}
+</div>
 
 <svelte:window
   on:keydown={e => {
