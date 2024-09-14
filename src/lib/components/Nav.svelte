@@ -6,10 +6,23 @@
 
   nav {
     display: flex;
+    height: 4.5rem;
+    align-items: center;
+  }
+
+  .nav-main {
+    display: flex;
     //max-width: 1136px;
     margin: 0 auto;
     height: 4.5rem;
     align-items: center;
+    flex-grow: 1;
+  }
+
+  .nav-main-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .title-logo {
@@ -103,6 +116,22 @@
     margin-left: auto;
   }
 
+  @media (max-width: 768px) {
+    nav {
+      flex-direction: column;
+      height: 9rem;
+    }
+    .nav-main {
+      flex-direction: column;
+      padding-top: 1rem;
+      align-items: flex-start;
+      flex-grow: 0;
+    }
+    .nav-links {
+      margin-left: 0;
+    }
+  }
+
 </style>
 
 <script lang="ts">
@@ -141,43 +170,47 @@
 </script>
 
 <nav>
-  <a href="/">
-    <div class="title-logo"></div>
-  </a>
-  <div class="title-network-indicator-container">
-    <span class="title-network-indicator-name">{network}</span>
-  </div>
-  <div class="nav-links">
-    <div class="nav-link">
-      Blockchain
-      <span class="chevron"></span>
-
-      <div class="nav-link-menu">
-        {#each blockchain_routes as { name, path }}
-          <NavItem name={name} path={path} />
-        {/each}
+  <div class="nav-main">
+    <div class="nav-main-title">
+      <a href="/">
+        <div class="title-logo"></div>
+      </a>
+      <div class="title-network-indicator-container">
+        <span class="title-network-indicator-name">{network}</span>
       </div>
     </div>
+    <div class="nav-links">
+      <div class="nav-link">
+        Blockchain
+        <span class="chevron"></span>
 
-    <div class="nav-link">
-      Proving
-      <span class="chevron"></span>
-
-      <div class="nav-link-menu">
-        {#each proving_routes as { name, path }}
-          <NavItem name={name} path={path} />
-        {/each}
+        <div class="nav-link-menu">
+          {#each blockchain_routes as { name, path }}
+            <NavItem name={name} path={path} />
+          {/each}
+        </div>
       </div>
-    </div>
 
-    <div class="nav-link">
-      Developers
-      <span class="chevron"></span>
+      <div class="nav-link">
+        Proving
+        <span class="chevron"></span>
 
-      <div class="nav-link-menu">
-        {#each developers_routes as { name, path }}
-          <NavItem name={name} path={path} />
-        {/each}
+        <div class="nav-link-menu">
+          {#each proving_routes as { name, path }}
+            <NavItem name={name} path={path} />
+          {/each}
+        </div>
+      </div>
+
+      <div class="nav-link">
+        Developers
+        <span class="chevron"></span>
+
+        <div class="nav-link-menu">
+          {#each developers_routes as { name, path }}
+            <NavItem name={name} path={path} />
+          {/each}
+        </div>
       </div>
     </div>
   </div>

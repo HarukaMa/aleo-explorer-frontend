@@ -237,28 +237,30 @@
   </Link>
 {/snippet}
 
-<table>
-  <thead>
-  {#each table.getHeaderGroups() as header_group}
-    <tr>
-      {#each header_group.headers as header}
-        <th>{header.column.columnDef.header}</th>
-      {/each}
-    </tr>
-  {/each}
-  </thead>
-  <tbody>
-  {#each table.getRowModel().rows as row}
-    <tr>
-      {#each row.getVisibleCells() as cell}
-        <td>
-          <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-        </td>
-      {/each}
-    </tr>
-  {/each}
-  </tbody>
-</table>
+<div class="table-container">
+  <table>
+    <thead>
+    {#each table.getHeaderGroups() as header_group}
+      <tr>
+        {#each header_group.headers as header}
+          <th>{header.column.columnDef.header}</th>
+        {/each}
+      </tr>
+    {/each}
+    </thead>
+    <tbody>
+    {#each table.getRowModel().rows as row}
+      <tr>
+        {#each row.getVisibleCells() as cell}
+          <td>
+            <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+          </td>
+        {/each}
+      </tr>
+    {/each}
+    </tbody>
+  </table>
+</div>
 
 {#key pagination}
   <TableNav page={pagination.pageIndex + 1} set_page={set_page} total_pages={total_pages} />

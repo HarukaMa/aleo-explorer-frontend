@@ -253,28 +253,30 @@
 
 <div id="blocks">
   <header>Blocks</header>
-  <table>
-    <thead>
-    {#each table.getHeaderGroups() as header_group}
-      <tr>
-        {#each header_group.headers as header}
-          <th>{header.column.columnDef.header}</th>
-        {/each}
-      </tr>
-    {/each}
-    </thead>
-    <tbody>
-    {#each table.getRowModel().rows as row}
-      <tr>
-        {#each row.getVisibleCells() as cell}
-          <td>
-            <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-          </td>
-        {/each}
-      </tr>
-    {/each}
-    </tbody>
-  </table>
+  <div class="table-container">
+    <table>
+      <thead>
+      {#each table.getHeaderGroups() as header_group}
+        <tr>
+          {#each header_group.headers as header}
+            <th>{header.column.columnDef.header}</th>
+          {/each}
+        </tr>
+      {/each}
+      </thead>
+      <tbody>
+      {#each table.getRowModel().rows as row}
+        <tr>
+          {#each row.getVisibleCells() as cell}
+            <td>
+              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+            </td>
+          {/each}
+        </tr>
+      {/each}
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <div class="spacer">

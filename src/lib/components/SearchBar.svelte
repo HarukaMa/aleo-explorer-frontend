@@ -95,6 +95,12 @@
     }
   }
 
+  @media (max-width: 768px) {
+    .search-bar-container {
+      width: 90vw;
+    }
+  }
+
   form {
     flex-grow: 1;
 

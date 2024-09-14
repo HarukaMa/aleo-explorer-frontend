@@ -516,28 +516,30 @@
         <Callout title="No transactions" description="This block has no transactions." icon="list-icon" />
       {:else}
         {#if block.block.transactions.length > 0 }
-          <table>
-            <thead>
-            {#each transaction_table.getHeaderGroups() as header_group}
-              <tr>
-                {#each header_group.headers as header}
-                  <th>{header.column.columnDef.header}</th>
-                {/each}
-              </tr>
-            {/each}
-            </thead>
-            <tbody>
-            {#each transaction_table.getRowModel().rows as row}
-              <tr>
-                {#each row.getVisibleCells() as cell}
-                  <td>
-                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                  </td>
-                {/each}
-              </tr>
-            {/each}
-            </tbody>
-          </table>
+          <div class="table-container">
+            <table>
+              <thead>
+              {#each transaction_table.getHeaderGroups() as header_group}
+                <tr>
+                  {#each header_group.headers as header}
+                    <th>{header.column.columnDef.header}</th>
+                  {/each}
+                </tr>
+              {/each}
+              </thead>
+              <tbody>
+              {#each transaction_table.getRowModel().rows as row}
+                <tr>
+                  {#each row.getVisibleCells() as cell}
+                    <td>
+                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
+              </tbody>
+            </table>
+          </div>
         {/if}
         {#if block.block.aborted_transaction_ids.length > 0}
           <div class="aborted-header">Aborted transactions</div>
@@ -597,53 +599,57 @@
         <Callout title="No solutions" description="This block has no puzzle solutions." icon="list-icon" />
       {:else}
         {#if block.solutions.length > 0 }
-          <table>
-            <thead>
-            {#each solution_table.getHeaderGroups() as header_group}
-              <tr>
-                {#each header_group.headers as header}
-                  <th>{header.column.columnDef.header}</th>
-                {/each}
-              </tr>
-            {/each}
-            </thead>
-            <tbody>
-            {#each solution_table.getRowModel().rows as row}
-              <tr>
-                {#each row.getVisibleCells() as cell}
-                  <td>
-                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                  </td>
-                {/each}
-              </tr>
-            {/each}
-            </tbody>
-          </table>
+          <div class="table-container">
+            <table>
+              <thead>
+              {#each solution_table.getHeaderGroups() as header_group}
+                <tr>
+                  {#each header_group.headers as header}
+                    <th>{header.column.columnDef.header}</th>
+                  {/each}
+                </tr>
+              {/each}
+              </thead>
+              <tbody>
+              {#each solution_table.getRowModel().rows as row}
+                <tr>
+                  {#each row.getVisibleCells() as cell}
+                    <td>
+                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
+              </tbody>
+            </table>
+          </div>
         {/if}
         {#if block.block.aborted_solution_ids.length > 0}
           <div class="aborted-header">Aborted solutions</div>
-          <table>
-            <thead>
-            {#each aborted_solution_table.getHeaderGroups() as header_group}
-              <tr>
-                {#each header_group.headers as header}
-                  <th>{header.column.columnDef.header}</th>
-                {/each}
-              </tr>
-            {/each}
-            </thead>
-            <tbody>
-            {#each aborted_solution_table.getRowModel().rows as row}
-              <tr>
-                {#each row.getVisibleCells() as cell}
-                  <td>
-                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                  </td>
-                {/each}
-              </tr>
-            {/each}
-            </tbody>
-          </table>
+          <div class="table-container">
+            <table>
+              <thead>
+              {#each aborted_solution_table.getHeaderGroups() as header_group}
+                <tr>
+                  {#each header_group.headers as header}
+                    <th>{header.column.columnDef.header}</th>
+                  {/each}
+                </tr>
+              {/each}
+              </thead>
+              <tbody>
+              {#each aborted_solution_table.getRowModel().rows as row}
+                <tr>
+                  {#each row.getVisibleCells() as cell}
+                    <td>
+                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
+              </tbody>
+            </table>
+          </div>
         {/if}
       {/if}
     </div>

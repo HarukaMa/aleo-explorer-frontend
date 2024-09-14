@@ -85,3 +85,7 @@
 :global(.dim) {
   color: $grey-400;
 }
+
+:global(.table-container) {
+  overflow-x: auto;
+}
