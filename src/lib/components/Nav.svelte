@@ -22,7 +22,6 @@
   .nav-main-title {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
   }
 
   .title-logo {
@@ -119,12 +118,14 @@
   @media (max-width: 768px) {
     nav {
       flex-direction: column;
+      align-items: flex-start;
       height: 9rem;
     }
     .nav-main {
       flex-direction: column;
       padding-top: 1rem;
       align-items: flex-start;
+      margin: 0;
       flex-grow: 0;
     }
     .nav-links {
