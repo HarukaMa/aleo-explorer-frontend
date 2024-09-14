@@ -437,6 +437,12 @@
       (<Time timestamp={block.block.header.metadata.timestamp} />)
       <!-- @formatter:on -->
     </DetailLine>
+    <DetailLine label="Epoch">
+      <div class="column">
+        <span>{ Math.floor(block.block.header.metadata.height / 360) }</span>
+        <span class="secondary">{ block.block.header.metadata.height % 360 } / 360</span>
+      </div>
+    </DetailLine>
   </div>
   <div class="group">
     <div class="details-line"></div>
