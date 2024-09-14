@@ -550,6 +550,9 @@
           <DetailLine label="Cumulative weight">
             <Number number={block.block.header.metadata.cumulative_weight} />
           </DetailLine>
+          <DetailLine label="Total supply">
+            <AleoCredit number={new Decimal(block.total_supply)} suffix={true} />
+          </DetailLine>
         </div>
         <div class="group">
           <div class="details-line"></div>
