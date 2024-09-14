@@ -11,4 +11,5 @@
 
 </script>
 
-<Number number={number.div(1000000)} precision={6} unit={suffix ? " Aleo Credits" : undefined} />
+<Number number={number.div(1000000)} precision={6}
+        unit={suffix ? ` <span class="dim">Aleo Credits</span>` : undefined} />

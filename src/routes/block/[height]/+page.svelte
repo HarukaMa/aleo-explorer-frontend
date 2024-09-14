@@ -65,6 +65,9 @@
 
   }
 
+  const solution_targets = block.solutions.map((solution: any) => new Decimal(solution.target))
+  const total_target = solution_targets.reduce((acc: Decimal, target: Decimal) => acc.add(target), new Decimal(0))
+
   const tab_data = [
     { title: "Transactions", id: "transactions" },
     { title: "Block info", id: "block_info" },
@@ -81,7 +84,7 @@
     status: string
   }
 
-  let transaction_table_data: TransactionList[] = block.block.transactions.map((tx: any, index: number) => {
+  const transaction_table_data: TransactionList[] = block.block.transactions.map((tx: any, index: number) => {
     let transitions: number, action: string, type: string, status: string
     let fee: Decimal[] | number[]
     if (tx.type === "accepted_execute") {
@@ -125,7 +128,7 @@
     }
   })
 
-  const columns: ColumnDef<TransactionList, any>[] = [
+  const transaction_table_columns: ColumnDef<TransactionList, any>[] = [
     {
       accessorKey: "index",
       header: "Index",
@@ -167,19 +170,91 @@
     },
   ]
 
-  const table = createTable<TransactionList>({
+  const transaction_table = createTable<TransactionList>({
     data: transaction_table_data,
-    columns,
+    columns: transaction_table_columns,
     getCoreRowModel: getCoreRowModel(),
   })
 
+  const aborted_transaction_table_columns: ColumnDef<string, string>[] = [
+    {
+      accessorKey: "transaction_id",
+      header: "Transaction ID",
+      cell: info => info.getValue(),
+    },
+  ]
 
+  const aborted_transaction_table = createTable<string>({
+    data: block.block.aborted_transaction_ids,
+    columns: aborted_transaction_table_columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
+  type SolutionList = {
+    solution_id: string
+    address: string
+    counter: Decimal
+    target: Decimal
+    reward: Decimal
+  }
 
+  const solution_table_data: SolutionList[] = block.solutions.map((solution: any) => {
+    return {
+      solution_id: solution.solution_id,
+      address: solution.address,
+      counter: new Decimal(solution.counter),
+      target: new Decimal(solution.target),
+      reward: new Decimal(solution.reward),
+    }
+  })
 
+  const solution_table_columns: ColumnDef<SolutionList, any>[] = [
+    {
+      accessorKey: "solution_id",
+      header: "Solution ID",
+      cell: info => renderComponent(SnippetWrapper, { snippet: solution_id_column, value: info.getValue() }),
+    },
+    {
+      accessorKey: "address",
+      header: "Address",
+      cell: info => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
+    },
+    {
+      accessorKey: "counter",
+      header: "Counter",
+      cell: info => renderComponent(Number, { number: info.getValue() }),
+    },
+    {
+      accessorKey: "target",
+      header: "Target",
+      cell: info => renderComponent(SnippetWrapper, { snippet: target_column, value: info.getValue() }),
+    },
+    {
+      accessorKey: "reward",
+      header: "Reward",
+      cell: info => renderComponent(AleoCredit, { number: info.getValue() }),
+    },
+  ]
 
+  const solution_table = createTable<SolutionList>({
+    data: solution_table_data,
+    columns: solution_table_columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
+  const aborted_solution_table_columns: ColumnDef<string, string>[] = [
+    {
+      accessorKey: "solution_id",
+      header: "Solution ID",
+      cell: info => info.getValue(),
+    },
+  ]
 
+  const aborted_solution_table = createTable<string>({
+    data: block.block.aborted_solution_ids,
+    columns: aborted_solution_table_columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
   let before_container_state: BeforeContainerState = getContext("before_container")
   before_container_state.snippet = before_container
@@ -286,9 +361,12 @@
     margin-top: 0.5rem;
   }
 
+  table {
+    width: 100%;
+  }
+
   .tab {
     margin-top: 2rem;
-    width: 100%;
   }
 
   .ellipsis {
@@ -297,12 +375,38 @@
     text-overflow: ellipsis;
   }
 
+  .aborted-header {
+    font-size: 1rem;
+    font-family: "Montserrat Variable", sans-serif;
+    font-weight: 600;
+    line-height: 1.25rem;
+  }
+
 </style>
 
 {#snippet transaction_id_column(value)}
   <div class="mono ellipsis">
     <Link href="/transaction/{value}" content={value}></Link>
   </div>
+{/snippet}
+
+{#snippet solution_id_column(value)}
+  <div class="mono">{value}</div>
+{/snippet}
+
+{#snippet address_column(value)}
+  <div class="mono ellipsis">
+    <Link href="/address/{value}" content={value}>
+      <UIAddress address={value} name_data={block.resolved_addresses} />
+    </Link>
+  </div>
+{/snippet}
+
+{#snippet target_column(value)}
+  <Number number={value} />
+  <span class="dim">
+    / <Number number={total_target} />
+  </span>
 {/snippet}
 
 {#snippet before_container()}
@@ -339,7 +443,8 @@
   </div>
   <div class="group">
     <DetailLine label="Validators">
-      {block.all_validators.length} <a id="validator-toggle" onclick={toggle_validators}>(Show validators)</a>
+      {block.all_validators.length} <a id="validator-toggle" onclick={toggle_validators} onkeydown="{toggle_validators}"
+                                       role="button" tabindex="0">(Show validators)</a>
       {#if validator_showing}
         <div id="validator-list">
           {#each block.all_validators as validator}
@@ -404,35 +509,134 @@
       {#if block.block.transactions.length === 0 && block.block.aborted_transaction_ids.length === 0}
         <Callout title="No transactions" description="This block has no transactions." icon="list-icon" />
       {:else}
-        <table>
-          <thead>
-          {#each table.getHeaderGroups() as header_group}
-            <tr>
-              {#each header_group.headers as header}
-                <th>{header.column.columnDef.header}</th>
-              {/each}
-            </tr>
-          {/each}
-          </thead>
-          <tbody>
-          {#each table.getRowModel().rows as row}
-            <tr>
-              {#each row.getVisibleCells() as cell}
-                <td>
-                  <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                </td>
-              {/each}
-            </tr>
-          {/each}
-          </tbody>
-        </table>
+        {#if block.block.transactions.length > 0 }
+          <table>
+            <thead>
+            {#each transaction_table.getHeaderGroups() as header_group}
+              <tr>
+                {#each header_group.headers as header}
+                  <th>{header.column.columnDef.header}</th>
+                {/each}
+              </tr>
+            {/each}
+            </thead>
+            <tbody>
+            {#each transaction_table.getRowModel().rows as row}
+              <tr>
+                {#each row.getVisibleCells() as cell}
+                  <td>
+                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+            </tbody>
+          </table>
+        {/if}
+        {#if block.block.aborted_transaction_ids.length > 0}
+          <div class="aborted-header">Aborted transactions</div>
+
+        {/if}
       {/if}
     </div>
   {/snippet}
   {#snippet block_info(binds)}
-    <div class="tab" bind:this={binds.block_info}>B</div>
+    <div class="tab" bind:this={binds.block_info}>
+      <div class="details">
+        <div class="group">
+          <DetailLine label="Round">
+            <Number number={block.block.header.metadata.round} />
+          </DetailLine>
+          <DetailLine label="Cumulative weight">
+            <Number number={block.block.header.metadata.cumulative_weight} />
+          </DetailLine>
+        </div>
+        <div class="group">
+          <div class="details-line"></div>
+        </div>
+        <div class="group">
+          <DetailLine label="Previous block hash">
+            <span class="mono">{block.block.previous_hash}</span>
+          </DetailLine>
+          <DetailLine label="Previous state root">
+            <span class="mono">{block.block.header.previous_state_root}</span>
+          </DetailLine>
+        </div>
+        <div class="group">
+          <div class="details-line"></div>
+        </div>
+        <div class="group">
+          <DetailLine label="Transactions root">
+            <span class="mono">{block.block.header.transactions_root}</span>
+          </DetailLine>
+          <DetailLine label="Finalize root">
+            <span class="mono">{block.block.header.finalize_root}</span>
+          </DetailLine>
+          <DetailLine label="Ratifications root">
+            <span class="mono">{block.block.header.ratifications_root}</span>
+          </DetailLine>
+          <DetailLine label="Solutions root">
+            <span class="mono">{block.block.header.solutions_root}</span>
+          </DetailLine>
+        </div>
+      </div>
+    </div>
   {/snippet}
   {#snippet solutions(binds)}
-    <div class="tab" bind:this={binds.solutions}>C</div>
+    <div class="tab" bind:this={binds.solutions}>
+      {#if block.solutions.length === 0 && block.block.aborted_solution_ids.length === 0}
+        <Callout title="No solutions" description="This block has no puzzle solutions." icon="list-icon" />
+      {:else}
+        {#if block.solutions.length > 0 }
+          <table>
+            <thead>
+            {#each solution_table.getHeaderGroups() as header_group}
+              <tr>
+                {#each header_group.headers as header}
+                  <th>{header.column.columnDef.header}</th>
+                {/each}
+              </tr>
+            {/each}
+            </thead>
+            <tbody>
+            {#each solution_table.getRowModel().rows as row}
+              <tr>
+                {#each row.getVisibleCells() as cell}
+                  <td>
+                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+            </tbody>
+          </table>
+        {/if}
+        {#if block.block.aborted_solution_ids.length > 0}
+          <div class="aborted-header">Aborted solutions</div>
+          <table>
+            <thead>
+            {#each aborted_solution_table.getHeaderGroups() as header_group}
+              <tr>
+                {#each header_group.headers as header}
+                  <th>{header.column.columnDef.header}</th>
+                {/each}
+              </tr>
+            {/each}
+            </thead>
+            <tbody>
+            {#each aborted_solution_table.getRowModel().rows as row}
+              <tr>
+                {#each row.getVisibleCells() as cell}
+                  <td>
+                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+            </tbody>
+          </table>
+        {/if}
+      {/if}
+    </div>
   {/snippet}
 </Tabs>

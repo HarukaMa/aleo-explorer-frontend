@@ -1,16 +1,14 @@
 <script lang="ts">
 
-  import type { Component } from "svelte"
+  import type { Snippet } from "svelte"
 
   interface Link {
     href: string
-    ChildComponent?: Component<any>
+    children?: Snippet
     content?: string
-
-    [key: string]: any
   }
 
-  let { href, ChildComponent, content, ...rest }: Link = $props()
+  let { href, children, content }: Link = $props()
 
 </script>
 
@@ -29,8 +27,8 @@
 </style>
 
 <a href={href}>
-  {#if ChildComponent}
-    <ChildComponent {ChildComponent} {content} {...rest} />
+  {#if children}
+    {@render children()}
   {:else}
     {content}
   {/if}

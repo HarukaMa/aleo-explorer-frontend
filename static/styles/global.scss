@@ -81,3 +81,7 @@
 :global(.flash) {
   animation: flash 0.3s ease-out;
 }
+
+:global(.dim) {
+  color: $grey-400;
+}
