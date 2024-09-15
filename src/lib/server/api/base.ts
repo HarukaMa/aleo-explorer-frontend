@@ -1,11 +1,5 @@
 import { API_ROOT, API_TOKEN } from "$env/static/private"
-
-export class APIError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = "APIError"
-  }
-}
+import { APIError } from "$lib/types"
 
 export class APIBase {
   private readonly api_root: string

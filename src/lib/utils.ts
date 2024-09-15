@@ -1,3 +1,4 @@
+import type { APIError } from "$lib/types"
 import type { APIBase } from "$lib/server/api/base"
 
 export function is_empty(obj: NonNullable<unknown>) {
@@ -29,4 +30,8 @@ export function server_timing(
   }
   setHeaders({ "Server-Timing": `${name};dur=${performance.now() - start}` })
   return result
+}
+
+export function app_error_from_api_error(err: APIError): App.Error {
+  return { error: err.name, message: err.message }
 }

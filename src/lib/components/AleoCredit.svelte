@@ -4,12 +4,14 @@
 
   interface AleoCredit {
     suffix?: boolean
-    number: Decimal
+    number: Decimal | string
   }
 
   let { suffix = false, number }: AleoCredit = $props()
 
+  const credits = number instanceof Decimal ? number : new Decimal(number)
+
 </script>
 
-<Number number={number.div(1000000)} precision={6}
+<Number number={credits.div(1000000)} precision={6}
         unit={suffix ? ` <span class="dim">Aleo Credits</span>` : undefined} />

@@ -3,6 +3,7 @@ import { error } from "@sveltejs/kit"
 import { API } from "$lib/server/api/api"
 import "$lib/server/api/block"
 import { APIError } from "$lib/server/api/base"
+import { app_error_from_api_error } from "$lib/utils"
 
 export const load: PageServerLoad = async () => {
   try {
@@ -15,7 +16,7 @@ export const load: PageServerLoad = async () => {
   } catch (err) {
     console.error(err)
     if (err instanceof APIError) {
-      return error(500, err.message)
+      return error(500, app_error_from_api_error(err))
     }
     throw err
   }

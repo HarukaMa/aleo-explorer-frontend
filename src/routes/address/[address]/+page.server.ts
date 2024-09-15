@@ -5,11 +5,11 @@ import { error } from "@sveltejs/kit"
 import { app_error_from_api_error } from "$lib/utils"
 
 export const load: PageServerLoad = async ({ params }) => {
-  const { height } = params
+  const { address } = params
   try {
     return {
-      block: await API.instance.block(height),
-      height: height,
+      data: await API.instance.address(address),
+      address: address,
     }
   } catch (err) {
     console.log(err)
