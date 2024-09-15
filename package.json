@@ -37,6 +37,8 @@
         "@fontsource-variable/inconsolata": "^5.0.20",
         "@fontsource-variable/montserrat": "^5.0.21",
         "@fontsource-variable/open-sans": "^5.0.31",
+        "@jsquash/jxl": "^1.1.0",
+        "@jsquash/png": "^3.0.1",
         "@tanstack/svelte-table": "alpha",
         "decimal.js": "^10.4.3"
     }

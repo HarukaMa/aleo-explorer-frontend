@@ -318,7 +318,7 @@
   <div class="group">
     {#if data.bond_state}
       <DetailLine label="Not implemented">
-
+        Not implemented
       </DetailLine>
     {/if}
     <DetailLine label="Lifetime stake reward">

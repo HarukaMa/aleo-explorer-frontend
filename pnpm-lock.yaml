@@ -17,6 +17,12 @@ importers:
       '@fontsource-variable/open-sans':
         specifier: ^5.0.31
         version: 5.0.31
+      '@jsquash/jxl':
+        specifier: ^1.1.0
+        version: 1.1.0
+      '@jsquash/png':
+        specifier: ^3.0.1
+        version: 3.0.1
       '@tanstack/svelte-table':
         specifier: alpha
         version: 9.0.0-alpha.10(svelte@5.0.0-next.241)
@@ -477,6 +483,12 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
+
+  '@jsquash/jxl@1.1.0':
+    resolution: {integrity: sha512-atdg3ZOOhmK3A87gRRS1mTBp+ljVK0rYaAVAhnrv7GhKTPFDZKo+GkLsXMu5oAka43Wi9iBOXFJeq+xtD1z57w==}
+
+  '@jsquash/png@3.0.1':
+    resolution: {integrity: sha512-Bnvv93Y5LL92cuk2r2gpV+9JKuDo2/w7bOODw1iPxk8VARknky0sS1tSDgMosUdhNb4CdMlcCm3TMzTaqa3zZw==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1615,6 +1627,9 @@ packages:
       vite:
         optional: true
 
+  wasm-feature-detect@1.6.2:
+    resolution: {integrity: sha512-4dnaZ+Fq/q+BbMlTIfaNS851i+0zmHzui++NUZdskESRu3xwB6g6x2FnGvBdWtpijqO5yuj1l+EUTJGc4S4DKg==}
+
   which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
@@ -1921,6 +1936,12 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@jsquash/jxl@1.1.0':
+    dependencies:
+      wasm-feature-detect: 1.6.2
+
+  '@jsquash/png@3.0.1': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -3052,6 +3073,8 @@ snapshots:
   vitefu@1.0.2(vite@5.4.3(@types/node@22.5.4)(sass@1.78.0)):
     optionalDependencies:
       vite: 5.4.3(@types/node@22.5.4)(sass@1.78.0)
+
+  wasm-feature-detect@1.6.2: {}
 
   which@2.0.2:
     dependencies:
