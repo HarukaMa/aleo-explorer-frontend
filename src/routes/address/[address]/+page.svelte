@@ -299,6 +299,17 @@
       background-image: $address-icon;
     }
 
+    .external-icon {
+      height: 40px;
+      width: 40px;
+
+      img {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+      }
+    }
+
     .address-data {
       font-size: 1.375rem;
       font-weight: 600;
@@ -461,7 +472,13 @@
 {#snippet before_container()}
   <div class="header">
     <div class="flex">
-      <div class="address-icon"></div>
+      {#if resolved.logo}
+        <div class="external-icon">
+          <img alt={resolved.tag} src="https://r2.aleoscan.io/{resolved.logo}" />
+        </div>
+      {:else}
+        <div class="address-icon"></div>
+      {/if}
       <div class="vert">
         <div class="address-title">
           {#if data && data.committee_state}Validator{:else}Address{/if}
