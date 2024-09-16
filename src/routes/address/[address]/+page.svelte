@@ -30,7 +30,7 @@
       { title: "Deployed programs", id: "programs" },
     ]
     if (data.delegated > 0) {
-      tabs.splice(0, 0, { title: "Delegators", id: "delegators" })
+      tabs.splice(0, 0, { title: "Top delegators", id: "delegators" })
     }
     return tabs
   })
