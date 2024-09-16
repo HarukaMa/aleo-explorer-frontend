@@ -188,7 +188,7 @@
       background-image: $address-icon;
     }
 
-    .address-num {
+    .address-data {
       font-size: 1.375rem;
       font-weight: 600;
       font-family: "Montserrat Variable", sans-serif;
@@ -201,7 +201,7 @@
   }
 
   .details {
-    margin-top: 2.5rem;
+    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -269,11 +269,28 @@
     line-height: 1.25rem;
   }
 
+  .address-warning {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 2.5rem;
+    padding: 1rem;
+    background-color: $yellow-50;
+    border-radius: 0.5rem;
+  }
+
+  .address-alert-icon {
+    height: 1.25rem;
+    width: 1.25rem;
+    background-color: $yellow-600;
+    mask-image: $alert-icon;
+  }
+
 </style>
 
-{#snippet transaction_id_column(value)}
+{#snippet transition_id_column(value)}
   <div class="mono ellipsis">
-    <Link href="/transaction/{value}" content={value}></Link>
+    <Link href="/transition/{value}" content={value}></Link>
   </div>
 {/snippet}
 
@@ -294,20 +311,34 @@
     <div class="flex">
       <div class="address-icon"></div>
       <div class="vert">
-        <div class="block-title">Address</div>
-        <div class="block-num">
-          <UIAddress address={address} name_data={data.resolved_addresses} short_address />
+        <div class="address-title">Address</div>
+        <div class="address-data">
+          <UIAddress address={address} name_data={data.resolved_addresses} short_address keep_font />
         </div>
       </div>
     </div>
   </div>
 {/snippet}
 
+{#if data.program_name}
+  <div class="address-warning">
+    <div class="address-alert-icon"></div>
+    This is a program address. Records owned by programs are currently not spendable.
+  </div>
+{/if}
+
 <div class="details">
   <div class="group">
     <DetailLine label="Address">
       <span class="mono">{data.address}</span>
     </DetailLine>
+    {#if data.program_name}
+      <DetailLine label="Program name">
+        <Link href="/program/{data.program_name}">
+          <span class="mono">{data.program_name}</span>
+        </Link>
+      </DetailLine>
+    {/if}
     <DetailLine label="Public credits">
       <AleoCredit number={data.public_balance} suffix={true}></AleoCredit>
     </DetailLine>
