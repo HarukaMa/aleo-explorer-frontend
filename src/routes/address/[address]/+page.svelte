@@ -8,9 +8,11 @@
   import UIAddress from "$lib/components/UIAddress.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
   import Decimal from "decimal.js"
-  import { type ColumnDef, createTable, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
+  import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
+  import { format_time_relative } from "$lib/time_mode.svelte"
+  import Callout from "$lib/components/Callout.svelte"
 
   let { data: server_data } = $props()
   let { data, address } = $derived(server_data)
@@ -45,7 +47,7 @@
 
   let transition_table_data: TransitionList[] = $derived(data.transitions.map((ts: any) => {
     return {
-      height: ts.block,
+      height: ts.height,
       timestamp: ts.timestamp,
       transition_id: ts.transition_id,
       action: {
@@ -80,6 +82,14 @@
       cell: info => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
     },
   ]
+
+  const transition_table = createTable<TransitionList>({
+    get data() {
+      return transition_table_data
+    },
+    columns: transition_table_columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
   type SolutionList = {
     height: number
@@ -152,6 +162,91 @@
       return solution_table_data
     },
     columns: solution_table_columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
+
+  type ProgramList = {
+    height: number
+    program: string
+    timestamp: number
+    transaction_id: string
+  }
+
+  let program_table_data: ProgramList[] = $derived(data.programs.map((program: any) => {
+    return {
+      height: program.height,
+      program: program.program_id,
+      timestamp: program.timestamp,
+      transaction_id: program.transaction_id,
+    }
+  }))
+
+  const program_table_columns: ColumnDef<ProgramList, any>[] = [
+    {
+      accessorKey: "height",
+      header: "In block",
+      cell: info => renderComponent(SnippetWrapper, { snippet: height_column, value: info.getValue() }),
+    },
+    {
+      accessorKey: "timestamp",
+      header: "Timestamp",
+      cell: info => renderComponent(SnippetWrapper, { snippet: timestamp_column, value: info.getValue() }),
+    },
+    {
+      accessorKey: "transaction_id",
+      header: "Transaction ID",
+      cell: info => renderComponent(SnippetWrapper, { snippet: transaction_id_column, value: info.getValue() }),
+    },
+    {
+      accessorKey: "program",
+      header: "Program ID",
+      cell: info => renderComponent(SnippetWrapper, { snippet: program_id_column, value: info.getValue() }),
+    },
+  ]
+
+  const program_table = createTable<ProgramList>({
+    get data() {
+      return program_table_data
+    },
+    columns: program_table_columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
+
+  type DelegatorList = {
+    address: string
+    amount: string
+  }
+
+  let delegator_table_data: DelegatorList[] = $derived.by(() => {
+    if (!data.address_stakes) {
+      return []
+    }
+    return Object.entries(data.address_stakes).map(([address, amount]: [string, any]) => {
+      return {
+        address,
+        amount,
+      }
+    })
+  })
+
+  const delegator_table_columns: ColumnDef<DelegatorList, any>[] = [
+    {
+      accessorKey: "address",
+      header: "Address",
+      cell: info => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
+    },
+    {
+      accessorKey: "amount",
+      header: "Staked",
+      cell: info => renderComponent(AleoCredit, { number: info.getValue() }),
+    },
+  ]
+
+  const delegator_table = createTable<DelegatorList>({
+    get data() {
+      return delegator_table_data
+    },
+    columns: delegator_table_columns,
     getCoreRowModel: getCoreRowModel(),
   })
 
@@ -306,6 +401,31 @@
 
 </style>
 
+{#snippet address_column(value)}
+  <div class="mono">
+    <Link href="/address/{value}" content={value}></Link>
+  </div>
+{/snippet}
+
+{#snippet height_column(value)}
+  <Link href="/block/{value}">
+    <Number number={value} />
+  </Link>
+{/snippet}
+
+{#snippet timestamp_column(value)}
+  {format_time_relative(new Date(value * 1000))}
+{/snippet}
+
+{#snippet action_column(value)}
+  <div class="column">
+    <span class="mono">{value.function}</span>
+    <Link href="/program/{value.program}">
+      <span class="secondary mono">{value.program}</span>
+    </Link>
+  </div>
+{/snippet}
+
 {#snippet transition_id_column(value)}
   <div class="mono ellipsis">
     <Link href="/transition/{value}" content={value}></Link>
@@ -321,6 +441,18 @@
   <span class="dim">
     / <Number number={value.sum} />
   </span>
+{/snippet}
+
+{#snippet transaction_id_column(value)}
+  <div class="mono ellipsis">
+    <Link href="/transaction/{value}" content={value}></Link>
+  </div>
+{/snippet}
+
+{#snippet program_id_column(value)}
+  <div class="mono">
+    <Link href="/program/{value}" content={value}></Link>
+  </div>
 {/snippet}
 
 {#snippet before_container()}
@@ -399,7 +531,9 @@
               <span class="secondary mono">{data.bond_state.validator}</span>
             </div>
           {:else}
-            <UIAddress address={data.bond_state.validator} name_data={data.resolved_addresses} short_address />
+            <Link href="/address/{data.bond_state.validator}">
+              <UIAddress address={data.bond_state.validator} name_data={data.resolved_addresses} />
+            </Link>
           {/if}
         </DetailLine>
       {/if}
@@ -489,23 +623,137 @@
   {#snippet delegators(binds)}
     <div class="tab" bind:this={binds.delegators}>
       {#if data.delegated > 0}
-        D
+        <div class="table-container">
+          <table>
+            <thead>
+            {#each delegator_table.getHeaderGroups() as header_group}
+              <tr>
+                {#each header_group.headers as header}
+                  <th>{header.column.columnDef.header}</th>
+                {/each}
+              </tr>
+            {/each}
+            </thead>
+            <tbody>
+            {#each delegator_table.getRowModel().rows as row}
+              <tr>
+                {#each row.getVisibleCells() as cell}
+                  <td>
+                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+            </tbody>
+          </table>
+        </div>
+      {:else}
+        <Callout title="No delegators"
+                 description="This address has not staked any credits to other addresses."
+                 icon="list-icon" />
       {/if}
     </div>
   {/snippet}
   {#snippet transitions(binds)}
     <div class="tab" bind:this={binds.transitions}>
-      A
+      {#if data.transitions.length === 0}
+        <Callout title="No transitions"
+                 description="This address has not publicly appeared in any transition."
+                 icon="list-icon" />
+      {:else}
+        <div class="table-container">
+          <table>
+            <thead>
+            {#each transition_table.getHeaderGroups() as header_group}
+              <tr>
+                {#each header_group.headers as header}
+                  <th>{header.column.columnDef.header}</th>
+                {/each}
+              </tr>
+            {/each}
+            </thead>
+            <tbody>
+            {#each transition_table.getRowModel().rows as row}
+              <tr>
+                {#each row.getVisibleCells() as cell}
+                  <td>
+                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+            </tbody>
+          </table>
+        </div>
+      {/if}
     </div>
   {/snippet}
   {#snippet solutions(binds)}
     <div class="tab" bind:this={binds.solutions}>
-      B
+      {#if data.solutions.length === 0}
+        <Callout title="No solutions"
+                 description="This address has not submitted any valid puzzle solutions."
+                 icon="list-icon" />
+      {:else}
+        <div class="table-container">
+          <table>
+            <thead>
+            {#each solution_table.getHeaderGroups() as header_group}
+              <tr>
+                {#each header_group.headers as header}
+                  <th>{header.column.columnDef.header}</th>
+                {/each}
+              </tr>
+            {/each}
+            </thead>
+            <tbody>
+            {#each solution_table.getRowModel().rows as row}
+              <tr>
+                {#each row.getVisibleCells() as cell}
+                  <td>
+                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+            </tbody>
+          </table>
+        </div>
+      {/if}
     </div>
   {/snippet}
   {#snippet programs(binds)}
     <div class="tab" bind:this={binds.programs}>
-      C
+      {#if data.programs.length === 0}
+        <Callout title="No programs"
+                 description="This address has not deployed any programs."
+                 icon="list-icon" />
+      {:else}
+        <div class="table-container">
+          <table>
+            <thead>
+            {#each program_table.getHeaderGroups() as header_group}
+              <tr>
+                {#each header_group.headers as header}
+                  <th>{header.column.columnDef.header}</th>
+                {/each}
+              </tr>
+            {/each}
+            </thead>
+            <tbody>
+            {#each program_table.getRowModel().rows as row}
+              <tr>
+                {#each row.getVisibleCells() as cell}
+                  <td>
+                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+            </tbody>
+          </table>
+        </div>
+      {/if}
     </div>
   {/snippet}
 </Tabs>

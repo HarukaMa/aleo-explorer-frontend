@@ -20,7 +20,7 @@
   @import 'static/styles/variables';
 
   a {
-    color: $blue-500;
+    color: $blue-600;
     text-decoration: none;
 
     &:hover {
