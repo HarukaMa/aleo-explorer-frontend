@@ -9,7 +9,6 @@
   }
 
   let { total_base_fee, total_priority_fee, total_burnt_fee }: Fee = $props()
-
 </script>
 
 <AleoCredit number={total_base_fee}></AleoCredit> base

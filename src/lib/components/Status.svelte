@@ -8,12 +8,10 @@
   }
 
   let { cls, children }: Status = $props()
-
 </script>
 
 <style lang="scss">
-
-  @import 'static/styles/variables';
+  @import "static/styles/variables";
 
   .status {
     display: inline-flex;
@@ -46,11 +44,8 @@
     background-color: $red-50;
     color: $red-600;
   }
-
-
 </style>
 
 <div class="status {cls}">
   {@render children()}
 </div>
-

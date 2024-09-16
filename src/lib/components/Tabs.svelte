@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import type { Snippet } from "svelte"
 
   type TabDescriptor = {
@@ -9,7 +8,7 @@
 
   interface Tabs {
     tab_data: TabDescriptor[]
-    active?: string,
+    active?: string
   }
 
   let { tab_data, active, ...tabs }: Tabs = $props()
@@ -34,7 +33,6 @@
     }
     tab_binds[active_tab].style.display = "block"
   })
-
 </script>
 
 <style lang="scss">
@@ -69,10 +67,7 @@
 <div class="tabs">
   <div class="tab-titles">
     {#each tab_data as tab}
-      <button
-        class:active={active_tab === tab.id}
-        onclick={() => active_tab = tab.id}
-      >
+      <button class:active={active_tab === tab.id} onclick={() => (active_tab = tab.id)}>
         {tab.title}
       </button>
     {/each}

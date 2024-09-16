@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import Button from "$lib/components/Button.svelte"
   import { ButtonLinkClass } from "$lib/types"
 
@@ -20,12 +19,9 @@
     }
     return options
   })
-
 </script>
 
-
 <style lang="scss">
-
   .table-nav {
     display: flex;
     gap: 0.25rem;
@@ -33,7 +29,6 @@
     justify-content: center;
     align-items: center;
   }
-
 </style>
 
 <div class="table-nav">
@@ -43,8 +38,7 @@
   {/if}
   {#each page_options as option}
     {#if option === page}
-      <Button cls={ButtonLinkClass.Secondary} action={() => null} content={option.toString()}
-              small={true} />
+      <Button cls={ButtonLinkClass.Secondary} action={() => null} content={option.toString()} small={true} />
     {:else}
       <Button cls={ButtonLinkClass.Ghost} action={() => set_page(option)} content={option.toString()} small={true} />
     {/if}
@@ -53,5 +47,4 @@
     <Button cls={ButtonLinkClass.Ghost} action={() => set_page(page + 1)} icon="next-page-icon" />
     <Button cls={ButtonLinkClass.Ghost} action={() => set_page(total_pages)} icon="last-page-icon" />
   {/if}
-
 </div>

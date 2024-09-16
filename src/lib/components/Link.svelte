@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import type { Snippet } from "svelte"
 
   interface Link {
@@ -13,11 +12,10 @@
 
   let target = external ? "_blank" : undefined
   let rel = external ? "nofollow" : undefined
-
 </script>
 
 <style lang="scss">
-  @import 'static/styles/variables';
+  @import "static/styles/variables";
 
   a {
     color: $blue-600;
@@ -30,7 +28,7 @@
   }
 </style>
 
-<a href={href} rel={rel} target={target}>
+<a {href} {rel} {target}>
   {#if children}
     {@render children()}
   {:else}

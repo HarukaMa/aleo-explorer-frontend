@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import type { Snippet } from "svelte"
 
   interface DetailLine {
@@ -9,11 +8,9 @@
   }
 
   let { label, children, tooltip }: DetailLine = $props()
-
 </script>
 
 <style lang="scss">
-
   @import "static/styles/variables";
 
   .line {
@@ -53,7 +50,6 @@
       overflow-wrap: break-word;
     }
   }
-
 </style>
 
 <div class="line">

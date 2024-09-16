@@ -1,12 +1,3 @@
-<style lang="scss">
-  @import "/static/styles/variables";
-
-  .epoch-progress {
-    font-weight: 400;
-    color: $grey-600;
-  }
-</style>
-
 <script lang="ts">
   interface Epoch {
     height: number
@@ -30,8 +21,16 @@
       }, 600)
     }
   })
-
 </script>
+
+<style lang="scss">
+  @import "/static/styles/variables";
+
+  .epoch-progress {
+    font-weight: 400;
+    color: $grey-600;
+  }
+</style>
 
 <span class="epoch" bind:this={span}>
   {epoch}

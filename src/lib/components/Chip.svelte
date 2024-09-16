@@ -10,12 +10,10 @@
   let { color, children, link }: Chip = $props()
 
   console.log(color)
-
 </script>
 
 <style lang="scss">
-
-  @import 'static/styles/variables';
+  @import "static/styles/variables";
 
   .chip {
     display: inline-flex;
@@ -38,12 +36,11 @@
 </style>
 
 {#if link}
-  <a href={link} class="chip" style:color={color}>
+  <a href={link} class="chip" style:color>
     {@render children()}
   </a>
 {:else}
-  <div class="chip" style:color={color}>
+  <div class="chip" style:color>
     {@render children()}
   </div>
 {/if}
-

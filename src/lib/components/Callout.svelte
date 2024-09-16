@@ -1,5 +1,4 @@
 <script lang="ts">
-
   type Callout = {
     title: string
     description: string
@@ -7,7 +6,6 @@
   }
 
   let { title, description, icon }: Callout = $props()
-
 </script>
 
 <style lang="scss">
@@ -57,7 +55,6 @@
   .description {
     line-height: 1.25rem;
   }
-
 </style>
 
 <div class="callout">

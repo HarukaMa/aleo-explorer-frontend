@@ -1,5 +1,4 @@
 <script lang="ts">
-
   let { is_index = false } = $props()
 
   let input: HTMLInputElement | undefined = $state(undefined)
@@ -9,11 +8,9 @@
       input.focus()
     }
   }
-
 </script>
 
 <style lang="scss">
-
   @import "/static/styles/variables";
 
   .home-search-bar-container {
@@ -104,7 +101,6 @@
   form {
     flex-grow: 1;
 
-
     input {
       padding: 0;
       border: none;
@@ -126,23 +122,24 @@
     font-family: inherit;
     font-size: inherit;
   }
-
 </style>
 
-
-<div class={is_index ? "home-search-bar-container" : "search-bar-container"} onclick={focus_search}
-     onkeydown={focus_search} role="button" tabindex="0">
+<div
+  class={is_index ? "home-search-bar-container" : "search-bar-container"}
+  onclick={focus_search}
+  onkeydown={focus_search}
+  role="button"
+  tabindex="0"
+>
   <div class="search-icon"></div>
   <form action="/search">
     <input bind:this={input} name="q" placeholder="Search for address, transaction, validator..." type="text" />
   </form>
-  <div class="keyboard-shortcut">
-    /
-  </div>
+  <div class="keyboard-shortcut">/</div>
 </div>
 
 <svelte:window
-  on:keydown={e => {
+  on:keydown={(e) => {
     if (input) {
       if (e.key === "/" && !input.contains(document.activeElement)) {
         e.preventDefault()

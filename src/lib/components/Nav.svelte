@@ -1,6 +1,39 @@
-<style lang="scss">
+<script lang="ts">
+  import { PUBLIC_NETWORK } from "$env/static/public"
+  import NavItem from "./NavItem.svelte"
+  import SearchBar from "$lib/components/SearchBar.svelte"
 
-  @import '../../../static/styles/variables';
+  let { is_index }: { is_index: boolean } = $props()
+
+  const networks: { [key: string]: string } = {
+    mainnet: "Mainnet",
+    testnet: "Testnet Beta",
+    canary: "Canary Net",
+  }
+
+  let network = networks[PUBLIC_NETWORK] || "Unknown Network"
+
+  const blockchain_routes = [
+    { name: "Blocks", path: "/blocks" },
+    { name: "Validators", path: "/validators" },
+    { name: "Programs", path: "/programs" },
+    { name: "Transactions", path: "/transactions" },
+    { name: "Nodes", path: "/nodes" },
+  ]
+
+  const proving_routes = [
+    { name: "Incentive dashboard", path: "/incentive" },
+    { name: "Calculator", path: "/calculator" },
+  ]
+
+  const developers_routes = [
+    { name: "Tools", path: "/tools" },
+    { name: "API", path: "/api/docs" },
+  ]
+</script>
+
+<style lang="scss">
+  @import "../../../static/styles/variables";
 
   /* top bar related */
 
@@ -132,43 +165,7 @@
       margin-left: 0;
     }
   }
-
 </style>
-
-<script lang="ts">
-  import { PUBLIC_NETWORK } from "$env/static/public"
-  import NavItem from "./NavItem.svelte"
-  import SearchBar from "$lib/components/SearchBar.svelte"
-
-  let { is_index }: { is_index: boolean } = $props()
-
-  const networks: { [key: string]: string } = {
-    mainnet: "Mainnet",
-    testnet: "Testnet Beta",
-    canary: "Canary Net",
-  }
-
-  let network = networks[PUBLIC_NETWORK] || "Unknown Network"
-
-  const blockchain_routes = [
-    { name: "Blocks", path: "/blocks" },
-    { name: "Validators", path: "/validators" },
-    { name: "Programs", path: "/programs" },
-    { name: "Transactions", path: "/transactions" },
-    { name: "Nodes", path: "/nodes" },
-  ]
-
-  const proving_routes = [
-    { name: "Incentive dashboard", path: "/incentive" },
-    { name: "Calculator", path: "/calculator" },
-  ]
-
-  const developers_routes = [
-    { name: "Tools", path: "/tools" },
-    { name: "API", path: "/api/docs" },
-  ]
-
-</script>
 
 <nav>
   <div class="nav-main">
@@ -187,7 +184,7 @@
 
         <div class="nav-link-menu">
           {#each blockchain_routes as { name, path }}
-            <NavItem name={name} path={path} />
+            <NavItem {name} {path} />
           {/each}
         </div>
       </div>
@@ -198,7 +195,7 @@
 
         <div class="nav-link-menu">
           {#each proving_routes as { name, path }}
-            <NavItem name={name} path={path} />
+            <NavItem {name} {path} />
           {/each}
         </div>
       </div>
@@ -209,7 +206,7 @@
 
         <div class="nav-link-menu">
           {#each developers_routes as { name, path }}
-            <NavItem name={name} path={path} />
+            <NavItem {name} {path} />
           {/each}
         </div>
       </div>
@@ -217,7 +214,7 @@
   </div>
   {#if !is_index}
     <div class="search">
-      <SearchBar is_index={is_index} />
+      <SearchBar {is_index} />
     </div>
   {/if}
 </nav>

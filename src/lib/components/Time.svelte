@@ -1,10 +1,9 @@
 <script lang="ts">
-
   import { current_time_mode, format_time } from "$lib/time_mode.svelte"
 
   const time_mode = current_time_mode()
 
-  let { timestamp, flash = false }: { timestamp: number, flash?: boolean } = $props()
+  let { timestamp, flash = false }: { timestamp: number; flash?: boolean } = $props()
 
   let prev_timestamp = timestamp
 
@@ -21,8 +20,6 @@
       }, 600)
     }
   })
-
-
 </script>
 
 <span class="time" bind:this={span}>

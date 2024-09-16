@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import type { Component } from "svelte"
   import type { ButtonLinkClass } from "$lib/types"
   import type { MouseEventHandler } from "svelte/elements"
@@ -85,14 +84,21 @@
       }
     }
   }
-
 </style>
 
 <form>
-  <button class={cls} class:small disabled={disabled} formaction={href} onclick={action}
-          style:background-image={background_image}
-          style:background-size={background_size} style:height={size} style:width={size}
-          type={button_type}>
+  <button
+    class={cls}
+    class:small
+    {disabled}
+    formaction={href}
+    onclick={action}
+    style:background-image={background_image}
+    style:background-size={background_size}
+    style:height={size}
+    style:width={size}
+    type={button_type}
+  >
     {#if typeof content === "string"}
       {content}
     {:else}

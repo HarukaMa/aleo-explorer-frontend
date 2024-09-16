@@ -8,8 +8,7 @@
 </script>
 
 <style lang="scss">
-
-  @import '../../../static/styles/variables';
+  @import "../../../static/styles/variables";
 
   .nav-link-menu-item {
     padding: 0.5rem;
@@ -21,10 +20,9 @@
       background: $grey-25;
     }
   }
-
 </style>
 
-<a href="{path}" class="nav-link-menu-item">
+<a class="nav-link-menu-item" href={path}>
   <div>
     {name}
   </div>

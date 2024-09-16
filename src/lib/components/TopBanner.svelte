@@ -1,5 +1,10 @@
-<style lang="scss">
+<script lang="ts">
+  import type { Snippet } from "svelte"
 
+  let { content }: { content: Snippet } = $props()
+</script>
+
+<style lang="scss">
   @import "static/styles/variables";
 
   .banner {
@@ -24,14 +29,7 @@
     width: 16px;
     background-image: $alert-icon;
   }
-
 </style>
-
-<script lang="ts">
-  import type { Snippet } from "svelte"
-
-  let { content }: { content: Snippet } = $props()
-</script>
 
 <div class="banner">
   <div class="alert-icon"></div>

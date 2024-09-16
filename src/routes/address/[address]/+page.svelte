@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import type { BeforeContainerState } from "$lib/types"
   import { getContext } from "svelte"
   import Number from "$lib/components/Number.svelte"
@@ -45,41 +44,44 @@
     }
   }
 
-  let transition_table_data: TransitionList[] = $derived(data.transitions.map((ts: any) => {
-    return {
-      height: ts.height,
-      timestamp: ts.timestamp,
-      transition_id: ts.transition_id,
-      action: {
-        program: ts.program_id,
-        function: ts.function_name,
-      },
-    }
-  }))
+  let transition_table_data: TransitionList[] = $derived(
+    data.transitions.map((ts: any) => {
+      return {
+        height: ts.height,
+        timestamp: ts.timestamp,
+        transition_id: ts.transition_id,
+        action: {
+          program: ts.program_id,
+          function: ts.function_name,
+        },
+      }
+    }),
+  )
 
   const transition_table_columns: ColumnDef<TransitionList, any>[] = [
     {
       accessorKey: "height",
       header: "In block",
-      cell: info => renderComponent(SnippetWrapper, {
-        snippet: height_column,
-        value: info.getValue(),
-      }),
+      cell: (info) =>
+        renderComponent(SnippetWrapper, {
+          snippet: height_column,
+          value: info.getValue(),
+        }),
     },
     {
       accessorKey: "timestamp",
       header: "Timestamp",
-      cell: info => renderComponent(SnippetWrapper, { snippet: timestamp_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: timestamp_column, value: info.getValue() }),
     },
     {
       accessorKey: "transition_id",
       header: "Transition ID",
-      cell: info => renderComponent(SnippetWrapper, { snippet: transition_id_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: transition_id_column, value: info.getValue() }),
     },
     {
       accessorKey: "action",
       header: "Function / Program",
-      cell: info => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
     },
   ]
 
@@ -100,60 +102,62 @@
     target: {
       proof: Decimal
       sum: Decimal
-    },
+    }
     reward: Decimal
   }
 
-  let solution_table_data: SolutionList[] = $derived(data.solutions.map((solution: any) => {
-    return {
-      height: solution.height,
-      epoch: Math.floor(solution.height / 360),
-      timestamp: solution.timestamp,
-      solution_id: solution.solution_id,
-      counter: new Decimal(solution.counter),
-      target: {
-        proof: new Decimal(solution.target),
-        sum: new Decimal(solution.target_sum),
-      },
-      reward: new Decimal(solution.reward),
-    }
-  }))
+  let solution_table_data: SolutionList[] = $derived(
+    data.solutions.map((solution: any) => {
+      return {
+        height: solution.height,
+        epoch: Math.floor(solution.height / 360),
+        timestamp: solution.timestamp,
+        solution_id: solution.solution_id,
+        counter: new Decimal(solution.counter),
+        target: {
+          proof: new Decimal(solution.target),
+          sum: new Decimal(solution.target_sum),
+        },
+        reward: new Decimal(solution.reward),
+      }
+    }),
+  )
 
   const solution_table_columns: ColumnDef<SolutionList, any>[] = [
     {
       accessorKey: "height",
       header: "In block",
-      cell: info => renderComponent(SnippetWrapper, { snippet: height_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: height_column, value: info.getValue() }),
     },
     {
       accessorKey: "epoch",
       header: "Epoch",
-      cell: info => renderComponent(Number, { number: info.getValue() }),
+      cell: (info) => renderComponent(Number, { number: info.getValue() }),
     },
     {
       accessorKey: "timestamp",
       header: "Timestamp",
-      cell: info => renderComponent(SnippetWrapper, { snippet: timestamp_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: timestamp_column, value: info.getValue() }),
     },
     {
       accessorKey: "solution_id",
       header: "Solution ID",
-      cell: info => renderComponent(SnippetWrapper, { snippet: solution_id_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: solution_id_column, value: info.getValue() }),
     },
     {
       accessorKey: "counter",
       header: "Counter",
-      cell: info => renderComponent(Number, { number: info.getValue() }),
+      cell: (info) => renderComponent(Number, { number: info.getValue() }),
     },
     {
       accessorKey: "target",
       header: "Target",
-      cell: info => renderComponent(SnippetWrapper, { snippet: target_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: target_column, value: info.getValue() }),
     },
     {
       accessorKey: "reward",
       header: "Reward",
-      cell: info => renderComponent(AleoCredit, { number: info.getValue() }),
+      cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
     },
   ]
 
@@ -172,35 +176,37 @@
     transaction_id: string
   }
 
-  let program_table_data: ProgramList[] = $derived(data.programs.map((program: any) => {
-    return {
-      height: program.height,
-      program: program.program_id,
-      timestamp: program.timestamp,
-      transaction_id: program.transaction_id,
-    }
-  }))
+  let program_table_data: ProgramList[] = $derived(
+    data.programs.map((program: any) => {
+      return {
+        height: program.height,
+        program: program.program_id,
+        timestamp: program.timestamp,
+        transaction_id: program.transaction_id,
+      }
+    }),
+  )
 
   const program_table_columns: ColumnDef<ProgramList, any>[] = [
     {
       accessorKey: "height",
       header: "In block",
-      cell: info => renderComponent(SnippetWrapper, { snippet: height_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: height_column, value: info.getValue() }),
     },
     {
       accessorKey: "timestamp",
       header: "Timestamp",
-      cell: info => renderComponent(SnippetWrapper, { snippet: timestamp_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: timestamp_column, value: info.getValue() }),
     },
     {
       accessorKey: "transaction_id",
       header: "Transaction ID",
-      cell: info => renderComponent(SnippetWrapper, { snippet: transaction_id_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: transaction_id_column, value: info.getValue() }),
     },
     {
       accessorKey: "program",
       header: "Program ID",
-      cell: info => renderComponent(SnippetWrapper, { snippet: program_id_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: program_id_column, value: info.getValue() }),
     },
   ]
 
@@ -233,12 +239,12 @@
     {
       accessorKey: "address",
       header: "Address",
-      cell: info => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
     },
     {
       accessorKey: "amount",
       header: "Staked",
-      cell: info => renderComponent(AleoCredit, { number: info.getValue() }),
+      cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
     },
   ]
 
@@ -258,11 +264,9 @@
       before_container_state.snippet = undefined
     }
   })
-
 </script>
 
 <style lang="scss">
-
   @import "static/styles/variables";
 
   div.header {
@@ -398,7 +402,6 @@
     background-color: $yellow-600;
     mask-image: $alert-icon;
   }
-
 </style>
 
 {#snippet address_column(value)}
@@ -464,7 +467,7 @@
           {#if data && data.committee_state}Validator{:else}Address{/if}
         </div>
         <div class="address-data">
-          <UIAddress address={address} name_data={data.resolved_addresses} short_address keep_font />
+          <UIAddress {address} name_data={data.resolved_addresses} short_address keep_font />
         </div>
       </div>
     </div>
@@ -618,7 +621,6 @@
   </div>
 </div>
 
-
 <Tabs {tab_data}>
   {#snippet delegators(binds)}
     <div class="tab" bind:this={binds.delegators}>
@@ -626,62 +628,66 @@
         <div class="table-container">
           <table>
             <thead>
-            {#each delegator_table.getHeaderGroups() as header_group}
-              <tr>
-                {#each header_group.headers as header}
-                  <th>{header.column.columnDef.header}</th>
-                {/each}
-              </tr>
-            {/each}
+              {#each delegator_table.getHeaderGroups() as header_group}
+                <tr>
+                  {#each header_group.headers as header}
+                    <th>{header.column.columnDef.header}</th>
+                  {/each}
+                </tr>
+              {/each}
             </thead>
             <tbody>
-            {#each delegator_table.getRowModel().rows as row}
-              <tr>
-                {#each row.getVisibleCells() as cell}
-                  <td>
-                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                  </td>
-                {/each}
-              </tr>
-            {/each}
+              {#each delegator_table.getRowModel().rows as row}
+                <tr>
+                  {#each row.getVisibleCells() as cell}
+                    <td>
+                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
             </tbody>
           </table>
         </div>
       {:else}
-        <Callout title="No delegators"
-                 description="This address has not staked any credits to other addresses."
-                 icon="list-icon" />
+        <Callout
+          title="No delegators"
+          description="This address has not staked any credits to other addresses."
+          icon="list-icon"
+        />
       {/if}
     </div>
   {/snippet}
   {#snippet transitions(binds)}
     <div class="tab" bind:this={binds.transitions}>
       {#if data.transitions.length === 0}
-        <Callout title="No transitions"
-                 description="This address has not publicly appeared in any transition."
-                 icon="list-icon" />
+        <Callout
+          title="No transitions"
+          description="This address has not publicly appeared in any transition."
+          icon="list-icon"
+        />
       {:else}
         <div class="table-container">
           <table>
             <thead>
-            {#each transition_table.getHeaderGroups() as header_group}
-              <tr>
-                {#each header_group.headers as header}
-                  <th>{header.column.columnDef.header}</th>
-                {/each}
-              </tr>
-            {/each}
+              {#each transition_table.getHeaderGroups() as header_group}
+                <tr>
+                  {#each header_group.headers as header}
+                    <th>{header.column.columnDef.header}</th>
+                  {/each}
+                </tr>
+              {/each}
             </thead>
             <tbody>
-            {#each transition_table.getRowModel().rows as row}
-              <tr>
-                {#each row.getVisibleCells() as cell}
-                  <td>
-                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                  </td>
-                {/each}
-              </tr>
-            {/each}
+              {#each transition_table.getRowModel().rows as row}
+                <tr>
+                  {#each row.getVisibleCells() as cell}
+                    <td>
+                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
             </tbody>
           </table>
         </div>
@@ -691,31 +697,33 @@
   {#snippet solutions(binds)}
     <div class="tab" bind:this={binds.solutions}>
       {#if data.solutions.length === 0}
-        <Callout title="No solutions"
-                 description="This address has not submitted any valid puzzle solutions."
-                 icon="list-icon" />
+        <Callout
+          title="No solutions"
+          description="This address has not submitted any valid puzzle solutions."
+          icon="list-icon"
+        />
       {:else}
         <div class="table-container">
           <table>
             <thead>
-            {#each solution_table.getHeaderGroups() as header_group}
-              <tr>
-                {#each header_group.headers as header}
-                  <th>{header.column.columnDef.header}</th>
-                {/each}
-              </tr>
-            {/each}
+              {#each solution_table.getHeaderGroups() as header_group}
+                <tr>
+                  {#each header_group.headers as header}
+                    <th>{header.column.columnDef.header}</th>
+                  {/each}
+                </tr>
+              {/each}
             </thead>
             <tbody>
-            {#each solution_table.getRowModel().rows as row}
-              <tr>
-                {#each row.getVisibleCells() as cell}
-                  <td>
-                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                  </td>
-                {/each}
-              </tr>
-            {/each}
+              {#each solution_table.getRowModel().rows as row}
+                <tr>
+                  {#each row.getVisibleCells() as cell}
+                    <td>
+                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
             </tbody>
           </table>
         </div>
@@ -725,31 +733,29 @@
   {#snippet programs(binds)}
     <div class="tab" bind:this={binds.programs}>
       {#if data.programs.length === 0}
-        <Callout title="No programs"
-                 description="This address has not deployed any programs."
-                 icon="list-icon" />
+        <Callout title="No programs" description="This address has not deployed any programs." icon="list-icon" />
       {:else}
         <div class="table-container">
           <table>
             <thead>
-            {#each program_table.getHeaderGroups() as header_group}
-              <tr>
-                {#each header_group.headers as header}
-                  <th>{header.column.columnDef.header}</th>
-                {/each}
-              </tr>
-            {/each}
+              {#each program_table.getHeaderGroups() as header_group}
+                <tr>
+                  {#each header_group.headers as header}
+                    <th>{header.column.columnDef.header}</th>
+                  {/each}
+                </tr>
+              {/each}
             </thead>
             <tbody>
-            {#each program_table.getRowModel().rows as row}
-              <tr>
-                {#each row.getVisibleCells() as cell}
-                  <td>
-                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                  </td>
-                {/each}
-              </tr>
-            {/each}
+              {#each program_table.getRowModel().rows as row}
+                <tr>
+                  {#each row.getVisibleCells() as cell}
+                    <td>
+                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
             </tbody>
           </table>
         </div>

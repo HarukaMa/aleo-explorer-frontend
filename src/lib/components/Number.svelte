@@ -1,12 +1,3 @@
-<style lang="scss">
-
-
-  .thousands-separator {
-    user-select: none;
-    -webkit-user-select: none;
-  }
-</style>
-
 <script lang="ts">
   import Decimal from "decimal.js"
 
@@ -55,12 +46,22 @@
       if (n.isInteger()) {
         return ""
       }
-      return trim_zero_decimal(new Decimal(number).mod(1).toString().slice(2, precision + 2))
+      return trim_zero_decimal(
+        new Decimal(number)
+          .mod(1)
+          .toString()
+          .slice(2, precision + 2),
+      )
     } else if (number instanceof Decimal) {
       if (number.isInteger()) {
         return ""
       }
-      return trim_zero_decimal(number.mod(1).toFixed(precision).slice(2, precision + 2))
+      return trim_zero_decimal(
+        number
+          .mod(1)
+          .toFixed(precision)
+          .slice(2, precision + 2),
+      )
     } else {
       return trim_zero_decimal(number.toFixed(precision).split(".")[1])
     }
@@ -76,10 +77,30 @@
       }, 600)
     }
   })
-  const integer_parts = $derived(integer_part.split("").reverse().join("").match(/.{1,3}/g)?.map((x) => x.split("").reverse().join("")).reverse() || [])
+  const integer_parts = $derived(
+    integer_part
+      .split("")
+      .reverse()
+      .join("")
+      .match(/.{1,3}/g)
+      ?.map((x) => x.split("").reverse().join(""))
+      .reverse() || [],
+  )
 </script>
+
+<style lang="scss">
+  .thousands-separator {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+</style>
 
 <!-- Prevents formatting as we don't want any extra whitespaces in html -->
 <!-- @formatter:off -->
-<span class="formatted-number" bind:this={span}>{#each integer_parts as part, i}{#if i > 0}<span class="thousands-separator">,</span>{/if}{part}{/each}{#if decimal_part}<span class="decimal-separator">.</span>{decimal_part}{/if}{#if unit}<span class="unit">{@html unit}</span>{/if}</span>
+<span bind:this={span} class="formatted-number"
+  >{#each integer_parts as part, i}{#if i > 0}<span class="thousands-separator">,</span
+      >{/if}{part}{/each}{#if decimal_part}<span class="decimal-separator">.</span>{decimal_part}{/if}{#if unit}<span
+      class="unit">{@html unit}</span
+    >{/if}</span
+>
 <!-- @formatter:on -->

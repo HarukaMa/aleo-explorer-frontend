@@ -24,12 +24,10 @@
   let truncated_address = $derived(address.slice(0, 13) + "..." + address.slice(-6))
 
   let cls = $derived(keep_font ? "" : "mono")
-
 </script>
 
 <style lang="scss">
-  @import 'static/styles/variables';
-
+  @import "static/styles/variables";
 </style>
 
 {#if !data}
@@ -38,16 +36,12 @@
   {:else}
     <span class={cls}>{address}</span>
   {/if}
+{:else if data.name}
+  {data.name}
+{:else if data.tag}
+  {data.tag}
+{:else if short_address}
+  <span class={cls}>{truncated_address}</span>
 {:else}
-  {#if data.name}
-    {data.name}
-  {:else if data.tag}
-    {data.tag}
-  {:else}
-    {#if short_address}
-      <span class={cls}>{truncated_address}</span>
-    {:else}
-      <span class={cls}>{address}</span>
-    {/if}
-  {/if}
+  <span class={cls}>{address}</span>
 {/if}

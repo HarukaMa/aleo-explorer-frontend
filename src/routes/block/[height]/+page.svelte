@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import { type BeforeContainerState, StatusClass } from "$lib/types"
   import { getContext } from "svelte"
   import Number from "$lib/components/Number.svelte"
@@ -25,7 +24,8 @@
 
   const ratifications = block.block.ratifications
 
-  let block_reward = new Decimal(0), puzzle_reward = new Decimal(0)
+  let block_reward = new Decimal(0),
+    puzzle_reward = new Decimal(0)
 
   for (let ratify of ratifications) {
     if (ratify.type === "block_reward") {
@@ -35,7 +35,8 @@
     }
   }
 
-  let total_base_fee = new Decimal(0), total_priority_fee = new Decimal(0)
+  let total_base_fee = new Decimal(0),
+    total_priority_fee = new Decimal(0)
   let total_burnt_fee = new Decimal(0)
 
   for (let tx of block.block.transactions) {
@@ -63,7 +64,6 @@
     } else {
       toggle.innerText = "(Show validators)"
     }
-
   }
 
   const solution_targets = block.solutions.map((solution: any) => new Decimal(solution.target))
@@ -86,7 +86,7 @@
   }
 
   const transaction_table_data: TransactionList[] = block.block.transactions.map((tx: any, index: number) => {
-    let transitions: number, action: { program: string, function: string | undefined }, type: string, status: string
+    let transitions: number, action: { program: string; function: string | undefined }, type: string, status: string
     let fee: Decimal[] | number[]
     if (tx.type === "accepted_execute") {
       transitions = tx.transaction.execution.transitions.length
@@ -131,7 +131,7 @@
       }
       fee = [new Decimal(0), new Decimal(0)]
     }
-    [status, type] = tx.type.split("_")
+    ;[status, type] = tx.type.split("_")
     type = type.charAt(0).toUpperCase() + type.slice(1)
     return {
       index: index,
@@ -148,41 +148,42 @@
     {
       accessorKey: "index",
       header: "Index",
-      cell: info => info.getValue(),
+      cell: (info) => info.getValue(),
     },
     {
       accessorKey: "transaction_id",
       header: "Transaction ID",
-      cell: info => renderComponent(SnippetWrapper, { snippet: transaction_id_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: transaction_id_column, value: info.getValue() }),
     },
     {
       accessorKey: "transitions",
       header: "Transitions",
-      cell: info => info.getValue(),
+      cell: (info) => info.getValue(),
     },
     {
       accessorKey: "type",
       header: "Type",
-      cell: info => info.getValue(),
+      cell: (info) => info.getValue(),
     },
     {
       accessorKey: "action",
       header: "Action",
-      cell: info => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
     },
     {
       accessorKey: "fee",
       header: "Fee",
-      cell: info => renderComponent(Fee, {
-        total_base_fee: info.getValue()[0],
-        total_priority_fee: info.getValue()[1],
-        total_burnt_fee: new Decimal(0),
-      }),
+      cell: (info) =>
+        renderComponent(Fee, {
+          total_base_fee: info.getValue()[0],
+          total_priority_fee: info.getValue()[1],
+          total_burnt_fee: new Decimal(0),
+        }),
     },
     {
       accessorKey: "status",
       header: "Status",
-      cell: info => renderComponent(SnippetWrapper, { snippet: status_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: status_column, value: info.getValue() }),
     },
   ]
 
@@ -196,7 +197,7 @@
     {
       accessorKey: "transaction_id",
       header: "Transaction ID",
-      cell: info => info.getValue(),
+      cell: (info) => info.getValue(),
     },
   ]
 
@@ -228,27 +229,27 @@
     {
       accessorKey: "solution_id",
       header: "Solution ID",
-      cell: info => renderComponent(SnippetWrapper, { snippet: solution_id_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: solution_id_column, value: info.getValue() }),
     },
     {
       accessorKey: "address",
       header: "Address",
-      cell: info => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
     },
     {
       accessorKey: "counter",
       header: "Counter",
-      cell: info => renderComponent(Number, { number: info.getValue() }),
+      cell: (info) => renderComponent(Number, { number: info.getValue() }),
     },
     {
       accessorKey: "target",
       header: "Target",
-      cell: info => renderComponent(SnippetWrapper, { snippet: target_column, value: info.getValue() }),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: target_column, value: info.getValue() }),
     },
     {
       accessorKey: "reward",
       header: "Reward",
-      cell: info => renderComponent(AleoCredit, { number: info.getValue() }),
+      cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
     },
   ]
 
@@ -262,7 +263,7 @@
     {
       accessorKey: "solution_id",
       header: "Solution ID",
-      cell: info => info.getValue(),
+      cell: (info) => info.getValue(),
     },
   ]
 
@@ -280,11 +281,9 @@
       before_container_state.snippet = undefined
     }
   })
-
 </script>
 
 <style lang="scss">
-
   @import "static/styles/variables";
 
   div.header {
@@ -397,7 +396,6 @@
     font-weight: 600;
     line-height: 1.25rem;
   }
-
 </style>
 
 {#snippet transaction_id_column(value)}
@@ -442,13 +440,9 @@
 
 {#snippet status_column(value)}
   {#if value === "accepted"}
-    <Status cls={StatusClass.Success}>
-      Accepted
-    </Status>
+    <Status cls={StatusClass.Success}>Accepted</Status>
   {:else}
-    <Status cls={StatusClass.Danger}>
-      Rejected
-    </Status>
+    <Status cls={StatusClass.Danger}>Rejected</Status>
   {/if}
 {/snippet}
 
@@ -475,15 +469,15 @@
       <span class="mono">{block.block.block_hash}</span>
     </DetailLine>
     <DetailLine label="Timestamp">
-      { format_time(new Date(block.block.header.metadata.timestamp * 1000), TimeMode.Relative) }
+      {format_time(new Date(block.block.header.metadata.timestamp * 1000), TimeMode.Relative)}
       <!-- @formatter:off -->
       (<Time timestamp={block.block.header.metadata.timestamp} />)
       <!-- @formatter:on -->
     </DetailLine>
     <DetailLine label="Epoch">
       <div class="column">
-        <span>{ Math.floor(block.block.header.metadata.height / 360) }</span>
-        <span class="secondary">{ block.block.header.metadata.height % 360 } / 360</span>
+        <span>{Math.floor(block.block.header.metadata.height / 360)}</span>
+        <span class="secondary">{block.block.header.metadata.height % 360} / 360</span>
       </div>
     </DetailLine>
   </div>
@@ -492,13 +486,17 @@
   </div>
   <div class="group">
     <DetailLine label="Validators">
-      {block.all_validators.length} <a id="validator-toggle" onclick={toggle_validators} onkeydown="{toggle_validators}"
-                                       role="button" tabindex="0">(Show validators)</a>
+      {block.all_validators.length}
+      <a id="validator-toggle" onclick={toggle_validators} onkeydown={toggle_validators} role="button" tabindex="0"
+        >(Show validators)</a
+      >
       {#if validator_showing}
         <div id="validator-list">
           {#each block.all_validators as validator}
-            <Chip color={block.validators.indexOf(validator) === -1 ? "var(--red-500)" : undefined}
-                  link="/address/{validator}">
+            <Chip
+              color={block.validators.indexOf(validator) === -1 ? "var(--red-500)" : undefined}
+              link="/address/{validator}"
+            >
               <UIAddress address={validator} name_data={block.resolved_addresses} short_address={true} />
             </Chip>
           {/each}
@@ -520,7 +518,14 @@
       <div class="column">
         <Number number={block.block.header.metadata.cumulative_proof_target}></Number>
         <!-- @formatter:off -->
-        <span class="secondary"><Number number={block.block.header.metadata.cumulative_proof_target / block.block.header.metadata.coinbase_target * 100} precision={2}></Number>% coinbase target reached</span>
+        <span class="secondary"
+          ><Number
+            number={(block.block.header.metadata.cumulative_proof_target /
+              block.block.header.metadata.coinbase_target) *
+              100}
+            precision={2}
+          ></Number>% coinbase target reached</span
+        >
         <!-- @formatter:on -->
       </div>
     </DetailLine>
@@ -551,42 +556,40 @@
   </div>
 </div>
 
-
 <Tabs {tab_data}>
   {#snippet transactions(binds)}
     <div class="tab" bind:this={binds.transactions}>
       {#if block.block.transactions.length === 0 && block.block.aborted_transaction_ids.length === 0}
         <Callout title="No transactions" description="This block has no transactions." icon="list-icon" />
       {:else}
-        {#if block.block.transactions.length > 0 }
+        {#if block.block.transactions.length > 0}
           <div class="table-container">
             <table>
               <thead>
-              {#each transaction_table.getHeaderGroups() as header_group}
-                <tr>
-                  {#each header_group.headers as header}
-                    <th>{header.column.columnDef.header}</th>
-                  {/each}
-                </tr>
-              {/each}
+                {#each transaction_table.getHeaderGroups() as header_group}
+                  <tr>
+                    {#each header_group.headers as header}
+                      <th>{header.column.columnDef.header}</th>
+                    {/each}
+                  </tr>
+                {/each}
               </thead>
               <tbody>
-              {#each transaction_table.getRowModel().rows as row}
-                <tr>
-                  {#each row.getVisibleCells() as cell}
-                    <td>
-                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                    </td>
-                  {/each}
-                </tr>
-              {/each}
+                {#each transaction_table.getRowModel().rows as row}
+                  <tr>
+                    {#each row.getVisibleCells() as cell}
+                      <td>
+                        <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                      </td>
+                    {/each}
+                  </tr>
+                {/each}
               </tbody>
             </table>
           </div>
         {/if}
         {#if block.block.aborted_transaction_ids.length > 0}
           <div class="aborted-header">Aborted transactions</div>
-
         {/if}
       {/if}
     </div>
@@ -641,28 +644,28 @@
       {#if block.solutions.length === 0 && block.block.aborted_solution_ids.length === 0}
         <Callout title="No solutions" description="This block has no puzzle solutions." icon="list-icon" />
       {:else}
-        {#if block.solutions.length > 0 }
+        {#if block.solutions.length > 0}
           <div class="table-container">
             <table>
               <thead>
-              {#each solution_table.getHeaderGroups() as header_group}
-                <tr>
-                  {#each header_group.headers as header}
-                    <th>{header.column.columnDef.header}</th>
-                  {/each}
-                </tr>
-              {/each}
+                {#each solution_table.getHeaderGroups() as header_group}
+                  <tr>
+                    {#each header_group.headers as header}
+                      <th>{header.column.columnDef.header}</th>
+                    {/each}
+                  </tr>
+                {/each}
               </thead>
               <tbody>
-              {#each solution_table.getRowModel().rows as row}
-                <tr>
-                  {#each row.getVisibleCells() as cell}
-                    <td>
-                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                    </td>
-                  {/each}
-                </tr>
-              {/each}
+                {#each solution_table.getRowModel().rows as row}
+                  <tr>
+                    {#each row.getVisibleCells() as cell}
+                      <td>
+                        <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                      </td>
+                    {/each}
+                  </tr>
+                {/each}
               </tbody>
             </table>
           </div>
@@ -672,24 +675,24 @@
           <div class="table-container">
             <table>
               <thead>
-              {#each aborted_solution_table.getHeaderGroups() as header_group}
-                <tr>
-                  {#each header_group.headers as header}
-                    <th>{header.column.columnDef.header}</th>
-                  {/each}
-                </tr>
-              {/each}
+                {#each aborted_solution_table.getHeaderGroups() as header_group}
+                  <tr>
+                    {#each header_group.headers as header}
+                      <th>{header.column.columnDef.header}</th>
+                    {/each}
+                  </tr>
+                {/each}
               </thead>
               <tbody>
-              {#each aborted_solution_table.getRowModel().rows as row}
-                <tr>
-                  {#each row.getVisibleCells() as cell}
-                    <td>
-                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                    </td>
-                  {/each}
-                </tr>
-              {/each}
+                {#each aborted_solution_table.getRowModel().rows as row}
+                  <tr>
+                    {#each row.getVisibleCells() as cell}
+                      <td>
+                        <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                      </td>
+                    {/each}
+                  </tr>
+                {/each}
               </tbody>
             </table>
           </div>
