@@ -115,7 +115,7 @@
       { name: "Block time", value: { component: Time, props: { timestamp: summary.latest_timestamp, flash: true } } },
       { name: "Active validators", value: { component: Number, props: { number: summary.validators, flash: true } } },
       {
-        name: "Validator participation rate (1h)",
+        name: "Validator participation rate (5m)",
         value: {
           component: Number,
           props: { number: (summary.participation_rate * 100), precision: 2, unit: "%", flash: true },
