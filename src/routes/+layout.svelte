@@ -46,13 +46,13 @@
   $effect(() => {
     if (!browser) return
     localStorage.setItem("time_display", TimeMode[time_mode.value])
-    document.cookie = `time_display=${TimeMode[time_mode.value]};`
+    document.cookie = `time_display=${TimeMode[time_mode.value]};path=/;samesite=strict`
   })
 
   $effect(() => {
     if (!browser) return
     localStorage.setItem("plausible_opt_out", plausible_opt_out.toString())
-    document.cookie = `plausible_opt_out=${plausible_opt_out.toString()};`
+    document.cookie = `plausible_opt_out=${plausible_opt_out.toString()};path=/;samesite=strict`
   })
 
   let time_display_mode: string = $derived.by(() => {
