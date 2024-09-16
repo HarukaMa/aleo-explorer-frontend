@@ -1,6 +1,6 @@
 <script lang="ts">
 
-  import type { BeforeContainerState } from "$lib/types"
+  import { type BeforeContainerState, StatusClass } from "$lib/types"
   import { getContext } from "svelte"
   import Number from "$lib/components/Number.svelte"
   import DetailLine from "$lib/components/DetailLine.svelte"
@@ -16,6 +16,7 @@
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
   import Callout from "$lib/components/Callout.svelte"
+  import Status from "$lib/components/Status.svelte"
 
   let { data } = $props()
   let { block, height } = data
@@ -109,7 +110,7 @@
       fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
     } else if (tx.type === "rejected_execute") {
       transitions = 1
-      const action_transition = tx.transaction.rejected.execution.transitions.at(-1)
+      const action_transition = tx.rejected.execution.transitions.at(-1)
       action = {
         program: action_transition.program_id,
         function: action_transition.function_name,
@@ -118,7 +119,7 @@
     } else if (tx.type === "rejected_deploy") {
       transitions = 1
       action = {
-        program: tx.transaction.rejected.deployment.program.id,
+        program: tx.rejected.deployment.program.id,
         function: undefined,
       }
       fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
@@ -181,7 +182,7 @@
     {
       accessorKey: "status",
       header: "Status",
-      cell: info => info.getValue(),
+      cell: info => renderComponent(SnippetWrapper, { snippet: status_column, value: info.getValue() }),
     },
   ]
 
@@ -436,6 +437,18 @@
         <span class="secondary mono">{value.program}</span>
       </Link>
     </div>
+  {/if}
+{/snippet}
+
+{#snippet status_column(value)}
+  {#if value === "accepted"}
+    <Status cls={StatusClass.Success}>
+      Accepted
+    </Status>
+  {:else}
+    <Status cls={StatusClass.Danger}>
+      Rejected
+    </Status>
   {/if}
 {/snippet}
 

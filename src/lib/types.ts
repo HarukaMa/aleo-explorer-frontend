@@ -8,6 +8,13 @@ export enum ButtonLinkClass {
   Danger = "danger",
 }
 
+export enum StatusClass {
+  Success = "success",
+  Info = "info",
+  Warning = "warning",
+  Danger = "danger",
+}
+
 export type BlockList = {
   height: number
   timestamp: number
