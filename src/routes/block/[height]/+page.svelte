@@ -85,7 +85,7 @@
   }
 
   const transaction_table_data: TransactionList[] = block.block.transactions.map((tx: any, index: number) => {
-    let transitions: number, action: string, type: string, status: string
+    let transitions: number, action: { program: string, function: string | undefined }, type: string, status: string
     let fee: Decimal[] | number[]
     if (tx.type === "accepted_execute") {
       transitions = tx.transaction.execution.transitions.length
@@ -96,23 +96,38 @@
         fee = [new Decimal(0), new Decimal(0)]
       }
       const action_transition = tx.transaction.execution.transitions.at(-1)
-      action = action_transition.program_id + " " + action_transition.function_name
+      action = {
+        program: action_transition.program_id,
+        function: action_transition.function_name,
+      }
     } else if (tx.type === "accepted_deploy") {
       transitions = 1
-      action = tx.transaction.deployment.program.id
+      action = {
+        program: tx.transaction.deployment.program.id,
+        function: undefined,
+      }
       fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
     } else if (tx.type === "rejected_execute") {
       transitions = 1
       const action_transition = tx.transaction.rejected.execution.transitions.at(-1)
-      action = action_transition.program_id + " " + action_transition.function_name
+      action = {
+        program: action_transition.program_id,
+        function: action_transition.function_name,
+      }
       fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
     } else if (tx.type === "rejected_deploy") {
       transitions = 1
-      action = tx.transaction.rejected.deployment.program.id
+      action = {
+        program: tx.transaction.rejected.deployment.program.id,
+        function: undefined,
+      }
       fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
     } else {
       transitions = 0
-      action = "Unknown"
+      action = {
+        program: "",
+        function: "",
+      }
       fee = [new Decimal(0), new Decimal(0)]
     }
     [status, type] = tx.type.split("_")
@@ -152,7 +167,7 @@
     {
       accessorKey: "action",
       header: "Action",
-      cell: info => info.getValue(),
+      cell: info => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
     },
     {
       accessorKey: "fee",
@@ -407,6 +422,21 @@
   <span class="dim">
     / <Number number={total_target} />
   </span>
+{/snippet}
+
+{#snippet action_column(value)}
+  {#if value.function === undefined}
+    <Link href="/program/{value.program}">
+      <span class="mono">{value.program}</span>
+    </Link>
+  {:else}
+    <div class="column">
+      <span class="mono">{value.function}</span>
+      <Link href="/program/{value.program}">
+        <span class="secondary mono">{value.program}</span>
+      </Link>
+    </div>
+  {/if}
 {/snippet}
 
 {#snippet before_container()}

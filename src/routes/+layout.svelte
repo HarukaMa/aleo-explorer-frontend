@@ -81,7 +81,7 @@ SOFTWARE.
 
   #footer-settings button, #footer-logo-copyright button {
     all: unset;
-    color: $blue-500;
+    color: $blue-600;
     text-decoration-line: none;
     line-height: 1.25rem;
 
@@ -152,7 +152,7 @@ SOFTWARE.
     left: 0;
     height: 4px;
     z-index: 50;
-    background-color: $blue-500;
+    background-color: $blue-600;
   }
 
 </style>
