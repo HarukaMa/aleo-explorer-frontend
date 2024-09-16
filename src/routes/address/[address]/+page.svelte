@@ -416,8 +416,10 @@
 </style>
 
 {#snippet address_column(value)}
-  <div class="mono">
-    <Link href="/address/{value}" content={value}></Link>
+  <div class="mono ellipsis">
+    <Link href="/address/{value}">
+      <UIAddress address={value} name_data={data.resolved_addresses} />
+    </Link>
   </div>
 {/snippet}
 

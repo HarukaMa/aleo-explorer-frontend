@@ -40,8 +40,14 @@
 
   .tabs {
     display: inline-flex;
+    flex-wrap: nowrap;
     align-items: flex-start;
     margin-top: 3rem;
+    overflow-x: auto;
+  }
+
+  .tab-titles {
+    flex-shrink: 0;
   }
 
   .tab-titles button {

@@ -54,6 +54,7 @@
 
   .description {
     line-height: 1.25rem;
+    text-align: center;
   }
 </style>
 
