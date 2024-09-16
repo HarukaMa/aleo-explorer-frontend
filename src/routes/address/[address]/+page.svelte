@@ -78,7 +78,7 @@
     },
     {
       accessorKey: "action",
-      header: "Program / Function call",
+      header: "Function / Program",
       cell: info => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
     },
   ]
