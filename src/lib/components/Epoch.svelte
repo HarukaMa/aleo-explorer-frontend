@@ -10,9 +10,10 @@
 <script lang="ts">
   interface Epoch {
     height: number
+    flash?: boolean
   }
 
-  let { height }: Epoch = $props()
+  let { height, flash = false }: Epoch = $props()
 
   let last_height = height
 
@@ -21,7 +22,7 @@
 
   let span: HTMLSpanElement
   $effect(() => {
-    if (last_height !== height) {
+    if (flash && last_height !== height) {
       last_height = height
       span.classList.add("flash")
       setTimeout(() => {

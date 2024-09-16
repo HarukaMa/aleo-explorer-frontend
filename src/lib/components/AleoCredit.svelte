@@ -9,7 +9,7 @@
 
   let { suffix = false, number }: AleoCredit = $props()
 
-  const credits = number instanceof Decimal ? number : new Decimal(number)
+  let credits = $derived(number instanceof Decimal ? number : new Decimal(number))
 
 </script>
 

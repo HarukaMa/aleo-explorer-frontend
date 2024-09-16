@@ -14,9 +14,10 @@
     number: number | Decimal | bigint | string
     precision?: number
     unit?: string
+    flash?: boolean
   }
 
-  let { number, precision = 0, unit }: Number = $props()
+  let { number, precision = 0, unit, flash = false }: Number = $props()
 
   let prev_number = $state<number | Decimal | bigint | string>(number)
 
@@ -67,7 +68,7 @@
 
   let span: HTMLSpanElement
   $effect(() => {
-    if (prev_number !== number) {
+    if (flash && prev_number !== number) {
       prev_number = number
       span.classList.add("flash")
       setTimeout(() => {

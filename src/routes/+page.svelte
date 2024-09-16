@@ -107,28 +107,34 @@
   let summary = $state(data.summary)
   let recent_blocks = $state(data.recent_blocks)
 
-  console.log(summary)
+  $inspect(summary)
 
   let summary_data = $derived([
     [
-      { name: "Latest block", value: { component: Number, props: { number: summary.latest_height } } },
-      { name: "Block time", value: { component: Time, props: { timestamp: summary.latest_timestamp } } },
-      { name: "Active validators", value: { component: Number, props: { number: summary.validators } } },
+      { name: "Latest block", value: { component: Number, props: { number: summary.latest_height, flash: true } } },
+      { name: "Block time", value: { component: Time, props: { timestamp: summary.latest_timestamp, flash: true } } },
+      { name: "Active validators", value: { component: Number, props: { number: summary.validators, flash: true } } },
       {
         name: "Validator participation rate (1h)",
-        value: { component: Number, props: { number: (summary.participation_rate * 100), precision: 2, unit: "%" } },
+        value: {
+          component: Number,
+          props: { number: (summary.participation_rate * 100), precision: 2, unit: "%", flash: true },
+        },
       },
     ],
     [
       {
         name: "Epoch",
-        value: { component: Epoch, props: { height: summary.latest_height } },
+        value: { component: Epoch, props: { height: summary.latest_height, flash: true } },
       },
-      { name: "Proof target", value: { component: Number, props: { number: summary.proof_target } } },
-      { name: "Coinbase target", value: { component: Number, props: { number: summary.coinbase_target } } },
+      { name: "Proof target", value: { component: Number, props: { number: summary.proof_target, flash: true } } },
+      {
+        name: "Coinbase target",
+        value: { component: Number, props: { number: summary.coinbase_target, flash: true } },
+      },
       {
         name: "Puzzle solving rate (15m)",
-        value: { component: Number, props: { number: summary.network_speed, precision: 2, unit: " s/s" } },
+        value: { component: Number, props: { number: summary.network_speed, precision: 2, unit: " s/s", flash: true } },
       },
     ],
   ])

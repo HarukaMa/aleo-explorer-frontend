@@ -20,11 +20,14 @@
 
   let active_tab = $state(active || tab_data[0].id)
 
-  const snippets: Snippet<[{ [key: string]: HTMLElement }]>[] = Object.values(tabs)
+  let snippets: Snippet<[{ [key: string]: HTMLElement }]>[] = $derived(Object.values(tabs))
 
   let tab_binds: { [key: string]: HTMLElement } = $state({})
 
   $effect(() => {
+    if (!tab_data.map(({ id }) => id).includes(active_tab)) {
+      active_tab = tab_data[0].id
+    }
     const other_tabs = Object.entries(tab_binds).filter(([id, _]) => id !== active_tab)
     for (const [_, bind] of other_tabs) {
       bind.style.display = "none"

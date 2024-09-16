@@ -6,9 +6,13 @@
     href: string
     children?: Snippet
     content?: string
+    external?: boolean
   }
 
-  let { href, children, content }: Link = $props()
+  let { href, children, content, external = false }: Link = $props()
+
+  let target = external ? "_blank" : undefined
+  let rel = external ? "nofollow" : undefined
 
 </script>
 
@@ -26,7 +30,7 @@
   }
 </style>
 
-<a href={href}>
+<a href={href} rel={rel} target={target}>
   {#if children}
     {@render children()}
   {:else}

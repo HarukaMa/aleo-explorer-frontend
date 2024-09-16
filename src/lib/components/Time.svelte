@@ -4,7 +4,7 @@
 
   const time_mode = current_time_mode()
 
-  let { timestamp }: { timestamp: number } = $props()
+  let { timestamp, flash = false }: { timestamp: number, flash?: boolean } = $props()
 
   let prev_timestamp = timestamp
 
@@ -13,7 +13,7 @@
   let span: HTMLSpanElement
 
   $effect(() => {
-    if (prev_timestamp !== timestamp) {
+    if (flash && prev_timestamp !== timestamp) {
       prev_timestamp = timestamp
       span.classList.add("flash")
       setTimeout(() => {

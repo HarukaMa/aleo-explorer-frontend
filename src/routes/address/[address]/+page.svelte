@@ -13,15 +13,25 @@
   import Link from "$lib/components/Link.svelte"
 
   let { data: server_data } = $props()
-  let { data, address } = server_data
+  let { data, address } = $derived(server_data)
 
-  console.log(data)
+  $inspect(data)
 
-  const tab_data = [
-    { title: "Recent transitions", id: "transitions" },
-    { title: "Accepted solutions", id: "solutions" },
-    { title: "Deployed programs", id: "programs" },
-  ]
+  let resolved = $derived(data.resolved_addresses[address])
+
+  let staked_to = $derived(data.resolved_addresses[data.bond_state?.validator])
+
+  let tab_data = $derived.by(() => {
+    let tabs = [
+      { title: "Recent transitions", id: "transitions" },
+      { title: "Accepted solutions", id: "solutions" },
+      { title: "Deployed programs", id: "programs" },
+    ]
+    if (data.delegated > 0) {
+      tabs.splice(0, 0, { title: "Delegators", id: "delegators" })
+    }
+    return tabs
+  })
 
   type TransitionList = {
     height: number
@@ -33,7 +43,7 @@
     }
   }
 
-  const transition_table_data: TransitionList[] = data.transitions.map((ts: any) => {
+  let transition_table_data: TransitionList[] = $derived(data.transitions.map((ts: any) => {
     return {
       height: ts.block,
       timestamp: ts.timestamp,
@@ -43,7 +53,7 @@
         function: ts.function_name,
       },
     }
-  })
+  }))
 
   const transition_table_columns: ColumnDef<TransitionList, any>[] = [
     {
@@ -84,7 +94,7 @@
     reward: Decimal
   }
 
-  const solution_table_data: SolutionList[] = data.solutions.map((solution: any) => {
+  let solution_table_data: SolutionList[] = $derived(data.solutions.map((solution: any) => {
     return {
       height: solution.height,
       epoch: Math.floor(solution.height / 360),
@@ -97,7 +107,7 @@
       },
       reward: new Decimal(solution.reward),
     }
-  })
+  }))
 
   const solution_table_columns: ColumnDef<SolutionList, any>[] = [
     {
@@ -138,7 +148,9 @@
   ]
 
   const solution_table = createTable<SolutionList>({
-    data: solution_table_data,
+    get data() {
+      return solution_table_data
+    },
     columns: solution_table_columns,
     getCoreRowModel: getCoreRowModel(),
   })
@@ -201,7 +213,7 @@
   }
 
   .details {
-    margin-top: 1rem;
+    margin-top: 2.5rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -233,6 +245,11 @@
     font-size: 0.75rem;
     line-height: 0.875rem;
     color: $grey-600;
+
+    &.mono {
+      font-family: "Inconsolata Variable", monospace;
+      font-size: 0.8rem;
+    }
   }
 
   #validator-toggle {
@@ -273,10 +290,11 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    margin-top: 2.5rem;
     padding: 1rem;
     background-color: $yellow-50;
     border-radius: 0.5rem;
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .address-alert-icon {
@@ -306,12 +324,13 @@
 {/snippet}
 
 {#snippet before_container()}
-  <!-- TODO validator -->
   <div class="header">
     <div class="flex">
       <div class="address-icon"></div>
       <div class="vert">
-        <div class="address-title">Address</div>
+        <div class="address-title">
+          {#if data && data.committee_state}Validator{:else}Address{/if}
+        </div>
         <div class="address-data">
           <UIAddress address={address} name_data={data.resolved_addresses} short_address keep_font />
         </div>
@@ -320,14 +339,13 @@
   </div>
 {/snippet}
 
-{#if data.program_name}
-  <div class="address-warning">
-    <div class="address-alert-icon"></div>
-    This is a program address. Records owned by programs are currently not spendable.
-  </div>
-{/if}
-
 <div class="details">
+  {#if data.program_name}
+    <div class="address-warning">
+      <div class="address-alert-icon"></div>
+      This is a program address. Records owned by programs are currently not spendable.
+    </div>
+  {/if}
   <div class="group">
     <DetailLine label="Address">
       <span class="mono">{data.address}</span>
@@ -339,8 +357,23 @@
         </Link>
       </DetailLine>
     {/if}
+    {#if resolved.name}
+      <DetailLine label="Primary ANS name">
+        {resolved.name}
+      </DetailLine>
+    {/if}
+    {#if resolved.tag}
+      <DetailLine label="Address tag">
+        {resolved.tag}
+      </DetailLine>
+    {/if}
+    {#if resolved.link}
+      <DetailLine label="Website">
+        <Link href={resolved.link} content={resolved.link} external />
+      </DetailLine>
+    {/if}
     <DetailLine label="Public credits">
-      <AleoCredit number={data.public_balance} suffix={true}></AleoCredit>
+      <AleoCredit number={data.public_balance} suffix />
     </DetailLine>
   </div>
   <div class="group">
@@ -348,12 +381,40 @@
   </div>
   <div class="group">
     {#if data.bond_state}
-      <DetailLine label="Not implemented">
-        Not implemented
+      <DetailLine label="Credits staked">
+        {#if data.committee_state}
+          <div class="column">
+            <AleoCredit number={data.bond_state.amount} suffix />
+            <span class="secondary">Staked to self</span>
+          </div>
+        {:else}
+          <AleoCredit number={data.bond_state.amount} suffix />
+        {/if}
+      </DetailLine>
+      {#if !data.committee_state}
+        <DetailLine label="Staked to validator">
+          {#if staked_to && (staked_to.name || staked_to.tag)}
+            <div class="column">
+              <Link href="/address/{data.bond_state.validator}" content={staked_to.tag || staked_to.name} />
+              <span class="secondary mono">{data.bond_state.validator}</span>
+            </div>
+          {:else}
+            <UIAddress address={data.bond_state.validator} name_data={data.resolved_addresses} short_address />
+          {/if}
+        </DetailLine>
+      {/if}
+      <DetailLine label="Withdrawal address">
+        {#if data.withdrawal_address === address}
+          Self
+        {:else}
+          <Link href="/address/{data.withdrawal_address}">
+            <UIAddress address={data.withdrawal_address} name_data={data.resolved_addresses} />
+          </Link>
+        {/if}
       </DetailLine>
     {/if}
     <DetailLine label="Lifetime stake reward">
-      <AleoCredit number={data.stake_reward} suffix={true}></AleoCredit>
+      <AleoCredit number={data.stake_reward} suffix />
     </DetailLine>
   </div>
   <div class="group">
@@ -361,18 +422,50 @@
   </div>
   <div class="group">
     <DetailLine label="Public credits received">
-      <AleoCredit number={data.transfer_in} suffix={true}></AleoCredit>
+      <AleoCredit number={data.transfer_in} suffix />
     </DetailLine>
     <DetailLine label="Public credits sent">
-      <AleoCredit number={data.transfer_out} suffix={true}></AleoCredit>
+      <AleoCredit number={data.transfer_out} suffix />
     </DetailLine>
     <DetailLine label="Total fee spent">
-      <AleoCredit number={data.fee} suffix={true}></AleoCredit>
+      <AleoCredit number={data.fee} suffix />
     </DetailLine>
   </div>
   <div class="group">
     <div class="details-line"></div>
   </div>
+  {#if data.committee_state}
+    <div class="group">
+      <DetailLine label="Credits staked">
+        <AleoCredit number={data.delegated} suffix />
+      </DetailLine>
+      <DetailLine label="Open for staking">
+        {#if data.committee_state.is_open}
+          Yes
+        {:else}
+          No
+        {/if}
+      </DetailLine>
+      <DetailLine label="Commission">
+        {data.committee_state.commission}%
+      </DetailLine>
+      <DetailLine label="Uptime in last 24 hours">
+        <Number number={data.uptime * 100} unit="%" />
+      </DetailLine>
+    </div>
+    <div class="group">
+      <div class="details-line"></div>
+    </div>
+  {:else if data.delegated > 0}
+    <div class="group">
+      <DetailLine label="Credits staked">
+        <AleoCredit number={data.delegated} suffix />
+      </DetailLine>
+    </div>
+    <div class="group">
+      <div class="details-line"></div>
+    </div>
+  {/if}
   <div class="group">
     <DetailLine label="Programs deployed">
       <Number number={data.programs.length} />
@@ -386,13 +479,20 @@
       <Number number={data.total_solutions} />
     </DetailLine>
     <DetailLine label="Lifetime puzzle reward">
-      <AleoCredit number={data.total_rewards} suffix={true}></AleoCredit>
+      <AleoCredit number={data.total_rewards} suffix />
     </DetailLine>
   </div>
 </div>
 
 
 <Tabs {tab_data}>
+  {#snippet delegators(binds)}
+    <div class="tab" bind:this={binds.delegators}>
+      {#if data.delegated > 0}
+        D
+      {/if}
+    </div>
+  {/snippet}
   {#snippet transitions(binds)}
     <div class="tab" bind:this={binds.transitions}>
       A

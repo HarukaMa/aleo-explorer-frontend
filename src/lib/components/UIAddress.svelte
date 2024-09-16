@@ -19,11 +19,11 @@
     keep_font = false,
   }: UIAddress = $props()
 
-  let data: UIAddressDataItem | undefined = name_data[address]
+  let data: UIAddressDataItem | undefined = $derived(name_data[address])
 
-  let truncated_address = address.slice(0, 13) + "..." + address.slice(-6)
+  let truncated_address = $derived(address.slice(0, 13) + "..." + address.slice(-6))
 
-  let cls = keep_font ? "" : "mono"
+  let cls = $derived(keep_font ? "" : "mono")
 
 </script>
 
