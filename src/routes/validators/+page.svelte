@@ -19,7 +19,7 @@
   type ValidatorList = {
     rank: number
     address: string
-    website: string | undefined
+    website: { link: string; domain: string } | undefined
     total_staked: Decimal
     voting_power: Decimal
     commission: number
@@ -27,15 +27,21 @@
   }
 
   let table_data: ValidatorList[] = $derived(
-    data.validators.map((validator: any, index: number) => ({
-      rank: index + 1,
-      address: validator.address,
-      website: data.resolved_addresses[validator.address]?.link,
-      total_staked: new Decimal(validator.stake),
-      voting_power: new Decimal(validator.stake).div(total_stake),
-      commission: validator.commission,
-      uptime: validator.uptime,
-    })),
+    data.validators.map((validator: any, index: number) => {
+      const link = data.resolved_addresses[validator.address]?.link
+      return {
+        rank: index + 1,
+        address: validator.address,
+        website: {
+          link,
+          domain: link ? new URL(link).hostname.split(".").splice(-2).join(".") : undefined,
+        },
+        total_staked: new Decimal(validator.stake),
+        voting_power: new Decimal(validator.stake).div(total_stake),
+        commission: validator.commission,
+        uptime: validator.uptime,
+      }
+    }),
   )
 
   const columns: ColumnDef<ValidatorList, any>[] = [
@@ -220,10 +226,8 @@
 {/snippet}
 
 {#snippet website_column(value)}
-  {#if value}
-    <Link href={value}>
-      {URL.parse(value).hostname.split(".").splice(-2).join(".")}
-    </Link>
+  {#if value.link}
+    <Link href={value.link}>{value.domain}</Link>
   {:else}
     <span class="no-website">None</span>
   {/if}
