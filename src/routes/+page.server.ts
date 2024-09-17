@@ -1,7 +1,6 @@
 import type { PageServerLoad } from "./$types"
 import { error } from "@sveltejs/kit"
 import { API } from "$lib/server/api/api"
-import "$lib/server/api/block"
 import { app_error_from_api_error } from "$lib/utils"
 import { APIError } from "$lib/types"
 
