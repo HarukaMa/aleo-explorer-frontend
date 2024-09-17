@@ -333,6 +333,7 @@ SOFTWARE.
           <a href="/privacy">Privacy Policy</a>
         </div>
         <div id="footer-external-links">
+          <a href="https://status.aleoscan.io">Status</a>
           <a href="https://github.com/HarukaMa/aleo-explorer" target="_blank">GitHub</a>
           <a href="https://x.com/Aleo_Scan" target="_blank">Twitter (X)</a>
         </div>
