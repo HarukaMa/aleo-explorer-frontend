@@ -606,7 +606,7 @@
         {data.committee_state.commission}%
       </DetailLine>
       <DetailLine label="Uptime in last 24 hours">
-        <Number number={data.uptime * 100} unit="%" />
+        <Number number={data.uptime * 100} unit="%" precision={2} />
       </DetailLine>
     </div>
     <div class="group">

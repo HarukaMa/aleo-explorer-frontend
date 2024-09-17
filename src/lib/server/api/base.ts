@@ -34,13 +34,19 @@ export class APIBase {
         return await response.json()
       } else {
         // noinspection ExceptionCaughtLocallyJS
-        throw new Error(`Upstream API request failed: ${response.status}: ${(await response.json())["error"]}`)
+        let json
+        try {
+          json = await response.json()
+        } catch (e) {
+          throw new APIError(response.status, response.statusText)
+        }
+        throw new APIError(response.status, json["error"])
       }
     } catch (e) {
-      if (e instanceof Error) {
-        throw new APIError(`Cannot connect to upstream API server: ${e.message}`)
+      if (e instanceof APIError) {
+        throw e
       }
-      throw new APIError(`Unknown error: ${e}`)
+      throw new APIError(500, `Unknown error: ${e}`)
     }
   }
 

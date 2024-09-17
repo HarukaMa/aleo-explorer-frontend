@@ -40,8 +40,11 @@ export type UIAddressDataItem = {
 export type UIAddressData = { [address: string]: UIAddressDataItem }
 
 export class APIError extends Error {
-  constructor(message: string) {
+  code: number
+
+  constructor(code: number, message: string) {
     super(message)
+    this.code = code
     this.name = "APIError"
   }
 }

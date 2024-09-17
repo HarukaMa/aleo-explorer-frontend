@@ -1,9 +1,9 @@
 import { APIExplorer } from "$lib/server/api/explorer"
-import { APIBlock } from "$lib/server/api/block"
+import { APIChain } from "$lib/server/api/chain"
 import { APIBase } from "$lib/server/api/base"
 import { APIAddress } from "$lib/server/api/address"
 
-const mixin = APIExplorer(APIAddress(APIBlock(APIBase)))
+const mixin = APIExplorer(APIAddress(APIChain(APIBase)))
 
 export class API extends mixin {
   private static _instance: API

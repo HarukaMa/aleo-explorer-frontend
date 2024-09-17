@@ -13,7 +13,7 @@ type Blocks = {
   total_pages: number
 }
 
-export function APIBlock<TBase extends APIBaseMixin>(Base: TBase) {
+export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
   return class extends Base {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(...args: any[]) {
@@ -40,6 +40,16 @@ export function APIBlock<TBase extends APIBaseMixin>(Base: TBase) {
 
     public async block(this: API, height: string | number): Promise<any> {
       return await super.get(`/block/${height}`)
+    }
+
+    public async validators(this: API, page: string | number | null): Promise<any> {
+      let params
+      if (page) {
+        params = { p: page.toString() }
+      } else {
+        params = {}
+      }
+      return await super.get("/validators", params)
     }
   }
 }

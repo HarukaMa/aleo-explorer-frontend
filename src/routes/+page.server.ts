@@ -16,7 +16,7 @@ export const load: PageServerLoad = async () => {
   } catch (err) {
     console.error(err)
     if (err instanceof APIError) {
-      return error(500, app_error_from_api_error(err))
+      return error(err.code, app_error_from_api_error(err))
     }
     throw err
   }
