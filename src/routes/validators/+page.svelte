@@ -176,6 +176,14 @@
   .no-website {
     color: $grey-400;
   }
+
+  .address-name {
+    line-height: 1.25rem;
+  }
+
+  .address-value {
+    line-height: 1rem;
+  }
 </style>
 
 {#snippet before_container()}
@@ -197,14 +205,16 @@
       </div>
     {/if}
     <div class="column">
-      <Link href="/address/{value}">
-        {#if data.resolved_addresses[value]?.tag}
-          {data.resolved_addresses[value].tag}
-        {:else}
-          Anonymous
-        {/if}
-      </Link>
-      <span class="secondary mono">{value.slice(0, 13) + "..." + value.slice(-6)}</span>
+      <span class="address-name">
+        <Link href="/address/{value}">
+          {#if data.resolved_addresses[value]?.tag}
+            {data.resolved_addresses[value].tag}
+          {:else}
+            Anonymous
+          {/if}
+        </Link>
+      </span>
+      <span class="secondary mono address-value">{value.slice(0, 13) + "..." + value.slice(-6)}</span>
     </div>
   </div>
 {/snippet}
