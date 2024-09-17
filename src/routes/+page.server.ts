@@ -6,8 +6,7 @@ import { APIError } from "$lib/types"
 
 export const load: PageServerLoad = async () => {
   try {
-    const recent_blocks = await API.instance.recent_blocks()
-    const summary = await API.instance.summary()
+    const [recent_blocks, summary] = await Promise.all([API.instance.recent_blocks(), API.instance.summary()])
     return {
       recent_blocks: recent_blocks,
       summary: summary,
