@@ -1,12 +1,13 @@
 <script lang="ts">
   import Decimal from "decimal.js"
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
-  import type { BeforeContainerState } from "$lib/types"
+  import { type BeforeContainerState, StatusClass } from "$lib/types"
   import { getContext } from "svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
-  import AleoCredit from "$lib/components/AleoCredit.svelte"
+  import AleoCredit from "$lib/components/AleoToken.svelte"
   import Number from "$lib/components/Number.svelte"
+  import Status from "$lib/components/Status.svelte"
 
   let { data: load_data } = $props()
 
@@ -19,29 +20,23 @@
   type ValidatorList = {
     rank: number
     address: string
-    website: { link: string; domain: string } | undefined
     total_staked: Decimal
     voting_power: Decimal
     commission: number
+    open: boolean
     uptime: number
   }
 
   let table_data: ValidatorList[] = $derived(
-    data.validators.map((validator: any, index: number) => {
-      const link = data.resolved_addresses[validator.address]?.link
-      return {
-        rank: index + 1,
-        address: validator.address,
-        website: {
-          link,
-          domain: link ? new URL(link).hostname.split(".").splice(-2).join(".") : undefined,
-        },
-        total_staked: new Decimal(validator.stake),
-        voting_power: new Decimal(validator.stake).div(total_stake),
-        commission: validator.commission,
-        uptime: validator.uptime,
-      }
-    }),
+    data.validators.map((validator: any, index: number) => ({
+      rank: index + 1,
+      address: validator.address,
+      total_staked: new Decimal(validator.stake),
+      voting_power: new Decimal(validator.stake).div(total_stake),
+      commission: validator.commission,
+      open: validator.open,
+      uptime: validator.uptime,
+    })),
   )
 
   const columns: ColumnDef<ValidatorList, any>[] = [
@@ -56,11 +51,6 @@
       cell: (info) => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
     },
     {
-      accessorKey: "website",
-      header: "Website",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: website_column, value: info.getValue() }),
-    },
-    {
       accessorKey: "total_staked",
       header: "Total Staked",
       cell: (info) => renderComponent(AleoCredit, { number: info.getValue(), suffix: true }),
@@ -71,14 +61,19 @@
       cell: (info) => renderComponent(Number, { number: info.getValue().times(100), precision: 2, unit: "%" }),
     },
     {
+      accessorKey: "uptime",
+      header: "Uptime",
+      cell: (info) => renderComponent(Number, { number: info.getValue() * 100, precision: 2, unit: "%" }),
+    },
+    {
       accessorKey: "commission",
       header: "Commission",
       cell: (info) => renderComponent(Number, { number: info.getValue(), unit: "%" }),
     },
     {
-      accessorKey: "uptime",
-      header: "Uptime",
-      cell: (info) => renderComponent(Number, { number: info.getValue() * 100, precision: 2, unit: "%" }),
+      accessorKey: "open",
+      header: "Open for delegation",
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: open_column, value: info.getValue() }),
     },
   ]
 
@@ -225,12 +220,14 @@
   </div>
 {/snippet}
 
-{#snippet website_column(value)}
-  {#if value.link}
-    <Link href={value.link}>{value.domain}</Link>
-  {:else}
-    <span class="no-website">None</span>
-  {/if}
+{#snippet open_column(value)}
+  <div class="right">
+    {#if value}
+      <Status cls={StatusClass.Success}>Yes</Status>
+    {:else}
+      <Status cls={StatusClass.Danger}>No</Status>
+    {/if}
+  </div>
 {/snippet}
 
 <div class="table-container">

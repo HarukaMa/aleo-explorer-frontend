@@ -4,7 +4,7 @@
   import Number from "$lib/components/Number.svelte"
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
   import Epoch from "$lib/components/Epoch.svelte"
-  import AleoCredit from "$lib/components/AleoCredit.svelte"
+  import AleoCredit from "$lib/components/AleoToken.svelte"
   import Time from "$lib/components/Time.svelte"
   import Link from "$lib/components/Link.svelte"
   import { browser } from "$app/environment"

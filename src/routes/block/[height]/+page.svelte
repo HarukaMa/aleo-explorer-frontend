@@ -5,7 +5,7 @@
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Time from "$lib/components/Time.svelte"
   import { format_time, TimeMode } from "$lib/time_mode.svelte.js"
-  import AleoCredit from "$lib/components/AleoCredit.svelte"
+  import AleoCredit from "$lib/components/AleoToken.svelte"
   import Chip from "$lib/components/Chip.svelte"
   import UIAddress from "$lib/components/UIAddress.svelte"
   import Tabs from "$lib/components/Tabs.svelte"

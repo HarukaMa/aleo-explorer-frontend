@@ -3,7 +3,7 @@
   import { getContext } from "svelte"
   import Number from "$lib/components/Number.svelte"
   import DetailLine from "$lib/components/DetailLine.svelte"
-  import AleoCredit from "$lib/components/AleoCredit.svelte"
+  import AleoCredit from "$lib/components/AleoToken.svelte"
   import UIAddress from "$lib/components/UIAddress.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
   import Decimal from "decimal.js"

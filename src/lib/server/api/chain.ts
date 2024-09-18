@@ -51,5 +51,9 @@ export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
       }
       return await super.get("/validators", params)
     }
+
+    public async transaction(this: API, id: string): Promise<any> {
+      return await super.get(`/transaction/${id}`)
+    }
   }
 }

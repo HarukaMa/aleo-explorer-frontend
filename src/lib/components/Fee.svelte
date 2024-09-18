@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AleoCredit from "$lib/components/AleoCredit.svelte"
+  import AleoCredit from "$lib/components/AleoToken.svelte"
   import Decimal from "decimal.js"
 
   type Fee = {
