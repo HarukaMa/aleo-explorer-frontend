@@ -265,6 +265,11 @@
     grid-auto-rows: auto;
     border-radius: 1rem;
     border: 1px solid $grey-100;
+    word-break: break-all;
+
+    .column :nth-child(2) {
+      line-height: 1.25rem;
+    }
   }
 </style>
 
@@ -442,11 +447,21 @@
             </div>
             <div class="column">
               <span class="dim">Before</span>
-              <span class="mono">{op.previous_value}</span>
+              {#if op.limited_tracked}
+                <Status cls={StatusClass.Warning}>Not tracked</Status>
+              {:else if op.previous_value === null}
+                <Status cls={StatusClass.Info}>New</Status>
+              {:else}
+                <span class="mono">{op.previous_value}</span>
+              {/if}
             </div>
             <div class="column">
               <span class="dim">After</span>
-              <span class="mono">{op.value}</span>
+              {#if op.type === "Remove"}
+                <Status cls={StatusClass.Danger}>Removed</Status>
+              {:else}
+                <span class="mono">{op.value}</span>
+              {/if}
             </div>
           </div>
         {/each}
