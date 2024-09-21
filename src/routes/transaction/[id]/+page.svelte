@@ -242,6 +242,7 @@
     font-family: "Montserrat Variable", sans-serif;
     font-weight: 600;
     line-height: 1.25rem;
+    margin-top: 1rem;
   }
 
   .fee-breakdown {
@@ -446,6 +447,40 @@
           </tbody>
         </table>
       </div>
+      {#if state === "Rejected" && type === "Execute"}
+        <div class="aborted-header">Rejected transitions</div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Index</th>
+                <th>Transition ID</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each data.confirmed_transaction.rejected.execution.transitions as transition, index}
+                <tr>
+                  <td>{index}</td>
+                  <td>
+                    <Link href="/transition/{transition.id}">
+                      <span class="mono">{transition.id}</span>
+                    </Link>
+                  </td>
+                  <td>
+                    <div class="column">
+                      <span class="mono">{transition.function_name}</span>
+                      <Link href="/program/{transition.program_id}">
+                        <span class="secondary mono">{transition.program_id}</span>
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      {/if}
     </div>
   {/snippet}
   {#snippet mapping(binds)}
