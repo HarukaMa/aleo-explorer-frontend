@@ -5,13 +5,14 @@
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Time from "$lib/components/Time.svelte"
   import { format_time, format_time_absolute_relative, TimeMode } from "$lib/time_mode.svelte.js"
-  import UIAddress from "$lib/components/UIAddress.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
-  import { type ColumnDef, createTable, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
+  import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
   import Fee from "$lib/components/Fee.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
   import Status from "$lib/components/Status.svelte"
+  import AleoToken from "$lib/components/AleoToken.svelte"
+  import FeeBreakdown from "$lib/components/FeeBreakdown.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -27,6 +28,14 @@
     // { title: "Finalize call graph", id: "finalize-call" },
   ]
 
+  let fee = $derived.by(() => {
+    if (state === "Unconfirmed") {
+      return data.transaction.fee
+    } else {
+      return data.confirmed_transaction.transaction.fee
+    }
+  })
+
   type TransitionList = {
     index: string
     transition_id: string
@@ -37,7 +46,7 @@
     if (type === "Execute") {
       if (state === "Accepted") {
         const tx = data.confirmed_transaction.transaction
-        let list = tx.execution.transitions
+        let list = [...tx.execution.transitions]
         if (tx.fee) {
           list.push(tx.fee.transition)
         }
@@ -45,7 +54,7 @@
       } else if (state === "Rejected") {
         return [data.confirmed_transaction.fee.transition]
       } else {
-        let list = data.transaction.execution.transitions
+        let list = [...data.transaction.execution.transitions]
         if (data.transaction.fee) {
           list.push(data.transaction.fee.transition)
         }
@@ -62,6 +71,8 @@
     }
   })
 
+  $inspect(transitions)
+
   let transition_table_data: TransitionList[] = $derived(
     transitions.map((transition: any, index: number) => {
       let display_index = index.toString()
@@ -74,7 +85,7 @@
       }
       return {
         index: display_index,
-        transition_id: transition.transition_id,
+        transition_id: transition.id,
         action: {
           program: transition.program_id,
           function: transition.function_name,
@@ -232,31 +243,35 @@
     font-weight: 600;
     line-height: 1.25rem;
   }
+
+  .fee-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mapping-operations {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .operation {
+    display: grid;
+    padding: 1.5rem;
+    grid-row-gap: 1rem;
+    grid-column-gap: 0.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: auto;
+    border-radius: 1rem;
+    border: 1px solid $grey-100;
+  }
 </style>
 
-{#snippet transaction_id_column(value)}
+{#snippet transition_id_column(value)}
   <div class="mono ellipsis">
-    <Link href="/transaction/{value}" content={value}></Link>
+    <Link href="/transition/{value}" content={value}></Link>
   </div>
-{/snippet}
-
-{#snippet solution_id_column(value)}
-  <div class="mono">{value}</div>
-{/snippet}
-
-{#snippet address_column(value)}
-  <div class="mono ellipsis">
-    <Link href="/address/{value}" content={value}>
-      <UIAddress address={value} name_data={block.resolved_addresses} />
-    </Link>
-  </div>
-{/snippet}
-
-{#snippet target_column(value)}
-  <Number number={value} />
-  <span class="dim">
-    / <Number number={total_target} />
-  </span>
 {/snippet}
 
 {#snippet action_column(value)}
@@ -271,14 +286,6 @@
         <span class="secondary mono">{value.program}</span>
       </Link>
     </div>
-  {/if}
-{/snippet}
-
-{#snippet status_column(value)}
-  {#if value === "accepted"}
-    <Status cls={StatusClass.Success}>Accepted</Status>
-  {:else}
-    <Status cls={StatusClass.Danger}>Rejected</Status>
   {/if}
 {/snippet}
 
@@ -301,7 +308,7 @@
     <DetailLine label="Transaction ID">
       <span class="mono">{data.tx_id}</span>
     </DetailLine>
-    {#if data.state != "Unconfirmed"}
+    {#if state !== "Unconfirmed"}
       <DetailLine label="Block">
         {#if data.first_seen < data.block_confirm_time}
           <div class="column">
@@ -309,11 +316,11 @@
               <Number number={data.height} />
             </Link>
             <span class="secondary">
-              {#if data.state === "Accepted"}
+              {#if state === "Accepted"}
                 Confirmed
-              {:else if data.state === "Rejected"}
+              {:else if state === "Rejected"}
                 Rejected
-              {:else if data.state === "Aborted"}
+              {:else if state === "Aborted"}
                 Aborted
               {/if}
               {format_time_absolute_relative(data.block_confirm_time - data.first_seen, false)}
@@ -359,13 +366,91 @@
   <div class="group">
     <div class="details-line"></div>
   </div>
+  <div class="group">
+    <DetailLine label="Type">
+      {type}
+    </DetailLine>
+    {#if state === "Accepted" || state === "Rejected"}
+      <DetailLine label="Index">
+        {data.confirmed_transaction.index}
+      </DetailLine>
+    {/if}
+  </div>
+  <div class="group">
+    <div class="details-line"></div>
+  </div>
+  <div class="group">
+    {#if fee}
+      <DetailLine label="Total fee spent">
+        <AleoToken number={fee.amount[0] + fee.amount[1]} suffix />
+      </DetailLine>
+    {:else}
+      <DetailLine label="Total fee spent">not implemented</DetailLine>
+    {/if}
+    <DetailLine label="Breakdown">
+      <div class="fee-breakdown">
+        <FeeBreakdown amount={fee.amount[0]} label="Base fee"></FeeBreakdown>
+        <FeeBreakdown amount={fee.amount[1]} label="Priority fee"></FeeBreakdown>
+      </div>
+    </DetailLine>
+  </div>
 </div>
 
 <Tabs {tab_data}>
   {#snippet transitions(binds)}
-    <div class="tab" bind:this={binds.transitions}>A</div>
+    <div class="tab" bind:this={binds.transitions}>
+      <div class="table-container">
+        <table>
+          <thead>
+            {#each transition_table.getHeaderGroups() as header_group}
+              <tr>
+                {#each header_group.headers as header}
+                  <th>{header.column.columnDef.header}</th>
+                {/each}
+              </tr>
+            {/each}
+          </thead>
+          <tbody>
+            {#each transition_table.getRowModel().rows as row}
+              <tr>
+                {#each row.getVisibleCells() as cell}
+                  <td>
+                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    </div>
   {/snippet}
   {#snippet mapping(binds)}
-    <div class="tab" bind:this={binds.mapping}>B</div>
+    <div class="tab" bind:this={binds.mapping}>
+      <div class="mapping-operations">
+        {#each data.mapping_operations as op}
+          <div class="operation">
+            <div class="column">
+              <span class="dim">Program</span>
+              <Link href="/program/{op.program_id}">
+                <span class="mono">{op.program_id}</span>
+              </Link>
+            </div>
+            <div class="column">
+              <span class="dim">Mapping</span>
+              <span class="mono">{op.mapping_name}[{op.key}]</span>
+            </div>
+            <div class="column">
+              <span class="dim">Before</span>
+              <span class="mono">{op.previous_value}</span>
+            </div>
+            <div class="column">
+              <span class="dim">After</span>
+              <span class="mono">{op.value}</span>
+            </div>
+          </div>
+        {/each}
+      </div>
+    </div>
   {/snippet}
 </Tabs>
