@@ -160,7 +160,7 @@
     .transaction-icon {
       height: 32px;
       width: 32px;
-      background-image: $block-icon;
+      background-image: $transaction-icon;
     }
 
     .transaction-id {
