@@ -52,7 +52,7 @@
         }
         return list
       } else if (state === "Rejected") {
-        return [data.confirmed_transaction.fee.transition]
+        return [data.confirmed_transaction.transaction.fee.transition]
       } else {
         let list = [...data.transaction.execution.transitions]
         if (data.transaction.fee) {
@@ -360,7 +360,10 @@
       {#if state === "Accepted"}
         <Status cls={StatusClass.Success}>Accepted</Status>
       {:else if state === "Rejected"}
-        <Status cls={StatusClass.Danger}>Rejected</Status>
+        <div class="column">
+          <Status cls={StatusClass.Danger}>Rejected</Status>
+          {data.reject_reason}
+        </div>
       {:else if state === "Aborted"}
         <Status cls={StatusClass.Danger}>Aborted</Status>
       {:else}
@@ -375,6 +378,21 @@
     <DetailLine label="Type">
       {type}
     </DetailLine>
+    {#if type === "Deploy"}
+      <DetailLine label="Program">
+        {#if state === "Accepted"}
+          <Link href="/program/{data.confirmed_transaction.transaction.deployment.program.id}">
+            <span class="mono">{data.confirmed_transaction.transaction.deployment.program.id}</span>
+          </Link>
+        {:else if state === "Rejected"}
+          <Link href="/program/{data.confirmed_transaction.rejected.deployment.program.id}">
+            <span class="mono">{data.confirmed_transaction.rejected.deployment.program.id}</span>
+          </Link>
+        {:else}
+          Not implemented
+        {/if}
+      </DetailLine>
+    {/if}
     {#if state === "Accepted" || state === "Rejected"}
       <DetailLine label="Index">
         {data.confirmed_transaction.index}
@@ -433,38 +451,40 @@
   {#snippet mapping(binds)}
     <div class="tab" bind:this={binds.mapping}>
       <div class="mapping-operations">
-        {#each data.mapping_operations as op}
-          <div class="operation">
-            <div class="column">
-              <span class="dim">Program</span>
-              <Link href="/program/{op.program_id}">
-                <span class="mono">{op.program_id}</span>
-              </Link>
+        {#if state === "Accepted" || state === "Rejected"}
+          {#each data.mapping_operations as op}
+            <div class="operation">
+              <div class="column">
+                <span class="dim">Program</span>
+                <Link href="/program/{op.program_id}">
+                  <span class="mono">{op.program_id}</span>
+                </Link>
+              </div>
+              <div class="column">
+                <span class="dim">Mapping</span>
+                <span class="mono">{op.mapping_name}[{op.key}]</span>
+              </div>
+              <div class="column">
+                <span class="dim">Before</span>
+                {#if op.limited_tracked}
+                  <Status cls={StatusClass.Warning}>Not tracked</Status>
+                {:else if op.previous_value === null}
+                  <Status cls={StatusClass.Info}>New</Status>
+                {:else}
+                  <span class="mono">{op.previous_value}</span>
+                {/if}
+              </div>
+              <div class="column">
+                <span class="dim">After</span>
+                {#if op.type === "Remove"}
+                  <Status cls={StatusClass.Danger}>Removed</Status>
+                {:else}
+                  <span class="mono">{op.value}</span>
+                {/if}
+              </div>
             </div>
-            <div class="column">
-              <span class="dim">Mapping</span>
-              <span class="mono">{op.mapping_name}[{op.key}]</span>
-            </div>
-            <div class="column">
-              <span class="dim">Before</span>
-              {#if op.limited_tracked}
-                <Status cls={StatusClass.Warning}>Not tracked</Status>
-              {:else if op.previous_value === null}
-                <Status cls={StatusClass.Info}>New</Status>
-              {:else}
-                <span class="mono">{op.previous_value}</span>
-              {/if}
-            </div>
-            <div class="column">
-              <span class="dim">After</span>
-              {#if op.type === "Remove"}
-                <Status cls={StatusClass.Danger}>Removed</Status>
-              {:else}
-                <span class="mono">{op.value}</span>
-              {/if}
-            </div>
-          </div>
-        {/each}
+          {/each}
+        {:else}{/if}
       </div>
     </div>
   {/snippet}
