@@ -55,5 +55,9 @@ export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
     public async transaction(this: API, id: string): Promise<any> {
       return await super.get(`/transaction/${id}`)
     }
+
+    public async transition(this: API, id: string): Promise<any> {
+      return await super.get(`/transition/${id}`)
+    }
   }
 }

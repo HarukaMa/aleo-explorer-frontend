@@ -33,6 +33,10 @@
     }
     tab_binds[active_tab].style.display = "block"
   })
+
+  export function set_active(id: string) {
+    active_tab = id
+  }
 </script>
 
 <style lang="scss">

@@ -314,6 +314,11 @@
     <DetailLine label="Transaction ID">
       <span class="mono">{data.tx_id}</span>
     </DetailLine>
+    {#if state === "Rejected"}
+      <DetailLine label="Original transaction ID">
+        <span class="mono">{data.original_txid}</span>
+      </DetailLine>
+    {/if}
     {#if state !== "Unconfirmed"}
       <DetailLine label="Block">
         {#if data.first_seen < data.block_confirm_time}
