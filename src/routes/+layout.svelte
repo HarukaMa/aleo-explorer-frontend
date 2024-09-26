@@ -3,7 +3,7 @@
   import { env } from "$env/dynamic/public"
   import { current_time_mode, format_time_relative, TimeMode } from "$lib/time_mode.svelte"
   import { browser } from "$app/environment"
-  import { getCookie } from "$lib/utils.js"
+  import { getCookie } from "$lib/utils"
   import { setContext, type Snippet } from "svelte"
   import TopBanner from "$lib/components/TopBanner.svelte"
   import { navigating, page } from "$app/stores"
@@ -69,6 +69,8 @@
   function switch_timezone() {
     if (time_mode.value === TimeMode.UTC) {
       time_mode.value = TimeMode.Local
+    } else if (time_mode.value === TimeMode.Local) {
+      time_mode.value = TimeMode.Relative
     } else {
       time_mode.value = TimeMode.UTC
     }

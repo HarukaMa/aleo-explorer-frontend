@@ -10,8 +10,8 @@
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
-  import { format_time_relative } from "$lib/time_mode.svelte"
   import Callout from "$lib/components/Callout.svelte"
+  import Time from "$lib/components/Time.svelte"
 
   let { data: server_data } = $props()
   let { data, address } = $derived(server_data)
@@ -430,7 +430,7 @@
 {/snippet}
 
 {#snippet timestamp_column(value)}
-  {format_time_relative(new Date(value * 1000))}
+  <Time timestamp={value} />
 {/snippet}
 
 {#snippet action_column(value)}

@@ -259,16 +259,30 @@
     getCoreRowModel: getCoreRowModel(),
   })
 
+  type AbortedSolutionList = {
+    solution_id: string
+  }
+
+  let aborted_solution_table_data: AbortedSolutionList[] = $derived(
+    block.block.aborted_solution_ids.map((solution_id: string) => {
+      return {
+        solution_id: solution_id,
+      }
+    }),
+  )
+
   const aborted_solution_table_columns: ColumnDef<string, string>[] = [
     {
       accessorKey: "solution_id",
       header: "Solution ID",
-      cell: (info) => info.getValue(),
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: solution_id_column, value: info.getValue() }),
     },
   ]
 
   const aborted_solution_table = createTable<string>({
-    data: block.block.aborted_solution_ids,
+    get data() {
+      return aborted_solution_table_data
+    },
     columns: aborted_solution_table_columns,
     getCoreRowModel: getCoreRowModel(),
   })
@@ -391,6 +405,7 @@
   }
 
   .aborted-header {
+    margin-top: 1rem;
     font-size: 1rem;
     font-family: "Montserrat Variable", sans-serif;
     font-weight: 600;
@@ -471,7 +486,7 @@
     <DetailLine label="Timestamp">
       {format_time(new Date(block.block.header.metadata.timestamp * 1000), TimeMode.Relative)}
       <!-- @formatter:off -->
-      (<Time timestamp={block.block.header.metadata.timestamp} />)
+      (<Time no_relative timestamp={block.block.header.metadata.timestamp} />)
       <!-- @formatter:on -->
     </DetailLine>
     <DetailLine label="Epoch">
