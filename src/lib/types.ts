@@ -48,3 +48,8 @@ export class APIError extends Error {
     this.name = "APIError"
   }
 }
+
+export enum SearchError {
+  QueryTooShort,
+  NotFound,
+}

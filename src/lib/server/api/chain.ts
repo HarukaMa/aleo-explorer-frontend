@@ -28,6 +28,10 @@ export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
       return await super.get("/block/index_update", { last_block: last_block })
     }
 
+    public async search(this: API, query: string): Promise<any> {
+      return await super.get("/search", { q: query })
+    }
+
     public async blocks(this: API, page: string | number | null): Promise<Blocks> {
       let params
       if (page) {

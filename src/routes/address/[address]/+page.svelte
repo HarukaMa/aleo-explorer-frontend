@@ -20,7 +20,7 @@
 
   let resolved = $derived(data.resolved_addresses[address])
 
-  let staked_to = $derived(data.resolved_addresses[data.bond_state?.validator])
+  let bonded_to = $derived(data.resolved_addresses[data.bond_state?.validator])
 
   let tab_data = $derived.by(() => {
     let tabs = [
@@ -546,10 +546,10 @@
         {/if}
       </DetailLine>
       {#if !data.committee_state}
-        <DetailLine label="Staked to validator">
-          {#if staked_to && (staked_to.name || staked_to.tag)}
+        <DetailLine label="Bonded to validator">
+          {#if bonded_to && (bonded_to.name || bonded_to.tag)}
             <div class="column">
-              <Link href="/address/{data.bond_state.validator}" content={staked_to.tag || staked_to.name} />
+              <Link href="/address/{data.bond_state.validator}" content={bonded_to.tag || bonded_to.name} />
               <span class="secondary mono">{data.bond_state.validator}</span>
             </div>
           {:else}
@@ -573,6 +573,28 @@
       <AleoCredit number={data.stake_reward} suffix />
     </DetailLine>
   </div>
+  {#if data.unbond_state}
+    <div class="group">
+      <div class="details-line"></div>
+    </div>
+    <div class="group">
+      <DetailLine label="Credits unbonding">
+        <AleoCredit number={data.unbond_state.amount} suffix />
+      </DetailLine>
+      <DetailLine label="Withdrawable at height">
+        <div class="column">
+          <Number number={data.unbond_state.height} />
+          <span class="secondary">
+            {#if data.latest_height >= data.unbond_state.height}
+              Withdrawable now
+            {:else}
+              Withdrawable in {data.unbond_state.height - data.latest_height} blocks
+            {/if}
+          </span>
+        </div>
+      </DetailLine>
+    </div>
+  {/if}
   <div class="group">
     <div class="details-line"></div>
   </div>
