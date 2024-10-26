@@ -137,7 +137,7 @@ SOFTWARE.
 <!-- Please note that this file is still subject to AGPL nonetheless. -->
 
 <style lang="scss">
-  @import "static/styles/global";
+  @use "/static/styles/global" as *;
 
   .container {
     max-width: 1620px;

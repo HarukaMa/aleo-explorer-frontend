@@ -288,5 +288,5 @@
 </div>
 
 <div class="spacer">
-  <ButtonLink href="/blocks" content="See all" cls={ButtonLinkClass.Secondary} />
+  <ButtonLink Content="See all" cls={ButtonLinkClass.Secondary} href="/blocks" />
 </div>

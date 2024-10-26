@@ -33,7 +33,7 @@
 </script>
 
 <style lang="scss">
-  @import "../../../static/styles/variables";
+  @use "/static/styles/variables" as *;
 
   /* top bar related */
 
@@ -170,7 +170,7 @@
 <nav>
   <div class="nav-main">
     <div class="nav-main-title">
-      <a href="/">
+      <a aria-label="Home" href="/">
         <div class="title-logo"></div>
       </a>
       <div class="title-network-indicator-container">

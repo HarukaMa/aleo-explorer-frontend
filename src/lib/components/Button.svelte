@@ -8,12 +8,12 @@
     action?: MouseEventHandler<any>
     cls: ButtonLinkClass
     disabled?: boolean
-    content?: string | Component<any>
+    Content?: string | Component<any>
     icon?: string
     small?: boolean
   }
 
-  let { href, action, cls, disabled = false, content = "", icon, small = false, ...props }: Button = $props()
+  let { href, action, cls, disabled = false, Content = "", icon, small = false, ...props }: Button = $props()
 
   let background_image: string | undefined = $state(undefined)
   let size: string | undefined = $state(undefined)
@@ -28,7 +28,7 @@
 </script>
 
 <style lang="scss">
-  @import "/static/styles/variables";
+  @use "/static/styles/variables" as *;
 
   button {
     all: unset;
@@ -99,10 +99,10 @@
     style:width={size}
     type={button_type}
   >
-    {#if typeof content === "string"}
-      {content}
+    {#if typeof Content === "string"}
+      {Content}
     {:else}
-      <svelte:component this={content} {...props} />
+      <Content {...props} />
     {/if}
   </button>
 </form>

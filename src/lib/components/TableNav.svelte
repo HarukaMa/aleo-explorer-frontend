@@ -38,9 +38,9 @@
   {/if}
   {#each page_options as option}
     {#if option === page}
-      <Button cls={ButtonLinkClass.Secondary} action={() => null} content={option.toString()} small={true} />
+      <Button cls={ButtonLinkClass.Secondary} action={() => null} Content={option.toString()} small={true} />
     {:else}
-      <Button cls={ButtonLinkClass.Ghost} action={() => set_page(option)} content={option.toString()} small={true} />
+      <Button cls={ButtonLinkClass.Ghost} action={() => set_page(option)} Content={option.toString()} small={true} />
     {/if}
   {/each}
   {#if page !== total_pages}

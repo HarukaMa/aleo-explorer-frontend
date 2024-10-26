@@ -298,7 +298,7 @@
 </script>
 
 <style lang="scss">
-  @import "static/styles/variables";
+  @use "/static/styles/variables" as *;
 
   div.header {
     display: flex;

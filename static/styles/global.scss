@@ -1,8 +1,9 @@
-@import "variables";
+@forward "variables";
+@use "variables" as *;
 
-@import "@fontsource-variable/open-sans";
-@import "@fontsource-variable/montserrat";
-@import "@fontsource-variable/inconsolata";
+@use "@fontsource-variable/open-sans";
+@use "@fontsource-variable/montserrat";
+@use "@fontsource-variable/inconsolata";
 
 :root {
   font-family: "Open Sans Variable", system-ui;

@@ -8,7 +8,7 @@
 </script>
 
 <style lang="scss">
-  @import "../../../static/styles/variables";
+  @use "/static/styles/variables" as *;
 
   .nav-link-menu-item {
     padding: 0.5rem;

@@ -7,7 +7,7 @@
 </script>
 
 <style lang="scss">
-  @import "static/styles/variables";
+  @use "/static/styles/variables" as *;
 
   .cell {
     display: flex;

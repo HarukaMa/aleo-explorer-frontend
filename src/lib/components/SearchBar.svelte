@@ -11,7 +11,7 @@
 </script>
 
 <style lang="scss">
-  @import "/static/styles/variables";
+  @use "/static/styles/variables" as *;
 
   .home-search-bar-container {
     display: inline-flex;
