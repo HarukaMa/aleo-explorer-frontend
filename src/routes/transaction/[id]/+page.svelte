@@ -413,15 +413,23 @@
       <DetailLine label="Total fee spent">
         <AleoToken number={fee.amount[0] + fee.amount[1]} suffix />
       </DetailLine>
+      <DetailLine label="Breakdown">
+        <div class="fee-breakdown">
+          <FeeBreakdown amount={fee.amount[0]} label="Base fee"></FeeBreakdown>
+          <FeeBreakdown amount={fee.amount[1]} label="Priority fee"></FeeBreakdown>
+        </div>
+      </DetailLine>
     {:else}
-      <DetailLine label="Total fee spent">not implemented</DetailLine>
+      <DetailLine label="Total fee spent">
+        <AleoToken number="10000" suffix />
+      </DetailLine>
+      <DetailLine label="Breakdown">
+        <div class="fee-breakdown">
+          <FeeBreakdown amount="10000" label="Base fee"></FeeBreakdown>
+          <FeeBreakdown amount="0" label="Priority fee"></FeeBreakdown>
+        </div>
+      </DetailLine>
     {/if}
-    <DetailLine label="Breakdown">
-      <div class="fee-breakdown">
-        <FeeBreakdown amount={fee.amount[0]} label="Base fee"></FeeBreakdown>
-        <FeeBreakdown amount={fee.amount[1]} label="Priority fee"></FeeBreakdown>
-      </div>
-    </DetailLine>
   </div>
 </div>
 

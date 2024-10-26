@@ -90,11 +90,11 @@
     let fee: Decimal[] | number[]
     if (tx.type === "accepted_execute") {
       transitions = tx.transaction.execution.transitions.length
-      if (tx.transaction.fee.transition !== null) {
+      if (tx.transaction.fee && tx.transaction.fee.transition !== null) {
         transitions += 1
         fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
       } else {
-        fee = [new Decimal(0), new Decimal(0)]
+        fee = [new Decimal(10000), new Decimal(0)]
       }
       const action_transition = tx.transaction.execution.transitions.at(-1)
       action = {
