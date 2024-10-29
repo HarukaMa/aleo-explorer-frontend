@@ -18,40 +18,50 @@
   import Status from "$lib/components/Status.svelte"
 
   let { data } = $props()
-  let { block, height } = data
+  let { block, height } = $derived(data)
 
-  console.log(block)
+  $inspect(block)
 
-  const ratifications = block.block.ratifications
+  let ratifications = $derived(block.block.ratifications)
 
-  let block_reward = new Decimal(0),
-    puzzle_reward = new Decimal(0)
-
-  for (let ratify of ratifications) {
-    if (ratify.type === "block_reward") {
-      block_reward = new Decimal(ratify.amount)
-    } else if (ratify.type === "puzzle_reward") {
-      puzzle_reward = new Decimal(ratify.amount)
+  let rewards = $derived.by(() => {
+    let block_reward = new Decimal(0)
+    let puzzle_reward = new Decimal(0)
+    for (let ratify of ratifications) {
+      if (ratify.type === "block_reward") {
+        block_reward = new Decimal(ratify.amount)
+      } else if (ratify.type === "puzzle_reward") {
+        puzzle_reward = new Decimal(ratify.amount)
+      }
     }
-  }
+    return {
+      block: block_reward,
+      puzzle: puzzle_reward,
+    }
+  })
 
-  let total_base_fee = new Decimal(0),
-    total_priority_fee = new Decimal(0)
-  let total_burnt_fee = new Decimal(0)
-
-  for (let tx of block.block.transactions) {
-    if (tx.type === "accepted_execute") {
-      if (tx.transaction.fee !== null) {
+  let total_fee = $derived.by(() => {
+    let total_base_fee = new Decimal(0)
+    let total_priority_fee = new Decimal(0)
+    for (let tx of block.block.transactions) {
+      if (tx.type === "accepted_execute") {
+        if (tx.transaction.fee !== null) {
+          const fee = tx.transaction.fee
+          total_base_fee = total_base_fee.add(fee.amount[0])
+          total_priority_fee = total_priority_fee.add(fee.amount[1])
+        }
+      } else {
         const fee = tx.transaction.fee
         total_base_fee = total_base_fee.add(fee.amount[0])
         total_priority_fee = total_priority_fee.add(fee.amount[1])
       }
-    } else {
-      const fee = tx.transaction.fee
-      total_base_fee = total_base_fee.add(fee.amount[0])
-      total_priority_fee = total_priority_fee.add(fee.amount[1])
     }
-  }
+    return {
+      base: total_base_fee,
+      priority: total_priority_fee,
+      burnt: new Decimal(0),
+    }
+  })
 
   let validator_showing = $state(false)
 
@@ -66,8 +76,10 @@
     }
   }
 
-  const solution_targets = block.solutions.map((solution: any) => new Decimal(solution.target))
-  const total_target = solution_targets.reduce((acc: Decimal, target: Decimal) => acc.add(target), new Decimal(0))
+  let solution_targets = $derived(block.solutions.map((solution: any) => new Decimal(solution.target)))
+  let total_target = $derived(
+    solution_targets.reduce((acc: Decimal, target: Decimal) => acc.add(target), new Decimal(0)),
+  )
 
   const tab_data = [
     { title: "Transactions", id: "transactions" },
@@ -85,64 +97,66 @@
     status: string
   }
 
-  const transaction_table_data: TransactionList[] = block.block.transactions.map((tx: any, index: number) => {
-    let transitions: number, action: { program: string; function: string | undefined }, type: string, status: string
-    let fee: Decimal[] | number[]
-    if (tx.type === "accepted_execute") {
-      transitions = tx.transaction.execution.transitions.length
-      if (tx.transaction.fee && tx.transaction.fee.transition !== null) {
-        transitions += 1
+  let transaction_table_data: TransactionList[] = $derived(
+    block.block.transactions.map((tx: any, index: number) => {
+      let transitions: number, action: { program: string; function: string | undefined }, type: string, status: string
+      let fee: Decimal[] | number[]
+      if (tx.type === "accepted_execute") {
+        transitions = tx.transaction.execution.transitions.length
+        if (tx.transaction.fee && tx.transaction.fee.transition !== null) {
+          transitions += 1
+          fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
+        } else {
+          fee = [new Decimal(10000), new Decimal(0)]
+        }
+        const action_transition = tx.transaction.execution.transitions.at(-1)
+        action = {
+          program: action_transition.program_id,
+          function: action_transition.function_name,
+        }
+      } else if (tx.type === "accepted_deploy") {
+        transitions = 1
+        action = {
+          program: tx.transaction.deployment.program.id,
+          function: undefined,
+        }
+        fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
+      } else if (tx.type === "rejected_execute") {
+        transitions = 1
+        const action_transition = tx.rejected.execution.transitions.at(-1)
+        action = {
+          program: action_transition.program_id,
+          function: action_transition.function_name,
+        }
+        fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
+      } else if (tx.type === "rejected_deploy") {
+        transitions = 1
+        action = {
+          program: tx.rejected.deployment.program.id,
+          function: undefined,
+        }
         fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
       } else {
-        fee = [new Decimal(10000), new Decimal(0)]
+        transitions = 0
+        action = {
+          program: "",
+          function: "",
+        }
+        fee = [new Decimal(0), new Decimal(0)]
       }
-      const action_transition = tx.transaction.execution.transitions.at(-1)
-      action = {
-        program: action_transition.program_id,
-        function: action_transition.function_name,
+      ;[status, type] = tx.type.split("_")
+      type = type.charAt(0).toUpperCase() + type.slice(1)
+      return {
+        index: index,
+        transaction_id: tx.transaction.id,
+        transitions: transitions,
+        action: action,
+        fee: fee,
+        type: type,
+        status: status,
       }
-    } else if (tx.type === "accepted_deploy") {
-      transitions = 1
-      action = {
-        program: tx.transaction.deployment.program.id,
-        function: undefined,
-      }
-      fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
-    } else if (tx.type === "rejected_execute") {
-      transitions = 1
-      const action_transition = tx.rejected.execution.transitions.at(-1)
-      action = {
-        program: action_transition.program_id,
-        function: action_transition.function_name,
-      }
-      fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
-    } else if (tx.type === "rejected_deploy") {
-      transitions = 1
-      action = {
-        program: tx.rejected.deployment.program.id,
-        function: undefined,
-      }
-      fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
-    } else {
-      transitions = 0
-      action = {
-        program: "",
-        function: "",
-      }
-      fee = [new Decimal(0), new Decimal(0)]
-    }
-    ;[status, type] = tx.type.split("_")
-    type = type.charAt(0).toUpperCase() + type.slice(1)
-    return {
-      index: index,
-      transaction_id: tx.transaction.id,
-      transitions: transitions,
-      action: action,
-      fee: fee,
-      type: type,
-      status: status,
-    }
-  })
+    }),
+  )
 
   const transaction_table_columns: ColumnDef<TransactionList, any>[] = [
     {
@@ -188,7 +202,9 @@
   ]
 
   const transaction_table = createTable<TransactionList>({
-    data: transaction_table_data,
+    get data() {
+      return transaction_table_data
+    },
     columns: transaction_table_columns,
     getCoreRowModel: getCoreRowModel(),
   })
@@ -202,7 +218,9 @@
   ]
 
   const aborted_transaction_table = createTable<string>({
-    data: block.block.aborted_transaction_ids,
+    get data() {
+      return block.block.aborted_transaction_ids
+    },
     columns: aborted_transaction_table_columns,
     getCoreRowModel: getCoreRowModel(),
   })
@@ -215,15 +233,17 @@
     reward: Decimal
   }
 
-  const solution_table_data: SolutionList[] = block.solutions.map((solution: any) => {
-    return {
-      solution_id: solution.solution_id,
-      address: solution.address,
-      counter: new Decimal(solution.counter),
-      target: new Decimal(solution.target),
-      reward: new Decimal(solution.reward),
-    }
-  })
+  let solution_table_data: SolutionList[] = $derived(
+    block.solutions.map((solution: any) => {
+      return {
+        solution_id: solution.solution_id,
+        address: solution.address,
+        counter: new Decimal(solution.counter),
+        target: new Decimal(solution.target),
+        reward: new Decimal(solution.reward),
+      }
+    }),
+  )
 
   const solution_table_columns: ColumnDef<SolutionList, any>[] = [
     {
@@ -254,7 +274,9 @@
   ]
 
   const solution_table = createTable<SolutionList>({
-    data: solution_table_data,
+    get data() {
+      return solution_table_data
+    },
     columns: solution_table_columns,
     getCoreRowModel: getCoreRowModel(),
   })
@@ -271,7 +293,7 @@
     }),
   )
 
-  const aborted_solution_table_columns: ColumnDef<string, string>[] = [
+  const aborted_solution_table_columns: ColumnDef<AbortedSolutionList, any>[] = [
     {
       accessorKey: "solution_id",
       header: "Solution ID",
@@ -279,7 +301,7 @@
     },
   ]
 
-  const aborted_solution_table = createTable<string>({
+  const aborted_solution_table = createTable<AbortedSolutionList>({
     get data() {
       return aborted_solution_table_data
     },
@@ -550,10 +572,10 @@
   </div>
   <div class="group">
     <DetailLine label="Block reward">
-      <AleoCredit number={block_reward} suffix={true}></AleoCredit>
+      <AleoCredit number={rewards.block} suffix={true}></AleoCredit>
     </DetailLine>
     <DetailLine label="Puzzle reward">
-      <AleoCredit number={puzzle_reward} suffix={true}></AleoCredit>
+      <AleoCredit number={rewards.puzzle} suffix={true}></AleoCredit>
     </DetailLine>
   </div>
   <div class="group">
@@ -562,9 +584,13 @@
   <div class="group">
     <DetailLine label="Total fee">
       <div class="column">
-        <AleoCredit number={total_base_fee.add(total_priority_fee)} suffix={true}></AleoCredit>
+        <AleoCredit number={total_fee.base.add(total_fee.priority)} suffix={true}></AleoCredit>
         <span class="secondary">
-          <Fee {total_base_fee} {total_burnt_fee} {total_priority_fee} />
+          <Fee
+            total_base_fee={total_fee.base}
+            total_burnt_fee={total_fee.burnt}
+            total_priority_fee={total_fee.priority}
+          />
         </span>
       </div>
     </DetailLine>

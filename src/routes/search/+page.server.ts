@@ -1,6 +1,6 @@
 import type { PageServerLoad } from "../../../.svelte-kit/types/src/routes/$types"
 import { API } from "$lib/server/api/api"
-import { error } from "@sveltejs/kit"
+import { error, redirect } from "@sveltejs/kit"
 import { app_error_from_api_error } from "$lib/utils"
 import { APIError, SearchError } from "$lib/types"
 
@@ -17,6 +17,36 @@ export const load: PageServerLoad = async ({ url }) => {
       }
     }
     const result = await API.instance.search(query)
+
+    if (result.type === "block") {
+      redirect(307, `/block/${result.height}`)
+    } else if (result.type === "blocks") {
+      if (result.blocks.length === 1) {
+        redirect(307, `/block/${result.blocks[0]}`)
+      }
+    } else if (result.type === "transactions") {
+      if (result.transactions.length === 1) {
+        redirect(307, `/transaction/${result.transactions[0]}`)
+      }
+    } else if (result.type === "transitions") {
+      if (result.transitions.length === 1) {
+        redirect(307, `/transition/${result.transitions[0]}`)
+      }
+    } else if (result.type === "addresses") {
+      if (result.addresses.length === 1) {
+        redirect(307, `/address/${result.addresses[0]}`)
+      }
+    } else if (result.type === "solutions") {
+      if (result.solutions.length === 1) {
+        redirect(307, `/solution/${result.solutions[0]}`)
+      }
+    } else if (result.type === "ans_program") {
+      if (result.programs.length === 0 && result.names.length === 1) {
+        redirect(307, `/name/${result.names[0]}`)
+      } else if (result.programs.length === 1 && result.names.length === 0) {
+        redirect(307, `/program/${result.programs[0]}`)
+      }
+    }
 
     return {
       query,
