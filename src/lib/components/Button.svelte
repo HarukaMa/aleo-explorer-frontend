@@ -52,6 +52,19 @@
       padding: 0.5rem 0.75rem;
     }
 
+    &.primary {
+      background-color: $blue-500;
+      color: white;
+
+      &:hover {
+        background-color: $blue-600;
+      }
+
+      &:active {
+        background-color: $blue-500;
+      }
+    }
+
     &.secondary {
       background-color: white;
       border: 1px solid $grey-200;

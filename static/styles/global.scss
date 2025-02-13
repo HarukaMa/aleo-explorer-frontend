@@ -90,3 +90,37 @@
 :global(.table-container) {
   overflow-x: auto;
 }
+
+:global(div.header) {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  background-color: $blue-50;
+  padding: 1.5rem 1.5rem;
+  border-radius: 1rem;
+  box-sizing: border-box;
+  gap: 2.5rem;
+  align-items: center;
+  justify-content: center;
+
+  :global(> *) {
+    max-width: 1620px;
+    width: 100%;
+  }
+
+  :global(.flex) {
+    display: inline-flex;
+    justify-content: left;
+    align-items: center;
+    gap: 1rem;
+  }
+}
+
+:global(.headers-small) {
+  font-family: "Montserrat Variable", sans-serif;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.5rem; /* 133.333% */
+  letter-spacing: -0.00563rem;
+}

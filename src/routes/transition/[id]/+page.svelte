@@ -40,29 +40,6 @@
   @use "/static/styles/variables" as *;
 
   div.header {
-    display: flex;
-    flex-direction: row;
-    margin: 0;
-    background-color: $blue-50;
-    padding: 1.5rem 1.5rem;
-    border-radius: 1rem;
-    box-sizing: border-box;
-    gap: 2.5rem;
-    align-items: center;
-    justify-content: center;
-
-    > * {
-      max-width: 1620px;
-      width: 100%;
-    }
-
-    .flex {
-      display: inline-flex;
-      justify-content: left;
-      align-items: center;
-      gap: 1rem;
-    }
-
     .transition-icon {
       height: 32px;
       width: 32px;

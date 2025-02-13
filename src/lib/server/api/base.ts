@@ -33,13 +33,14 @@ export class APIBase {
       if (response.ok) {
         return await response.json()
       } else {
-        // noinspection ExceptionCaughtLocallyJS
         let json
         try {
           json = await response.json()
         } catch (e) {
+          // noinspection ExceptionCaughtLocallyJS
           throw new APIError(response.status, response.statusText)
         }
+        // noinspection ExceptionCaughtLocallyJS
         throw new APIError(response.status, json["error"])
       }
     } catch (e) {
