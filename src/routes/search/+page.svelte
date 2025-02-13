@@ -25,7 +25,7 @@
     } else if (result.type === "ans_program") {
       return "ANS / Program"
     } else {
-      return "Unknown"
+      return "Object"
     }
   })
 
