@@ -174,6 +174,10 @@
     background: $search-error-icon;
   }
 
+  .error-message {
+    text-align: center;
+  }
+
   .spacer {
     padding-top: 1.25rem;
   }
