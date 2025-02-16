@@ -285,6 +285,9 @@
 
 <Tabs {tab_data}>
   {#snippet structure(binds)}
+    <div class="tab" bind:this={binds.recent_calls}>111111111111</div>
+  {/snippet}
+  {#snippet recent_calls(binds)}
     <div class="tab" bind:this={binds.structure}>
       <div class="table-container">
         <table>
@@ -311,9 +314,6 @@
         </table>
       </div>
     </div>
-  {/snippet}
-  {#snippet recent_calls(binds)}
-    <div class="tab" bind:this={binds.recent_calls}>111111111111</div>
   {/snippet}
   {#snippet source_code(binds)}
     <div class="tab" bind:this={binds.source_code}>22222222222</div>
