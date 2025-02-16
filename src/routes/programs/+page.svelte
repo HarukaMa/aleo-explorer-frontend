@@ -113,13 +113,13 @@
 
   async function set_page(page: number) {
     table.setPageIndex(page - 1)
-    const response = await fetch(`/api/blocks?p=${page}`)
+    const response = await fetch(`/api/programs?p=${page}`)
     if (!response.ok) {
       throw new Error("Failed to fetch data")
     }
     const data = await response.json()
-    blocks = data.blocks
-    total_programs = data.total_blocks
+    programs = data.programs
+    total_programs = data.total_programs
     total_pages = data.total_pages
 
     const current_params = new URLSearchParams(location.search)
