@@ -63,5 +63,19 @@ export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
     public async transition(this: API, id: string): Promise<any> {
       return await super.get(`/transition/${id}`)
     }
+
+    public async programs(this: API, page: string | number | null): Promise<any> {
+      let params
+      if (page) {
+        params = { p: page.toString() }
+      } else {
+        params = {}
+      }
+      return await super.get("/programs", params)
+    }
+
+    public async program(this: API, id: string): Promise<any> {
+      return await super.get(`/program/${id}`)
+    }
   }
 }
