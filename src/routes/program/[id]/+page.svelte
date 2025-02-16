@@ -246,7 +246,9 @@
       <span class="mono">{data.program_id}</span>
     </DetailLine>
     <DetailLine label="Program address">
-      <UIAddress address={data.address} name_data={{}} />
+      <Link href="/address/{data.address}">
+        <UIAddress address={data.address} name_data={{}} />
+      </Link>
     </DetailLine>
   </div>
   <div class="group">
@@ -260,7 +262,9 @@
         </Link>
       </DetailLine>
       <DetailLine label="Program owner">
-        <UIAddress address={data.owner} name_data={data.resolved_addresses} />
+        <Link href="/address/{data.owner}">
+          <UIAddress address={data.owner} name_data={data.resolved_addresses} />
+        </Link>
       </DetailLine>
     </div>
     <div class="group">
@@ -285,10 +289,10 @@
 
 <Tabs {tab_data}>
   {#snippet structure(binds)}
-    <div class="tab" bind:this={binds.recent_calls}>111111111111</div>
+    <div class="tab" bind:this={binds.structure}>111111111111</div>
   {/snippet}
   {#snippet recent_calls(binds)}
-    <div class="tab" bind:this={binds.structure}>
+    <div class="tab" bind:this={binds.recent_calls}>
       <div class="table-container">
         <table>
           <thead>
