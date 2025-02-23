@@ -1,15 +1,28 @@
 <script lang="ts">
-  import { type BeforeContainerState, StatusClass } from "$lib/types"
+  import { type BeforeContainerState, ButtonLinkClass, StatusClass } from "$lib/types"
   import { getContext } from "svelte"
   import Number from "$lib/components/Number.svelte"
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Time from "$lib/components/Time.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
-  import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
+  import {
+    type ColumnDef,
+    createTable,
+    FlexRender,
+    getCoreRowModel,
+    getPaginationRowModel,
+    type PaginationState,
+    renderComponent,
+    type Updater,
+  } from "@tanstack/svelte-table"
+  import { Highlight } from "svelte-rune-highlight"
+  import aleo from "$lib/hljs.aleo.js"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
   import Status from "$lib/components/Status.svelte"
   import UIAddress from "$lib/components/UIAddress.svelte"
+  import TableNav from "$lib/components/TableNav.svelte"
+  import Button from "$lib/components/Button.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -61,13 +74,39 @@
     },
   ]
 
+  let pagination: PaginationState = $state({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+
   const transition_table = createTable<TransitionList>({
     get data() {
       return transition_table_data
     },
     columns: transition_table_columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    get rowCount() {
+      return data.recent_calls.length
+    },
+    get state() {
+      return { pagination }
+    },
+    onPaginationChange: onPaginationChange,
   })
+
+  async function onPaginationChange(updaterOrValue: Updater<PaginationState>) {
+    if (updaterOrValue instanceof Function) {
+      updaterOrValue = updaterOrValue(pagination)
+    }
+    pagination = updaterOrValue
+  }
+
+  function set_page(page: number) {
+    transition_table.setPageIndex(page - 1)
+  }
+
+  let total_pages = $derived(Math.ceil(data.recent_calls.length / pagination.pageSize))
 
   let before_container_state: BeforeContainerState = getContext("before_container")
   before_container_state.snippet = before_container
@@ -116,12 +155,12 @@
       align-items: flex-start;
       width: 100%;
     }
+  }
 
-    .details-line {
-      width: 100%;
-      height: 1px;
-      background-color: $grey-100;
-    }
+  .details-line {
+    width: 100%;
+    height: 1px;
+    background-color: $grey-100;
   }
 
   .column {
@@ -196,6 +235,32 @@
 
     .column :nth-child(2) {
       line-height: 1.25rem;
+    }
+  }
+
+  .tab {
+    line-height: 1.25rem;
+  }
+
+  .source-code {
+    display: flex;
+    padding: 1.5rem;
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 1rem;
+    border: 1px solid $grey-100;
+    background: $grey-25;
+  }
+
+  .source-code-header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    align-self: stretch;
+    font-weight: 600;
+
+    > span {
+      flex: 1 0 0;
     }
   }
 </style>
@@ -289,7 +354,73 @@
 
 <Tabs {tab_data}>
   {#snippet structure(binds)}
-    <div class="tab" bind:this={binds.structure}>111111111111</div>
+    <div class="tab" bind:this={binds.structure}>
+      <div class="details">
+        <div class="group">
+          <DetailLine label="Imports">
+            {#if data.imports.length === 0}
+              <span class="dim">None</span>
+            {:else}
+              {#each data.imports as i}
+                <Link href="/program/{i}">
+                  <div class="mono">{i}</div>
+                </Link>
+              {/each}
+            {/if}
+          </DetailLine>
+          <div class="details-line"></div>
+          <DetailLine label="Mappings">
+            {#if data.mappings.length === 0}
+              <span class="dim">None</span>
+            {:else}
+              {#each data.mappings as m}
+                <div class="mono">{m.name} ({m.key_type} -> {m.value_type})</div>
+              {/each}
+            {/if}
+          </DetailLine>
+          <div class="details-line"></div>
+          <DetailLine label="Structs">
+            {#if data.structs.length === 0}
+              <span class="dim">None</span>
+            {:else}
+              {#each data.structs as s}
+                <div class="mono">{s}</div>
+              {/each}
+            {/if}
+          </DetailLine>
+          <div class="details-line"></div>
+          <DetailLine label="Records">
+            {#if data.records.length === 0}
+              <span class="dim">None</span>
+            {:else}
+              {#each data.records as r}
+                <div class="mono">{r}</div>
+              {/each}
+            {/if}
+          </DetailLine>
+          <div class="details-line"></div>
+          <DetailLine label="Functions">
+            {#if data.closures.length === 0}
+              <span class="dim">None</span>
+            {:else}
+              {#each data.closures as f}
+                <div class="mono">{f}</div>
+              {/each}
+            {/if}
+          </DetailLine>
+          <div class="details-line"></div>
+          <DetailLine label="Transitions">
+            {#if data.functions.length === 0}
+              <span class="dim">None</span>
+            {:else}
+              {#each data.functions as t}
+                <div class="mono">{t}</div>
+              {/each}
+            {/if}
+          </DetailLine>
+        </div>
+      </div>
+    </div>
   {/snippet}
   {#snippet recent_calls(binds)}
     <div class="tab" bind:this={binds.recent_calls}>
@@ -305,22 +436,38 @@
             {/each}
           </thead>
           <tbody>
-            {#each transition_table.getRowModel().rows as row}
-              <tr>
-                {#each row.getVisibleCells() as cell}
-                  <td>
-                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                  </td>
-                {/each}
-              </tr>
-            {/each}
+            {#key pagination}
+              {#each transition_table.getPaginationRowModel().flatRows as row}
+                <tr>
+                  {#each row.getVisibleCells() as cell}
+                    <td>
+                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                    </td>
+                  {/each}
+                </tr>
+              {/each}
+            {/key}
           </tbody>
         </table>
+        {#key pagination}
+          <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
+        {/key}
       </div>
     </div>
   {/snippet}
   {#snippet source_code(binds)}
-    <div class="tab" bind:this={binds.source_code}>22222222222</div>
+    <div class="tab" bind:this={binds.source_code}>
+      <div class="source-code">
+        <div class="source-code-header">
+          <span>Program Source Code (Aleo Instruction)</span>
+          <Button cls={ButtonLinkClass.Ghost} disabled Content="Upload Leo Source" />
+        </div>
+        <div class="details-line"></div>
+        <div class="source-code-body">
+          <Highlight language={aleo} code={data.source} numberLine hideBorder --line-number-color="#9e9e9e" />
+        </div>
+      </div>
+    </div>
   {/snippet}
   {#snippet read_mappings(binds)}
     <div class="tab" bind:this={binds.read_mappings}>32333333333</div>

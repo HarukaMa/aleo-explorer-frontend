@@ -5,6 +5,7 @@
     createTable,
     FlexRender,
     getCoreRowModel,
+    type PaginationState,
     renderComponent,
     type Updater,
   } from "@tanstack/svelte-table"
@@ -84,8 +85,6 @@
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
     },
   ]
-
-  type PaginationState = { pageIndex: number; pageSize: number }
 
   let pagination: PaginationState = $state({
     pageIndex: data.page - 1,

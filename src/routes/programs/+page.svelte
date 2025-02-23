@@ -5,6 +5,7 @@
     createTable,
     FlexRender,
     getCoreRowModel,
+    type PaginationState,
     renderComponent,
     type Updater,
   } from "@tanstack/svelte-table"
@@ -72,8 +73,6 @@
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
     },
   ]
-
-  type PaginationState = { pageIndex: number; pageSize: number }
 
   let pagination: PaginationState = $state({
     pageIndex: data.page - 1,
@@ -188,7 +187,6 @@
 
   table {
     width: 100%;
-    margin-top: 2.5rem;
   }
 </style>
 
@@ -237,6 +235,10 @@
     </Link>
   {/if}
 {/snippet}
+
+{#key pagination}
+  <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
+{/key}
 
 <div class="table-container">
   <table>
