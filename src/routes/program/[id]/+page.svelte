@@ -24,6 +24,7 @@
   import TableNav from "$lib/components/TableNav.svelte"
   import Button from "$lib/components/Button.svelte"
   import ReadMapping from "$lib/components/ReadMapping.svelte"
+  import Callout from "$lib/components/Callout.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -479,17 +480,21 @@
   {/snippet}
   {#snippet read_mappings(binds)}
     <div class="tab" bind:this={binds.read_mappings}>
-      <div class="mappings">
-        {#key data.mappings}
-          {#each data.mappings as mapping}
-            <ReadMapping
-              program={data.program_id}
-              mapping={mapping.name}
-              type={mapping.key_type + " -> " + mapping.value_type}
-            />
-          {/each}
-        {/key}
-      </div>
+      {#if data.mappings.length === 0}
+        <Callout title="No mappings" description="This program has no mappings." icon="list-icon" />
+      {:else}
+        <div class="mappings">
+          {#key data.mappings}
+            {#each data.mappings as mapping}
+              <ReadMapping
+                program={data.program_id}
+                mapping={mapping.name}
+                type={mapping.key_type + " -> " + mapping.value_type}
+              />
+            {/each}
+          {/key}
+        </div>
+      {/if}
     </div>
   {/snippet}
 </Tabs>
