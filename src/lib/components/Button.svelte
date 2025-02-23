@@ -40,6 +40,7 @@
     justify-content: center;
     align-items: center;
     font-size: 1rem;
+    line-height: 1.5rem;
     font-weight: 600;
     cursor: pointer;
     background-repeat: no-repeat;

@@ -23,6 +23,7 @@
   import UIAddress from "$lib/components/UIAddress.svelte"
   import TableNav from "$lib/components/TableNav.svelte"
   import Button from "$lib/components/Button.svelte"
+  import ReadMapping from "$lib/components/ReadMapping.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -263,6 +264,13 @@
       flex: 1 0 0;
     }
   }
+
+  .mappings {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 40rem;
+  }
 </style>
 
 {#snippet transition_id_column(value)}
@@ -470,6 +478,16 @@
     </div>
   {/snippet}
   {#snippet read_mappings(binds)}
-    <div class="tab" bind:this={binds.read_mappings}>32333333333</div>
+    <div class="tab" bind:this={binds.read_mappings}>
+      <div class="mappings">
+        {#each data.mappings as mapping}
+          <ReadMapping
+            program={data.program_id}
+            mapping={mapping.name}
+            type={mapping.key_type + " -> " + mapping.value_type}
+          />
+        {/each}
+      </div>
+    </div>
   {/snippet}
 </Tabs>
