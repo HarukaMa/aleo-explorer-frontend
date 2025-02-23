@@ -480,13 +480,15 @@
   {#snippet read_mappings(binds)}
     <div class="tab" bind:this={binds.read_mappings}>
       <div class="mappings">
-        {#each data.mappings as mapping}
-          <ReadMapping
-            program={data.program_id}
-            mapping={mapping.name}
-            type={mapping.key_type + " -> " + mapping.value_type}
-          />
-        {/each}
+        {#key data.mappings}
+          {#each data.mappings as mapping}
+            <ReadMapping
+              program={data.program_id}
+              mapping={mapping.name}
+              type={mapping.key_type + " -> " + mapping.value_type}
+            />
+          {/each}
+        {/key}
       </div>
     </div>
   {/snippet}
