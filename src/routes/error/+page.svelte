@@ -41,8 +41,8 @@
 <div class="error-container">
   <div class="error-code">500</div>
   <div class="error-body">
-    <div class="error-title">Error Title</div>
-    Error Content
+    <div class="error-title">Internal Server Error</div>
+    Failed to load the page due to server error:
     {placeholder}
   </div>
 </div>
