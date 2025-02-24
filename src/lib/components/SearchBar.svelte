@@ -8,6 +8,16 @@
       input.focus()
     }
   }
+
+  function clear_search(this: HTMLFormElement, e: Event) {
+    e.preventDefault()
+    this.submit()
+    if (input) {
+      input.blur()
+      input.value = ""
+    }
+    return false
+  }
 </script>
 
 <style lang="scss">
@@ -132,7 +142,7 @@
   tabindex="0"
 >
   <div class="search-icon"></div>
-  <form action="/search">
+  <form action="/search" onsubmit={clear_search}>
     <input bind:this={input} name="q" placeholder="Search for address, transaction, validator..." type="text" />
   </form>
   <div class="keyboard-shortcut">/</div>
