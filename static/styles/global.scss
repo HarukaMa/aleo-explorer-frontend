@@ -5,6 +5,7 @@
 @use "@fontsource-variable/montserrat";
 @use "@fontsource-variable/inconsolata";
 
+
 :root {
   font-family: "Open Sans Variable", system-ui;
   // cv05, cv08: disambiguation; cv01: better "1"; cv10: better "G"
@@ -18,6 +19,14 @@
   --last-page-icon: #{$last-page-icon};
 
   --list-icon: #{$list-icon};
+
+  --block-icon: #{$block-icon};
+  --address-icon: #{$address-icon};
+  --info-icon: #{$info-icon};
+  --validator-icon: #{$validator-icon};
+  --transaction-icon: #{$transaction-icon};
+  --transition-icon: #{$transition-icon};
+  --program-icon: #{$program-icon};
 
   --red-500: #{$red-500};
 }

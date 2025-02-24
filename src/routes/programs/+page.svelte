@@ -236,10 +236,6 @@
   {/if}
 {/snippet}
 
-{#key pagination}
-  <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
-{/key}
-
 <div class="table-container">
   <table>
     <thead>

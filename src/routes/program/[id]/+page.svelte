@@ -25,6 +25,7 @@
   import Button from "$lib/components/Button.svelte"
   import ReadMapping from "$lib/components/ReadMapping.svelte"
   import Callout from "$lib/components/Callout.svelte"
+  import PageHeader from "$lib/components/PageHeader.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -122,25 +123,6 @@
 
 <style lang="scss">
   @use "/static/styles/variables" as *;
-
-  div.header {
-    .program-icon {
-      height: 32px;
-      width: 32px;
-      background-image: $program-icon;
-    }
-
-    .program-id {
-      font-size: 1.375rem;
-      font-weight: 600;
-      font-family: "Montserrat Variable", sans-serif;
-    }
-
-    .program-title {
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
-  }
 
   .details {
     margin-top: 2.5rem;
@@ -302,15 +284,7 @@
 
 {#snippet before_container()}
   <div class="header">
-    <div class="flex">
-      <div class="program-icon"></div>
-      <div class="vert">
-        <div class="program-title">Program</div>
-        <div class="program-id">
-          {data.program_id}
-        </div>
-      </div>
-    </div>
+    <PageHeader icon="program-icon" title="Program" content={data.program_id} />
   </div>
 {/snippet}
 
