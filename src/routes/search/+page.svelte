@@ -127,6 +127,37 @@
     getCoreRowModel: getCoreRowModel(),
   })
 
+  let program_table_data: TableItem[] = $derived.by(() => {
+    if (result.type !== "ans_program") {
+      return []
+    }
+    return result.programs.map((value: string) => ({ value }))
+  })
+
+  let program_columns: ColumnDef<TableItem, any>[] = $derived.by(() => {
+    return [
+      {
+        accessorKey: "value",
+        header: "Program",
+        cell: (info) =>
+          renderComponent(SnippetWrapper, {
+            snippet: data_column,
+            value: info.getValue(),
+          }),
+      },
+    ]
+  })
+
+  const program_table = createTable<TableItem>({
+    get data() {
+      return program_table_data
+    },
+    get columns() {
+      return program_columns
+    },
+    getCoreRowModel: getCoreRowModel(),
+  })
+
   let before_container_state: BeforeContainerState = getContext("before_container")
   before_container_state.snippet = before_container
 
@@ -189,6 +220,25 @@
       width: 100%;
     }
   }
+
+  .too-many-warning {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 2.5rem;
+    padding: 1rem;
+    background-color: $yellow-50;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .too-many-alert-icon {
+    height: 1.25rem;
+    width: 1.25rem;
+    background-color: $yellow-600;
+    mask-image: $alert-icon;
+  }
 </style>
 
 {#snippet before_container()}
@@ -220,6 +270,12 @@
     </div>
   </div>
 {:else}
+  {#if result.too_many}
+    <div class="too-many-warning">
+      <div class="too-many-alert-icon"></div>
+      Your search has returned too many results. Showing only 50 results below.
+    </div>
+  {/if}
   <div class="table-container">
     <table>
       <thead>
@@ -244,4 +300,30 @@
       </tbody>
     </table>
   </div>
+  {#if result.type === "ans_program"}
+    <div class="table-container">
+      <table>
+        <thead>
+          {#each program_table.getHeaderGroups() as header_group}
+            <tr>
+              {#each header_group.headers as header}
+                <th>{header.column.columnDef.header}</th>
+              {/each}
+            </tr>
+          {/each}
+        </thead>
+        <tbody>
+          {#each program_table.getRowModel().rows as row}
+            <tr>
+              {#each row.getVisibleCells() as cell}
+                <td>
+                  <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                </td>
+              {/each}
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {/if}
 {/if}

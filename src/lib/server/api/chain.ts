@@ -77,5 +77,13 @@ export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
     public async program(this: API, id: string): Promise<any> {
       return await super.get(`/program/${id}`)
     }
+
+    public async ans(this: API, name: string): Promise<string> {
+      return await super.get(`/ans/${name}`)
+    }
+
+    public async solution(this: API, id: string): Promise<any> {
+      return await super.get(`/solution/${id}`)
+    }
   }
 }
