@@ -47,7 +47,7 @@ export class APIBase {
       if (e instanceof APIError) {
         throw e
       }
-      throw new APIError(500, `Unknown error: ${e}`)
+      throw new APIError(500, `${e}`)
     }
   }
 

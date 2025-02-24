@@ -1,7 +1,7 @@
-import type { HandleServerError } from "@sveltejs/kit"
+import type { HandleClientError } from "@sveltejs/kit"
 
-export const handleError: HandleServerError = async ({ error }) => {
-  console.log("server error handler")
+export const handleError: HandleClientError = async ({ error }) => {
+  console.log("client error handler")
   console.log(error)
   // @ts-expect-error unknown
   if (error.status === 404) {
@@ -14,6 +14,6 @@ export const handleError: HandleServerError = async ({ error }) => {
   // Return a new response object
   return {
     error: error.text,
-    message: error.message,
+    message: "Unknown error",
   }
 }

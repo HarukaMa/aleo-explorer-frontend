@@ -33,5 +33,5 @@ export function server_timing(
 }
 
 export function app_error_from_api_error(err: APIError): App.Error {
-  return { error: err.name, message: err.message }
+  return { error: "Explorer API error", message: err.message }
 }
