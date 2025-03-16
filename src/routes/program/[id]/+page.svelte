@@ -254,6 +254,10 @@
     gap: 2rem;
     max-width: 40rem;
   }
+
+  :global(tr td.hljs:first-child) {
+    background: $grey-25;
+  }
 </style>
 
 {#snippet transition_id_column(value)}

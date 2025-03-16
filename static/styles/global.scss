@@ -75,7 +75,7 @@
   }
 }
 
-:global(.mono) {
+:global(.mono), :global(code) {
   font-family: "Inconsolata Variable", monospace;
   font-size: 0.9375rem;
 }
