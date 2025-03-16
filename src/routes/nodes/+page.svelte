@@ -118,13 +118,19 @@
     }
 
     .info {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      grid-column-gap: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: start;
 
       .info-data {
+        flex: auto;
+        min-width: 8rem;
         display: flex;
         flex-direction: column;
+        @media (max-width: 768px) {
+          flex: 1 1 calc(50% - 2rem);
+        }
 
         .info-data-title {
           font-family: "Open Sans Variable", system-ui;
