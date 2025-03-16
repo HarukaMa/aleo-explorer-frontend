@@ -254,10 +254,6 @@
     gap: 2rem;
     max-width: 40rem;
   }
-
-  :global(tr td.hljs:first-child) {
-    background: $grey-25;
-  }
 </style>
 
 {#snippet transition_id_column(value)}
@@ -451,7 +447,14 @@
         </div>
         <div class="details-line"></div>
         <div class="source-code-body">
-          <Highlight language={aleo} code={data.source} numberLine hideBorder --line-number-color="#9e9e9e" />
+          <Highlight
+            language={aleo}
+            code={data.source}
+            numberLine
+            hideBorder
+            backgroudColor="#f9f9f9"
+            --line-number-color="#9e9e9e"
+          />
         </div>
       </div>
     </div>

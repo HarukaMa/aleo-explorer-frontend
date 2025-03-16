@@ -12,33 +12,33 @@
         "format": "prettier --write ."
     },
     "devDependencies": {
-        "@cloudflare/workers-types": "^4.20250214.0",
-        "@sveltejs/adapter-cloudflare": "^5.0.3",
-        "@sveltejs/kit": "^2.17.2",
+        "@cloudflare/workers-types": "^4.20250313.0",
+        "@sveltejs/adapter-cloudflare": "^5.1.0",
+        "@sveltejs/kit": "^2.19.2",
         "@sveltejs/vite-plugin-svelte": "^5.0.3",
         "@types/eslint": "^9.6.1",
-        "eslint": "^9.21.0",
+        "eslint": "^9.22.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-svelte": "^2.46.1",
         "globals": "^15.15.0",
-        "prettier": "^3.5.2",
+        "prettier": "^3.5.3",
         "prettier-plugin-svelte": "^3.3.3",
-        "sass": "^1.85.0",
-        "svelte": "^5.20.2",
-        "svelte-check": "^4.1.4",
+        "sass": "^1.85.1",
+        "svelte": "^5.23.0",
+        "svelte-check": "^4.1.5",
         "tslib": "^2.8.1",
-        "typescript": "^5.7.3",
-        "typescript-eslint": "^8.24.1",
-        "vite": "^6.1.1",
-        "wrangler": "^3.109.2"
+        "typescript": "^5.8.2",
+        "typescript-eslint": "^8.26.1",
+        "vite": "^6.2.2",
+        "wrangler": "^3.114.1"
     },
     "type": "module",
     "dependencies": {
-        "@fontsource-variable/inconsolata": "^5.1.1",
-        "@fontsource-variable/montserrat": "^5.1.1",
-        "@fontsource-variable/open-sans": "^5.1.1",
+        "@fontsource-variable/inconsolata": "^5.2.5",
+        "@fontsource-variable/montserrat": "^5.2.5",
+        "@fontsource-variable/open-sans": "^5.2.5",
         "@tanstack/svelte-table": "alpha",
         "decimal.js": "^10.5.0",
-        "svelte-rune-highlight": "^0.5.13"
+        "svelte-rune-highlight": "^0.5.15"
     }
 }
