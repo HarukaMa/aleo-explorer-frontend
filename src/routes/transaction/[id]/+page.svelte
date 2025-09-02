@@ -375,6 +375,15 @@
           Not implemented
         {/if}
       </DetailLine>
+      <DetailLine label="Edition">
+        {#if state === "Accepted"}
+          {data.confirmed_transaction.transaction.deployment.edition}
+        {:else if state === "Rejected"}
+          {data.confirmed_transaction.rejected.deployment.edition}
+        {:else}
+          Not implemented
+        {/if}
+      </DetailLine>
     {/if}
     {#if state === "Accepted" || state === "Rejected"}
       <DetailLine label="Index">

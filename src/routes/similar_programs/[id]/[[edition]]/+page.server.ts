@@ -4,11 +4,15 @@ import { error } from "@sveltejs/kit"
 import { app_error_from_api_error } from "$lib/utils"
 import { APIError } from "$lib/types"
 
-export const load: PageServerLoad = async ({ params }) => {
-  const { id } = params
+export const load: PageServerLoad = async ({ url, params }) => {
+  const page = url.searchParams.get("page") || 1
+  const { id, edition } = params
   try {
     return {
-      data: await API.instance.program(id),
+      page,
+      programs: await API.instance.similar_programs(id, edition || null, page),
+      id,
+      edition,
     }
   } catch (err) {
     console.log(err)

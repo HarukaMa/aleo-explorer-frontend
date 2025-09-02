@@ -22,30 +22,28 @@
   let programs = $state(data.programs.programs)
   let total_programs = $state(data.programs.total_programs)
   let total_pages = $state(data.programs.total_pages)
+  let id = $state(data.id)
+  let edition = $state(data.edition)
 
   type ProgramList = {
     id: string
     height: number
     called: number
-    edition: number
     transaction_id: string
   }
 
   let table_data: ProgramList[] = $derived(
     programs.map((program: any) => ({
-      id: program.id,
+      id: program.program_id,
       height: program.height,
       called: program.called,
-      edition: program.edition,
       transaction_id: program.transaction_id,
     })),
   )
 
   const columns: ColumnDef<ProgramList, any>[] = [
     {
-      accessorFn: (row) => {
-        return { id: row.id, edition: row.edition }
-      },
+      accessorKey: "id",
       header: "Program ID",
       cell: (info) =>
         renderComponent(SnippetWrapper, {
@@ -70,11 +68,6 @@
           snippet: txid_column,
           value: info.getValue(),
         }),
-    },
-    {
-      accessorKey: "edition",
-      header: "Edition",
-      cell: (info) => renderComponent(Number, { number: info.getValue() }),
     },
     {
       accessorKey: "called",
@@ -121,7 +114,7 @@
 
   async function set_page(page: number) {
     table.setPageIndex(page - 1)
-    const response = await fetch(`/api/programs?p=${page}`)
+    const response = await fetch(`/api/similar_programs/${id}/${edition || 0}?p=${page}`)
     if (!response.ok) {
       throw new Error("Failed to fetch data")
     }
@@ -202,7 +195,7 @@
 
 {#snippet before_container()}
   <div class="header">
-    <div class="title">Program Registry</div>
+    <div class="title">Similar Programs</div>
     <!--    <div class="info">-->
     <!--      {#each header_data as data}-->
     <!--        <div class="info-data">-->
@@ -222,7 +215,7 @@
 
 {#snippet id_column(value)}
   <span class="mono ellipsis">
-    <Link href="/program/{value.id}/{value.edition}">{value.id}</Link>
+    <Link href="/program/{value}">{value}</Link>
   </span>
 {/snippet}
 
