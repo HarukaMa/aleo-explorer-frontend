@@ -24,7 +24,7 @@
     [
       { name: "Latest block", value: { component: Number, props: { number: summary.latest_height, flash: true } } },
       { name: "Block time", value: { component: Time, props: { timestamp: summary.latest_timestamp, flash: true } } },
-      { name: "Active validators", value: { component: Number, props: { number: summary.validators, flash: true } } },
+      { name: "Validators", value: { component: Number, props: { number: summary.validators, flash: true } } },
       {
         name: "Validator participation rate (5m)",
         value: {
@@ -142,11 +142,13 @@
 </script>
 
 <style lang="scss">
+  @use "/static/styles/variables" as *;
+
   .background {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: 600px;
     background-image: var(--home-bg);
     background-size: cover;
@@ -162,16 +164,14 @@
     letter-spacing: -0.025rem;
   }
 
-  .search-bar {
-    margin-top: 1.5rem;
-  }
-
   #summary {
-    margin-top: 3rem;
-    display: flex;
-    gap: 8rem;
-    margin-right: 4rem;
-
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    background-color: white;
+    border: 1px solid $grey-100;
+    padding: 24px;
+    border-radius: 16px;
     :global(.formatted-number),
     :global(.epoch),
     :global(.time) {
@@ -180,45 +180,34 @@
     }
   }
 
-  .column {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 50%;
+  @media (max-width: 768px) {
+    #summary {
+      grid-template-columns: 1fr;
+    }
   }
 
   .row {
-    display: flex;
     line-height: 1.25rem;
-
-    > div {
-      &:nth-child(1) {
-        display: inline;
-        width: 50%;
-      }
-
-      &:nth-child(2) {
-        display: inline;
-        width: 50%;
-        font-weight: 700;
-      }
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    & > .row-label {
+      color: $grey-600;
+      font-weight: 400;
     }
   }
 
-  #blocks {
-    margin-top: 8rem;
-
-    header {
-      font-family: "Montserrat Variable", sans-serif;
-      font-size: 1.75rem;
-      font-weight: 600;
-      line-height: 2rem;
-    }
+  h2 {
+    font-family: "Montserrat Variable", sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 2rem;
+    margin-top: 0px;
   }
 
   table {
     width: 100%;
-    margin-top: 2.5rem;
     white-space: nowrap;
   }
 
@@ -226,6 +215,25 @@
     margin: 2rem auto 0;
     display: flex;
     justify-content: center;
+  }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .content {
+    max-width: 1135px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 120px;
+  }
+
+  .table-container {
+    max-width: 100%;
+    overflow-x: auto;
   }
 </style>
 
@@ -237,54 +245,54 @@
 
 <div class="background" style:--home-bg="url({home_bg})"></div>
 
-<div class="big-title">Explore Aleo Blockchain</div>
-
-<div class="search-bar">
-  <SearchBar is_index />
-</div>
-
-<div id="summary">
-  {#each summary_data as column}
-    <div class="column">
-      {#each column as row}
-        <div class="row">
-          <div>{row.name}</div>
-          {#if row.value instanceof Object}
-            <row.value.component {...row.value.props} />
-          {:else}
-            <div>{row.value}</div>
-          {/if}
-        </div>
+<div class="content">
+  <div class="hero">
+    <div class="big-title">Explore Aleo Blockchain</div>
+    <SearchBar is_index />
+  </div>
+  <div class="overview">
+    <h2>Aleo Overview</h2>
+    <div id="summary">
+      {#each summary_data as column}
+        {#each column as row}
+          <div class="row">
+            <div class="row-label">{row.name}</div>
+            {#if row.value instanceof Object}
+              <row.value.component {...row.value.props} />
+            {:else}
+              <div>{row.value}</div>
+            {/if}
+          </div>
+        {/each}
       {/each}
     </div>
-  {/each}
-</div>
-
-<div id="blocks">
-  <header>Blocks</header>
-  <div class="table-container">
-    <table>
-      <thead>
-        {#each table.getHeaderGroups() as header_group}
-          <tr>
-            {#each header_group.headers as header}
-              <th>{header.column.columnDef.header}</th>
-            {/each}
-          </tr>
-        {/each}
-      </thead>
-      <tbody>
-        {#each table.getRowModel().rows as row}
-          <tr>
-            {#each row.getVisibleCells() as cell}
-              <td>
-                <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-              </td>
-            {/each}
-          </tr>
-        {/each}
-      </tbody>
-    </table>
+  </div>
+  <div id="blocks">
+    <h2>Blocks</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          {#each table.getHeaderGroups() as header_group}
+            <tr>
+              {#each header_group.headers as header}
+                <th>{header.column.columnDef.header}</th>
+              {/each}
+            </tr>
+          {/each}
+        </thead>
+        <tbody>
+          {#each table.getRowModel().rows as row}
+            <tr>
+              {#each row.getVisibleCells() as cell}
+                <td>
+                  <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                </td>
+              {/each}
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
