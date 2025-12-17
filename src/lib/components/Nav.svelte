@@ -2,6 +2,7 @@
   import { PUBLIC_NETWORK } from "$env/static/public"
   import NavItem from "./NavItem.svelte"
   import SearchBar from "$lib/components/SearchBar.svelte"
+  import { onMount } from "svelte"
 
   let { is_index }: { is_index: boolean } = $props()
 
@@ -12,6 +13,22 @@
   }
 
   let network = networks[PUBLIC_NETWORK] || "Unknown Network"
+
+  let aleoPrice = $state(0)
+  let priceChange24h = $state(0)
+
+  onMount(async () => {
+    try {
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=aleo&vs_currencies=usd&include_24hr_change=true",
+      )
+      const data = await response.json()
+      aleoPrice = data.aleo.usd
+      priceChange24h = data.aleo.usd_24h_change
+    } catch (error) {
+      console.error("Failed to fetch ALEO price:", error)
+    }
+  })
 
   const blockchain_routes = [
     { name: "Blocks", path: "/blocks" },
@@ -84,6 +101,7 @@
     border: 1px solid $grey-100;
     border-radius: 1.5rem;
     background: white;
+    display: none;
   }
 
   .title-network-indicator-name {
@@ -281,6 +299,48 @@
       display: none;
     }
   }
+
+  .price-tag {
+    display: flex;
+    margin: auto 0 auto 0.5rem;
+    align-items: center;
+    height: 1.5rem;
+    border-radius: 36px;
+    padding: 0px 6px;
+    gap: 8px;
+    background-color: white;
+    border: 1px solid $grey-100;
+    flex-shrink: 1;
+    font-size: 12px;
+  }
+
+  .price-tag-data {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .price-tag-price {
+    font-weight: 600;
+  }
+
+  .price-tag-trend {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .price-tag-data[data-state="positive"] > .price-tag-trend {
+    color: $green-500;
+  }
+
+  .price-tag-data[data-state="negative"] svg {
+    rotate: 180deg;
+  }
+
+  .price-tag-data[data-state="negative"] > .price-tag-trend {
+    color: $red-500;
+  }
 </style>
 
 <nav>
@@ -291,6 +351,34 @@
       </a>
       <div class="title-network-indicator-container">
         <span class="title-network-indicator-name">{network}</span>
+      </div>
+      <div class="price-tag">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="14" height="14" rx="7" fill="#121212"></rect>
+          <path
+            d="M7.89829 3.17188H7.05454H6.13179L4.59863 7.64795H5.5323L6.77419 3.99634H7.22386L8.4656 7.64795H6.75381H5.5323L5.24336 8.47241H7.03219H8.74398L9.54676 10.8281H10.5103L7.89829 3.17188Z"
+            fill="white"
+          ></path>
+          <path d="M3.50879 10.8284H4.44013L5.24309 8.47266H4.31586L3.50879 10.8284Z" fill="white"></path>
+          <path d="M3.67312 7.64795L3.39062 8.4724H4.31606L4.59856 7.64795H3.67312Z" fill="white"></path>
+        </svg>
+        <div
+          class="price-tag-data"
+          data-state={priceChange24h !== null && priceChange24h >= 0 ? "positive" : "negative"}
+        >
+          <p class="price-tag-price">${aleoPrice?.toFixed(2)}</p>
+          {#if priceChange24h !== null}
+            <div class="price-tag-trend">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M6.50033 3.914V10H5.50033V3.914L2.81833 6.596L2.11133 5.889L6.00033 2L9.88933 5.889L9.18233 6.596L6.50033 3.914Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+              <p>{Math.abs(priceChange24h).toFixed(2)}%</p>
+            </div>
+          {/if}
+        </div>
       </div>
     </div>
     <div class="nav-links">
