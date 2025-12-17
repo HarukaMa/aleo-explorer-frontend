@@ -391,6 +391,7 @@
 
   table {
     width: 100%;
+    white-space: nowrap;
   }
 
   .tab {
