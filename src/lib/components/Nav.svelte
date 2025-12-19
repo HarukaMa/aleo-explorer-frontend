@@ -366,7 +366,7 @@
           class="price-tag-data"
           data-state={priceChange24h !== null && priceChange24h >= 0 ? "positive" : "negative"}
         >
-          <p class="price-tag-price">${aleoPrice?.toFixed(2)}</p>
+          <p class="price-tag-price">${aleoPrice?.toFixed(3)}</p>
           {#if priceChange24h !== null}
             <div class="price-tag-trend">
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
