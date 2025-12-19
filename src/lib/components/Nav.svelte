@@ -39,7 +39,6 @@
   ]
 
   const proving_routes = [
-    { name: "Leaderboard", path: "/incentive" },
     { name: "Calculator", path: "/calculator" },
   ]
 
