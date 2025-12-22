@@ -12,6 +12,7 @@
   import Link from "$lib/components/Link.svelte"
   import Callout from "$lib/components/Callout.svelte"
   import Time from "$lib/components/Time.svelte"
+    import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data: server_data } = $props()
   let { data, address } = $derived(server_data)
@@ -784,3 +785,9 @@
     </div>
   {/snippet}
 </Tabs>
+
+<PageInformation
+  title="Address"
+  description="An address in the Aleo blockchain serves as a unique identifier for users or entities. It is used to send and receive credits, interact with programs, and store transaction history. Addresses are essential for identifying participants on the network."
+  icon="address-icon"
+/>

@@ -6,6 +6,7 @@
   import type { BeforeContainerState } from "$lib/types"
   import { getContext } from "svelte"
   import Link from "$lib/components/Link.svelte"
+  import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data } = $props()
 
@@ -273,3 +274,8 @@
     </tbody>
   </table>
 </div>
+
+<PageInformation
+  title="Node"
+  description="A node in the Aleo blockchain is a device or computer that participates in the network by running the blockchain’s software. Nodes can validate transactions, store blockchain data, and relay information across the network. They are essential for maintaining the decentralized nature and security of the blockchain."
+/>

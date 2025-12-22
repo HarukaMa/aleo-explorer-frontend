@@ -16,6 +16,7 @@
   import Link from "$lib/components/Link.svelte"
   import Callout from "$lib/components/Callout.svelte"
   import Status from "$lib/components/Status.svelte"
+    import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data } = $props()
   let { block, height } = $derived(data)
@@ -720,3 +721,9 @@
     </div>
   {/snippet}
 </Tabs>
+
+<PageInformation
+  title="Block"
+  description="A block in the Aleo blockchain is a fundamental unit that records transactions and state transitions. It is cryptographically secured and linked to the previous block, forming a chain. Each block contains data that is validated by the network’s consensus mechanism."
+  icon="block-icon"
+/>

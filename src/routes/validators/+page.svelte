@@ -8,6 +8,7 @@
   import AleoCredit from "$lib/components/AleoToken.svelte"
   import Number from "$lib/components/Number.svelte"
   import Status from "$lib/components/Status.svelte"
+  import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data: load_data } = $props()
 
@@ -255,3 +256,9 @@
     </tbody>
   </table>
 </div>
+
+<PageInformation
+  title="Validator"
+  description="A validator is a crucial participant in the Aleo blockchain responsible for verifying transactions and adding new blocks. Validators stake credits to secure the network and ensure its integrity by solving cryptographic puzzles. Their role is essential for maintaining the consensus and stability of the network."
+  icon="validator-icon"
+/>

@@ -13,6 +13,7 @@
   import Status from "$lib/components/Status.svelte"
   import AleoToken from "$lib/components/AleoToken.svelte"
   import FeeBreakdown from "$lib/components/FeeBreakdown.svelte"
+    import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -554,3 +555,10 @@
     </div>
   {/snippet}
 </Tabs>
+
+
+<PageInformation
+  title="Transaction"
+  description="A transaction in Aleo is an on-chain action that facilitates the transfer of credits, interaction with smart contracts, or execution of operations. Each transaction is processed by validators and added to a block. Transactions are a key component of maintaining the dynamic state of the blockchain."
+  icon="transaction-icon"
+/>

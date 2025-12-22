@@ -17,6 +17,7 @@
   import TableNav from "$lib/components/TableNav.svelte"
   import Decimal from "decimal.js"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+    import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data } = $props()
 
@@ -265,3 +266,9 @@
 {#key pagination}
   <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
 {/key}
+
+<PageInformation
+  title="Transaction"
+  description="A transaction in Aleo is an on-chain action that facilitates the transfer of credits, interaction with smart contracts, or execution of operations. Each transaction is processed by validators and added to a block. Transactions are a key component of maintaining the dynamic state of the blockchain."
+  icon="transaction-icon"
+/>

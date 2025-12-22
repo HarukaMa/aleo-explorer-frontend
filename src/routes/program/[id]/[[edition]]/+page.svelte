@@ -26,6 +26,7 @@
   import ReadMapping from "$lib/components/ReadMapping.svelte"
   import Callout from "$lib/components/Callout.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
+    import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -486,3 +487,9 @@
     </div>
   {/snippet}
 </Tabs>
+
+<PageInformation
+  title="Program"
+  description="A program on the Aleo blockchain is a smart contract that allows users to interact with private computations. These programs leverage zero-knowledge cryptography to ensure that the details of transactions and operations remain private. Programs can be deployed and called by any participant on the network."
+  icon="program-icon"
+/>

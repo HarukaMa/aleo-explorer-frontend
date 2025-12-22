@@ -18,6 +18,7 @@
   import Decimal from "decimal.js"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
+  import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data } = $props()
 
@@ -218,3 +219,9 @@
 {#key pagination}
   <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
 {/key}
+
+<PageInformation
+  title="Block"
+  description="A block in the Aleo blockchain is a fundamental unit that records transactions and state transitions. It is cryptographically secured and linked to the previous block, forming a chain. Each block contains data that is validated by the network’s consensus mechanism."
+  icon="block-icon"
+/>

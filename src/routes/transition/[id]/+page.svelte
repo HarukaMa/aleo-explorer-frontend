@@ -5,6 +5,7 @@
   import Tabs from "$lib/components/Tabs.svelte"
   import Link from "$lib/components/Link.svelte"
   import Status from "$lib/components/Status.svelte"
+    import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -317,3 +318,9 @@
     {/if}
   {/snippet}
 </Tabs>
+
+<PageInformation
+  title="Transition"
+  description="A transition in the Aleo blockchain represents a change in the program state, triggered by a specific transaction. It involves the execution of functions or operations within the network’s smart contracts. Transitions are integral to updating the state and logic of deployed programs."
+  icon="transition-icon"
+/>
