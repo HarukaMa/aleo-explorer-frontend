@@ -110,6 +110,7 @@
   }
 
   let total_pages = $derived(Math.ceil(data.recent_calls.length / pagination.pageSize))
+  let transition_rows = $derived(transition_table.getPaginationRowModel().flatRows)
 
   let before_container_state: BeforeContainerState = getContext("before_container")
   before_container_state.snippet = before_container
@@ -408,35 +409,39 @@
   {/snippet}
   {#snippet recent_calls(binds)}
     <div class="tab" bind:this={binds.recent_calls}>
-      <div class="table-container">
-        <table>
-          <thead>
-            {#each transition_table.getHeaderGroups() as header_group}
-              <tr>
-                {#each header_group.headers as header}
-                  <th>{header.column.columnDef.header}</th>
-                {/each}
-              </tr>
-            {/each}
-          </thead>
-          <tbody>
-            {#key pagination}
-              {#each transition_table.getPaginationRowModel().flatRows as row}
+      {#if transition_rows.length === 0}
+        <Callout title="No transitions" description="There are no transitions in this program yet." icon="list-icon" />
+      {:else}
+        <div class="table-container">
+          <table>
+            <thead>
+              {#each transition_table.getHeaderGroups() as header_group}
                 <tr>
-                  {#each row.getVisibleCells() as cell}
-                    <td>
-                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                    </td>
+                  {#each header_group.headers as header}
+                    <th>{header.column.columnDef.header}</th>
                   {/each}
                 </tr>
               {/each}
-            {/key}
-          </tbody>
-        </table>
-        {#key pagination}
-          <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
-        {/key}
-      </div>
+            </thead>
+            <tbody>
+              {#key pagination}
+                {#each transition_rows as row}
+                  <tr>
+                    {#each row.getVisibleCells() as cell}
+                      <td>
+                        <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                      </td>
+                    {/each}
+                  </tr>
+                {/each}
+              {/key}
+            </tbody>
+          </table>
+          {#key pagination}
+            <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
+          {/key}
+        </div>
+      {/if}
     </div>
   {/snippet}
   {#snippet source_code(binds)}
