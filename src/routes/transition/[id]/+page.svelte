@@ -1,11 +1,12 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import { type BeforeContainerState, StatusClass } from "$lib/types"
   import { getContext } from "svelte"
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
   import Link from "$lib/components/Link.svelte"
   import Status from "$lib/components/Status.svelte"
-    import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -123,6 +124,12 @@
     }
   }
 </style>
+
+<Seo
+  title="Aleo Transition {transition.id} | AleoScan - Aleo Blockchain Explorer"
+  description="View Aleo transition {transition.id}. Check execution inputs, outputs, transaction hash, and smart contract calls."
+  keywords="Aleo transition, transaction execution, program calls, blockchain transition"
+/>
 
 {#snippet before_container()}
   <div class="header">

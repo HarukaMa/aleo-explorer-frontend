@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import { type BeforeContainerState, type BlockList } from "$lib/types"
   import {
     type ColumnDef,
@@ -17,7 +18,7 @@
   import TableNav from "$lib/components/TableNav.svelte"
   import Decimal from "decimal.js"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
-    import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data } = $props()
 
@@ -211,6 +212,12 @@
     white-space: nowrap;
   }
 </style>
+
+<Seo
+  title="Aleo Transaction List | AleoScan - Aleo Blockchain Explorer"
+  description="Track the latest Aleo transactions. View transaction hash, sender, recipient, gas fees, and block confirmations."
+  keywords="Aleo transactions, blockchain transfers, transaction hash, zk transactions"
+/>
 
 {#snippet before_container()}
   <div class="header">

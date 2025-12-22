@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import { type BeforeContainerState, StatusClass } from "$lib/types"
   import { getContext } from "svelte"
   import Number from "$lib/components/Number.svelte"
@@ -16,7 +17,7 @@
   import Link from "$lib/components/Link.svelte"
   import Callout from "$lib/components/Callout.svelte"
   import Status from "$lib/components/Status.svelte"
-    import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data } = $props()
   let { block, height } = $derived(data)
@@ -413,6 +414,12 @@
     line-height: 1.25rem;
   }
 </style>
+
+<Seo
+  title="{height} Aleo Block | AleoScan - Aleo Blockchain Explorer"
+  description="View Aleo block {height} details. Check transactions, validator, block hash and confirmations."
+  keywords="Aleo block, blockchain explorer, block details, validator, transactions, gas fees"
+/>
 
 {#snippet transaction_id_column(value)}
   <div class="mono ellipsis">

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import home_bg from "$lib/assets/images/home_bg.svg"
   import SearchBar from "$lib/components/SearchBar.svelte"
   import Number from "$lib/components/Number.svelte"
@@ -236,6 +237,12 @@
     overflow-x: auto;
   }
 </style>
+
+<Seo
+  title="Aleo Blockchain Explorer | AleoScan - Track Blocks & Transactions"
+  description="AleoScan is a powerful Aleo blockchain explorer. Track transactions, blocks, validators, programs, and smart contracts in real-time."
+  keywords="Aleo explorer, zk blockchain, Aleo blocks, private transactions, zk contracts, zk"
+/>
 
 {#snippet height_column(value)}
   <Link href="/block/{value}">

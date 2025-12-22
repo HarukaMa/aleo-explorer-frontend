@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import type { BeforeContainerState } from "$lib/types"
   import { getContext } from "svelte"
   import Number from "$lib/components/Number.svelte"
@@ -12,7 +13,7 @@
   import Link from "$lib/components/Link.svelte"
   import Callout from "$lib/components/Callout.svelte"
   import Time from "$lib/components/Time.svelte"
-    import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data: server_data } = $props()
   let { data, address } = $derived(server_data)
@@ -395,6 +396,12 @@
     background-repeat: no-repeat;
   }
 </style>
+
+<Seo
+  title="Aleo Address {address} | AleoScan - Aleo Blockchain Explorer"
+  description="Check Aleo address {address} details. View public transaction history, and public balance."
+  keywords="Aleo address, transactions, account balance, blockchain address lookup"
+/>
 
 {#snippet address_column(value)}
   <div class="mono ellipsis">

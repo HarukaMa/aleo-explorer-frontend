@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import { type BeforeContainerState, StatusClass } from "$lib/types"
   import { getContext } from "svelte"
   import Number from "$lib/components/Number.svelte"
@@ -13,7 +14,7 @@
   import Status from "$lib/components/Status.svelte"
   import AleoToken from "$lib/components/AleoToken.svelte"
   import FeeBreakdown from "$lib/components/FeeBreakdown.svelte"
-    import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -260,6 +261,12 @@
     }
   }
 </style>
+
+<Seo
+  title="Aleo Transaction {data.tx_id} | AleoScan - Aleo Blockchain Explorer"
+  description="Explore Aleo transaction {data.tx_id}. View sender, recipient, status, gas fees, and block height."
+  keywords="Aleo transaction, blockchain transfer, transaction hash, zk transaction fees"
+/>
 
 {#snippet transition_id_column(value)}
   <div class="mono ellipsis">

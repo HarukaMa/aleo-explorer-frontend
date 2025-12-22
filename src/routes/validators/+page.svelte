@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import Decimal from "decimal.js"
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
   import { type BeforeContainerState, StatusClass } from "$lib/types"
@@ -188,6 +189,12 @@
     line-height: 1rem;
   }
 </style>
+
+<Seo
+  title="Aleo Validators List | AleoScan - Aleo Blockchain Explorer"
+  description="Browse Aleo validators. View staking rewards, commission rates, uptime, and delegation stats."
+  keywords="Aleo validators, staking, proof-of-stake, validator rewards, delegation"
+/>
 
 {#snippet before_container()}
   <div class="header">

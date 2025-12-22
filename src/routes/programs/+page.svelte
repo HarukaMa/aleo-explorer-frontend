@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import { type BeforeContainerState } from "$lib/types"
   import {
     type ColumnDef,
@@ -14,7 +15,7 @@
   import { getContext } from "svelte"
   import TableNav from "$lib/components/TableNav.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
-    import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data } = $props()
 
@@ -201,6 +202,12 @@
     white-space: nowrap;
   }
 </style>
+
+<Seo
+  title="Aleo Programs List | AleoScan - Aleo Blockchain Explorer"
+  description="Discover Aleo smart programs. View deployed contracts, execution data, and transaction logs."
+  keywords="Aleo programs, smart contracts, blockchain contracts, zero-knowledge applications"
+/>
 
 {#snippet before_container()}
   <div class="header">

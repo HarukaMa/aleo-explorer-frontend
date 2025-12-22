@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import { type BeforeContainerState, type BlockList } from "$lib/types"
   import {
     type ColumnDef,
@@ -164,6 +165,12 @@
     white-space: nowrap;
   }
 </style>
+
+<Seo
+  title="Aleo Blocks List | AleoScan - Aleo Blockchain Explorer"
+  description="Explore recent Aleo blocks. View height, timestamp, transactions, block hash, and validators in real-time."
+  keywords="Aleo blocks, blockchain explorer, latest blocks, transactions, validators"
+/>
 
 {#snippet before_container()}
   <div class="header">

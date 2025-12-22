@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import { type BeforeContainerState, ButtonLinkClass, StatusClass } from "$lib/types"
   import { getContext } from "svelte"
   import Number from "$lib/components/Number.svelte"
@@ -26,7 +27,7 @@
   import ReadMapping from "$lib/components/ReadMapping.svelte"
   import Callout from "$lib/components/Callout.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
-    import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageInformation from "$lib/components/PageInformation.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -258,6 +259,12 @@
     max-width: 40rem;
   }
 </style>
+
+<Seo
+  title="Aleo Program {data.program_id} | AleoScan - Aleo Blockchain Explorer"
+  description="Explore Aleo program {data.program_id}. View contract execution, function calls, and transaction logs."
+  keywords="Aleo smart contracts, Aleo program, contract execution, privacy blockchain"
+/>
 
 {#snippet transition_id_column(value)}
   <div class="mono ellipsis">

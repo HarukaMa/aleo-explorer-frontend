@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Seo from "$lib/components/Seo.svelte"
   import UIAddress from "$lib/components/UIAddress.svelte"
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
@@ -186,6 +187,12 @@
     display: inline-block;
   }
 </style>
+
+<Seo
+  title="Aleo Nodes List | AleoScan - Aleo Blockchain Explorer"
+  description="View Aleo blockchain nodes. Check validator nodes, uptime, geolocation, and consensus participation."
+  keywords="Aleo nodes, blockchain network, validator nodes, proof-of-stake, network security"
+/>
 
 {#snippet before_container()}
   <div class="header">
