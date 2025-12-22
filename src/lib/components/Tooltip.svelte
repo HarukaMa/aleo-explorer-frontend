@@ -33,10 +33,10 @@
 
   .tooltip {
     position: absolute;
-    padding: 0.75rem 1rem;
-    background-color: $grey-800;
+    padding: 0.5rem 0.75rem;
+    background-color: black;
     color: white;
-    border-radius: 0.5rem;
+    border-radius: 0.25rem;
     font-size: 0.875rem;
     line-height: 1.5;
     white-space: normal;
@@ -59,7 +59,7 @@
         top: 100%;
         left: 50%;
         transform: translateX(-50%);
-        border-top-color: $grey-800;
+        border-top-color: black;
       }
     }
 
@@ -72,7 +72,7 @@
         bottom: 100%;
         left: 50%;
         transform: translateX(-50%);
-        border-bottom-color: $grey-800;
+        border-bottom-color: black;
       }
     }
 
@@ -85,7 +85,7 @@
         right: 100%;
         top: 50%;
         transform: translateY(-50%);
-        border-right-color: $grey-800;
+        border-right-color: black;
       }
     }
 
@@ -98,7 +98,7 @@
         left: 100%;
         top: 50%;
         transform: translateY(-50%);
-        border-left-color: $grey-800;
+        border-left-color: black;
       }
     }
   }
