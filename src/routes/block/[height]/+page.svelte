@@ -485,19 +485,19 @@
 
 <div class="details">
   <div class="group">
-    <DetailLine label="Height">
+    <DetailLine label="Height" tooltip="The index of the block in the chain.">
       <Number number={block.block.header.metadata.height} />
     </DetailLine>
-    <DetailLine label="Block hash">
-      <span class="mono">{block.block.block_hash}</span>
-    </DetailLine>
-    <DetailLine label="Timestamp">
+    <DetailLine label="Timestamp" tooltip="The exact time the block was added.">
       {format_time(new Date(block.block.header.metadata.timestamp * 1000), TimeMode.Relative)}
       <!-- @formatter:off -->
       (<Time no_relative timestamp={block.block.header.metadata.timestamp} />)
       <!-- @formatter:on -->
     </DetailLine>
-    <DetailLine label="Epoch">
+    <DetailLine label="Block hash" tooltip="A cryptographic identifier for this block.">
+      <span class="mono">{block.block.block_hash}</span>
+    </DetailLine>
+    <DetailLine label="Epoch" tooltip="The consensus period in which the block was produced.">
       <div class="column">
         <span>{Math.floor(block.block.header.metadata.height / 360)}</span>
         <span class="secondary">{block.block.header.metadata.height % 360} / 360</span>
@@ -508,7 +508,7 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Validators">
+    <DetailLine label="Validators" tooltip="Entities responsible for validating and adding the block.">
       {block.all_validators.length}
       <a id="validator-toggle" onclick={toggle_validators} onkeydown={toggle_validators} role="button" tabindex="0"
         >(Show validators)</a
@@ -531,13 +531,13 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Proof target">
+    <DetailLine label="Proof target" tooltip="The difficulty level needed to validate a block.">
       <Number number={block.block.header.metadata.proof_target}></Number>
     </DetailLine>
-    <DetailLine label="Coinbase target">
+    <DetailLine label="Coinbase target" tooltip="The difficulty required to generate validator rewards.">
       <Number number={block.block.header.metadata.coinbase_target}></Number>
     </DetailLine>
-    <DetailLine label="Cumulative proof target">
+    <DetailLine label="Cumulative proof target" tooltip="The total difficulty for all validated blocks up to this one.">
       <div class="column">
         <Number number={block.block.header.metadata.cumulative_proof_target}></Number>
         <!-- @formatter:off -->
@@ -557,10 +557,10 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Block reward">
+    <DetailLine label="Block reward" tooltip="The reward given to validators for processing the block.">
       <AleoCredit number={rewards.block} suffix={true}></AleoCredit>
     </DetailLine>
-    <DetailLine label="Puzzle reward">
+    <DetailLine label="Puzzle reward" tooltip="The reward for solving the cryptographic proving puzzle.">
       <AleoCredit number={rewards.puzzle} suffix={true}></AleoCredit>
     </DetailLine>
   </div>
@@ -568,7 +568,7 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Total fee">
+    <DetailLine label="Total fee" tooltip="The sum of all transaction fees included in the block.">
       <div class="column">
         <AleoCredit number={total_fee.base.add(total_fee.priority)} suffix={true}></AleoCredit>
         <span class="secondary">
@@ -625,24 +625,21 @@
     <div class="tab" bind:this={binds.block_info}>
       <div class="details">
         <div class="group">
-          <DetailLine label="Round">
+          <DetailLine label="Round" tooltip="The iteration used for consensus and block production.">
             <Number number={block.block.header.metadata.round} />
           </DetailLine>
-          <DetailLine label="Cumulative weight">
+          <DetailLine label="Cumulative weight" tooltip="The total weight of all previous blocks, measuring overall difficulty.">
             <Number number={block.block.header.metadata.cumulative_weight} />
-          </DetailLine>
-          <DetailLine label="Total supply">
-            <AleoCredit number={new Decimal(block.total_supply)} suffix={true} />
           </DetailLine>
         </div>
         <div class="group">
           <div class="details-line"></div>
         </div>
         <div class="group">
-          <DetailLine label="Previous block hash">
+          <DetailLine label="Previous block hash" tooltip="The hash of the block immediately before this one.">
             <span class="mono">{block.block.previous_hash}</span>
           </DetailLine>
-          <DetailLine label="Previous state root">
+          <DetailLine label="Previous state root" tooltip="The state root representing the global state before this block.">
             <span class="mono">{block.block.header.previous_state_root}</span>
           </DetailLine>
         </div>
@@ -650,16 +647,16 @@
           <div class="details-line"></div>
         </div>
         <div class="group">
-          <DetailLine label="Transactions root">
+          <DetailLine label="Transactions root" tooltip="The hash of all transactions included in this block.">
             <span class="mono">{block.block.header.transactions_root}</span>
           </DetailLine>
-          <DetailLine label="Finalize root">
+          <DetailLine label="Finalize root" tooltip="The state root marking finalized state for this block.">
             <span class="mono">{block.block.header.finalize_root}</span>
           </DetailLine>
-          <DetailLine label="Ratifications root">
+          <DetailLine label="Ratifications root" tooltip="The state root after all ratifications.">
             <span class="mono">{block.block.header.ratifications_root}</span>
           </DetailLine>
-          <DetailLine label="Solutions root">
+          <DetailLine label="Solutions root" tooltip="The state root reflecting all proving solutions submitted for this block.">
             <span class="mono">{block.block.header.solutions_root}</span>
           </DetailLine>
         </div>

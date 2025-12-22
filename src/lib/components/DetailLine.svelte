@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte"
+  import Tooltip from "./Tooltip.svelte"
 
   interface DetailLine {
     label: string
@@ -8,6 +9,8 @@
   }
 
   let { label, children, tooltip }: DetailLine = $props()
+
+  let showTooltip = $state(false)
 </script>
 
 <style lang="scss">
@@ -32,7 +35,14 @@
     font-size: 0.875rem;
   }
 
-  .tooltip {
+  .tooltip-trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: help;
+  }
+
+  .tooltip-icon {
     width: 16px;
     height: 16px;
     background-image: $info-icon;
@@ -54,10 +64,20 @@
 
 <div class="line">
   <div class="left">
-    <div class="label">{label}</div>
     {#if tooltip}
-      <div class="tooltip" title={tooltip}></div>
+      <div
+        class="tooltip-trigger"
+        onmouseenter={() => (showTooltip = true)}
+        onmouseleave={() => (showTooltip = false)}
+        role="tooltip"
+      >
+        <div class="tooltip-icon"></div>
+        {#if showTooltip}
+          <Tooltip>{tooltip}</Tooltip>
+        {/if}
+      </div>
     {/if}
+    <div class="label">{label}</div>
   </div>
   <div class="right">
     {@render children()}
