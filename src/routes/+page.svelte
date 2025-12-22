@@ -224,7 +224,7 @@
   }
 
   .content {
-    max-width: 1135px;
+    max-width: 1620px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
