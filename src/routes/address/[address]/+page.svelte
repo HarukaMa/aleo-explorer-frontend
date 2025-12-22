@@ -388,8 +388,10 @@
   .address-alert-icon {
     height: 1.25rem;
     width: 1.25rem;
+    flex-shrink: 0;
     background-color: $yellow-600;
     mask-image: $alert-icon;
+    background-repeat: no-repeat;
   }
 </style>
 
