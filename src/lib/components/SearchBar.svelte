@@ -2,6 +2,23 @@
   let { is_index = false } = $props()
 
   let input: HTMLInputElement | undefined = $state(undefined)
+  let is_mobile = $state(false)
+
+  $effect(() => {
+    const mq = window.matchMedia("(max-width: 768px)")
+    is_mobile = mq.matches
+
+    const handler = (e: MediaQueryListEvent) => {
+      is_mobile = e.matches
+    }
+    mq.addEventListener("change", handler)
+
+    return () => mq.removeEventListener("change", handler)
+  })
+
+  const placeholder = $derived(
+    is_mobile ? "Address, transaction, validator" : "Search for address, transaction, validator..."
+  )
 
   function focus_search() {
     if (input) {
@@ -137,19 +154,6 @@
     font-size: inherit;
   }
 
-  .with-long-placeholder {
-    @media (max-width: 768px) {
-      display: none;
-    }
-  }
-
-  .with-short-placeholder {
-    display: none;
-
-    @media (max-width: 768px) {
-      display: flex;
-    }
-  }
 </style>
 
 <div
@@ -161,8 +165,7 @@
 >
   <div class="search-icon"></div>
   <form action="/search" onsubmit={clear_search}>
-    <input bind:this={input} name="q" class="with-long-placeholder" placeholder="Search for address, transaction, validator..." type="text" />
-    <input bind:this={input} name="q" class="with-short-placeholder" placeholder="Address, transaction, validator" type="text" />
+    <input bind:this={input} name="q" {placeholder} type="text" />
   </form>
   <div class="keyboard-shortcut">/</div>
 </div>

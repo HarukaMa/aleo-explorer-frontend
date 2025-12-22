@@ -4,60 +4,64 @@ import { error, redirect } from "@sveltejs/kit"
 import { app_error_from_api_error } from "$lib/utils"
 import { APIError, SearchError } from "$lib/types"
 
+const redirectIfSingle = (items: string[], path: string) => {
+  if (items.length === 1) {
+    redirect(307, `/${path}/${items[0]}`)
+  }
+  if (items.length === 0) {
+    return SearchError.NotFound
+  }
+}
+
 export const load: PageServerLoad = async ({ url }) => {
   try {
     const query = url.searchParams.get("q")
-    // just in case some links or the component is broken
+
     if (!query || query.length < 3) {
-      // don't hit backend for meaningless search
       return {
         query: "",
         result: {},
         error: SearchError.QueryTooShort,
       }
     }
+
     const result = await API.instance.search(query)
+    console.log(`result`, result)
+    let error: SearchError | undefined
 
-    let error = undefined
+    switch (result.type) {
+      case "block":
+        redirect(307, `/block/${result.height}`)
+        break
 
-    if (result.type === "block") {
-      redirect(307, `/block/${result.height}`)
-    } else if (result.type === "blocks") {
-      if (result.blocks.length === 1) {
-        redirect(307, `/block/${result.blocks[0]}`)
-      } else if (result.blocks.length === 0) {
-        error = SearchError.NotFound
-      }
-    } else if (result.type === "transactions") {
-      if (result.transactions.length === 1) {
-        redirect(307, `/transaction/${result.transactions[0]}`)
-      } else if (result.transactions.length === 0) {
-        error = SearchError.NotFound
-      }
-    } else if (result.type === "transitions") {
-      if (result.transitions.length === 1) {
-        redirect(307, `/transition/${result.transitions[0]}`)
-      } else if (result.transitions.length === 0) {
-        error = SearchError.NotFound
-      }
-    } else if (result.type === "addresses") {
-      if (result.addresses.length === 1) {
-        redirect(307, `/address/${result.addresses[0]}`)
-      } else if (result.addresses.length === 0) {
-        error = SearchError.NotFound
-      }
-    } else if (result.type === "solutions") {
-      if (result.solutions.length === 1) {
-        redirect(307, `/solution/${result.solutions[0]}`)
-      } else if (result.solutions.length === 0) {
-        error = SearchError.NotFound
-      }
-    } else if (result.type === "ans_program") {
-      if (result.programs.length === 0 && result.names.length === 1) {
-        redirect(307, `/ans/${result.names[0]}`)
-      } else if (result.programs.length === 1 && result.names.length === 0) {
-        redirect(307, `/program/${result.programs[0]}`)
-      }
+      case "blocks":
+        error = redirectIfSingle(result.blocks, "block")
+        break
+
+      case "transactions":
+        error = redirectIfSingle(result.transactions, "transaction")
+        break
+
+      case "transitions":
+        error = redirectIfSingle(result.transitions, "transition")
+        break
+
+      case "addresses":
+        error = redirectIfSingle(result.addresses, "address")
+        break
+
+      case "solutions":
+        error = redirectIfSingle(result.solutions, "solution")
+        break
+
+      case "ans_program":
+        if (result.programs.length === 0 && result.names.length === 1) {
+          redirect(307, `/ans/${result.names[0]}`)
+        }
+        if (result.programs.length === 1 && result.names.length === 0) {
+          redirect(307, `/program/${result.programs[0]}`)
+        }
+        break
     }
 
     return {
