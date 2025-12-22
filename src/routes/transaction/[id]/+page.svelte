@@ -40,34 +40,34 @@
     index: string
     transition_id: string
     action: { program: string; function: string }
+    status: string
   }
 
   let transitions = $derived.by(() => {
-    if (type === "Execute") {
-      if (state === "Accepted") {
-        const tx = data.confirmed_transaction.transaction
-        let list = [...tx.execution.transitions]
-        if (tx.fee) {
-          list.push(tx.fee.transition)
+    switch (type) {
+      case "Execute": {
+        const currentState = state ?? "Unconfirmed"
+        const transaction = data.confirmed_transaction?.transaction ?? data
+
+        if (currentState === "Rejected") {
+          return [{ ...transaction.fee.transition, state: currentState }]
         }
-        return list
-      } else if (state === "Rejected") {
-        return [data.confirmed_transaction.transaction.fee.transition]
-      } else {
-        let list = [...data.transaction.execution.transitions]
-        if (data.transaction.fee) {
-          list.push(data.transaction.fee.transition)
+
+        const transitions = [...transaction.execution.transitions]
+        if (transaction.fee) {
+          transitions.push(transaction.fee.transition)
         }
-        return list
+
+        return transitions.map((transition) => ({ ...transition, state: currentState }))
       }
-    } else if (type === "Deploy") {
-      if (data.confirmed_transaction) {
-        return [data.confirmed_transaction.transaction.fee.transition]
-      } else {
-        return [data.transaction.fee.transition]
+
+      case "Deploy": {
+        const transaction = data.confirmed_transaction?.transaction ?? data.transaction
+        return [{ ...transaction.fee.transition, state }]
       }
-    } else {
-      return []
+
+      default:
+        return []
     }
   })
 
@@ -76,6 +76,7 @@
   let transition_table_data: TransitionList[] = $derived(
     transitions.map((transition: any, index: number) => {
       let display_index = index.toString()
+
       if (
         index === transitions.length - 1 &&
         transition.program_id === "credits.aleo" &&
@@ -83,6 +84,7 @@
       ) {
         display_index = "Fee"
       }
+
       return {
         index: display_index,
         transition_id: transition.id,
@@ -90,6 +92,7 @@
           program: transition.program_id,
           function: transition.function_name,
         },
+        status: transition.state,
       }
     }),
   )
@@ -109,6 +112,11 @@
       accessorKey: "action",
       header: "Action",
       cell: (info) => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: (info) => renderComponent(SnippetWrapper, { snippet: status_column, value: info.getValue() }),
     },
   ]
 
@@ -287,6 +295,16 @@
   </div>
 {/snippet}
 
+{#snippet status_column(value)}
+  {#if value?.startsWith("Accepted")}
+    <Status cls={StatusClass.Success}>Accepted</Status>
+  {:else if value?.startsWith("Rejected")}
+    <Status cls={StatusClass.Danger}>Rejected</Status>
+  {:else}
+    <Status cls={StatusClass.Warning}>Unknown</Status>
+  {/if}
+{/snippet}
+
 <div class="details">
   <div class="group">
     <DetailLine label="Transaction ID">
@@ -456,6 +474,7 @@
                 <th>Index</th>
                 <th>Transition ID</th>
                 <th>Action</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -473,6 +492,17 @@
                       <Link href="/program/{transition.program_id}">
                         <span class="secondary mono">{transition.program_id}</span>
                       </Link>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="column">
+                      {#if transition.status.startsWith("Accepted")}
+                        <Status cls={StatusClass.Success}>Accepted</Status>
+                      {:else if transition.status.startsWith("Rejected")}
+                        <Status cls={StatusClass.Danger}>Rejected</Status>
+                      {:else}
+                        <Status cls={StatusClass.Warning}>Unknown</Status>
+                      {/if}
                     </div>
                   </td>
                 </tr>
