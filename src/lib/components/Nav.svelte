@@ -38,9 +38,7 @@
     { name: "Nodes", path: "/nodes" },
   ]
 
-  const proving_routes = [
-    { name: "Calculator", path: "/calculator" },
-  ]
+  const proving_routes = [{ name: "Calculator", path: "/calculator" }]
 
   const developers_routes = [
     { name: "Tools", path: "/tools" },
@@ -61,21 +59,17 @@
 <style lang="scss">
   @use "/static/styles/variables" as *;
 
-  /* top bar related */
-
   nav {
     display: flex;
-    height: 4.5rem;
     align-items: center;
+    height: auto;
   }
 
   .nav-main {
     display: flex;
-    //max-width: 1136px;
-    margin: 0 auto;
+    width: 100%;
     height: 4.5rem;
     align-items: center;
-    flex-grow: 1;
   }
 
   .nav-main-title {
@@ -215,7 +209,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 4rem;
+    height: 4.5rem;
     padding: 0 1rem;
   }
 
@@ -274,7 +268,7 @@
     height: 40px;
     display: flex;
     align-items: center;
-    padding: 8px;
+    padding: 0px 8px;
     border-radius: 8px;
     &:hover {
       background: $grey-25;
@@ -282,10 +276,6 @@
   }
 
   @media (max-width: 768px) {
-    nav {
-      height: 4rem;
-    }
-
     .nav-links {
       display: none;
     }
@@ -294,8 +284,14 @@
       display: block;
     }
 
+    nav {
+      align-items: start;
+      flex-direction: column;
+    }
+
     .search {
-      display: none;
+      margin-bottom: 1rem;
+      margin-left: 0;
     }
   }
 

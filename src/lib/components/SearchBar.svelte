@@ -106,6 +106,10 @@
     .search-bar-container {
       width: 90vw;
     }
+
+    .keyboard-shortcut {
+      display: none !important;
+    }
   }
 
   form {
@@ -132,6 +136,20 @@
     font-family: inherit;
     font-size: inherit;
   }
+
+  .with-long-placeholder {
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .with-short-placeholder {
+    display: none;
+
+    @media (max-width: 768px) {
+      display: flex;
+    }
+  }
 </style>
 
 <div
@@ -143,7 +161,8 @@
 >
   <div class="search-icon"></div>
   <form action="/search" onsubmit={clear_search}>
-    <input bind:this={input} name="q" placeholder="Search for address, transaction, validator..." type="text" />
+    <input bind:this={input} name="q" class="with-long-placeholder" placeholder="Search for address, transaction, validator..." type="text" />
+    <input bind:this={input} name="q" class="with-short-placeholder" placeholder="Address, transaction, validator" type="text" />
   </form>
   <div class="keyboard-shortcut">/</div>
 </div>
