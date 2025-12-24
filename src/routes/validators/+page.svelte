@@ -193,7 +193,6 @@
 <Seo
   title="Aleo Validators List | AleoScan - Aleo Blockchain Explorer"
   description="Browse Aleo validators. View staking rewards, commission rates, uptime, and delegation stats."
-  keywords="Aleo validators, staking, proof-of-stake, validator rewards, delegation"
 />
 
 {#snippet before_container()}

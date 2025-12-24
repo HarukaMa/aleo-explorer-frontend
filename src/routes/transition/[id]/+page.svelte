@@ -128,7 +128,6 @@
 <Seo
   title="Aleo Transition {transition.id} | AleoScan - Aleo Blockchain Explorer"
   description="View Aleo transition {transition.id}. Check execution inputs, outputs, transaction hash, and smart contract calls."
-  keywords="Aleo transition, transaction execution, program calls, blockchain transition"
 />
 
 {#snippet before_container()}

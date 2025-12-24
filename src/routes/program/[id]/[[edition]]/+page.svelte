@@ -263,7 +263,6 @@
 <Seo
   title="Aleo Program {data.program_id} | AleoScan - Aleo Blockchain Explorer"
   description="Explore Aleo program {data.program_id}. View contract execution, function calls, and transaction logs."
-  keywords="Aleo smart contracts, Aleo program, contract execution, privacy blockchain"
 />
 
 {#snippet transition_id_column(value)}

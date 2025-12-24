@@ -299,7 +299,6 @@
 <Seo
   title="Proving Calculator | AleoScan"
   description="Calculate the average time and credits for finding a solution based on your prover's solution rate and the current network difficulty."
-  keywords="aleo, calculator, proving, prover, solution rate, proof target"
 />
 
 <div class="header">

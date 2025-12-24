@@ -418,7 +418,6 @@
 <Seo
   title="{height} Aleo Block | AleoScan - Aleo Blockchain Explorer"
   description="View Aleo block {height} details. Check transactions, validator, block hash and confirmations."
-  keywords="Aleo block, blockchain explorer, block details, validator, transactions, gas fees"
 />
 
 {#snippet transaction_id_column(value)}

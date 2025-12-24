@@ -241,7 +241,6 @@
 <Seo
   title="Aleo Blockchain Explorer | AleoScan - Track Blocks & Transactions"
   description="AleoScan is a powerful Aleo blockchain explorer. Track transactions, blocks, validators, programs, and smart contracts in real-time."
-  keywords="Aleo explorer, zk blockchain, Aleo blocks, private transactions, zk contracts, zk"
 />
 
 {#snippet height_column(value)}

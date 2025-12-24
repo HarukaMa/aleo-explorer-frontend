@@ -206,7 +206,6 @@
 <Seo
   title="Aleo Programs List | AleoScan - Aleo Blockchain Explorer"
   description="Discover Aleo smart programs. View deployed contracts, execution data, and transaction logs."
-  keywords="Aleo programs, smart contracts, blockchain contracts, zero-knowledge applications"
 />
 
 {#snippet before_container()}

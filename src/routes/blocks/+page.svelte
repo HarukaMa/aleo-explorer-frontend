@@ -169,7 +169,6 @@
 <Seo
   title="Aleo Blocks List | AleoScan - Aleo Blockchain Explorer"
   description="Explore recent Aleo blocks. View height, timestamp, transactions, block hash, and validators in real-time."
-  keywords="Aleo blocks, blockchain explorer, latest blocks, transactions, validators"
 />
 
 {#snippet before_container()}

@@ -265,7 +265,6 @@
 <Seo
   title="Aleo Transaction {data.tx_id} | AleoScan - Aleo Blockchain Explorer"
   description="Explore Aleo transaction {data.tx_id}. View sender, recipient, status, gas fees, and block height."
-  keywords="Aleo transaction, blockchain transfer, transaction hash, zk transaction fees"
 />
 
 {#snippet transition_id_column(value)}

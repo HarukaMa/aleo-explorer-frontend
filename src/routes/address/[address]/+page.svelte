@@ -400,7 +400,6 @@
 <Seo
   title="Aleo Address {address} | AleoScan - Aleo Blockchain Explorer"
   description="Check Aleo address {address} details. View public transaction history, and public balance."
-  keywords="Aleo address, transactions, account balance, blockchain address lookup"
 />
 
 {#snippet address_column(value)}

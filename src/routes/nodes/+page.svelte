@@ -191,7 +191,6 @@
 <Seo
   title="Aleo Nodes List | AleoScan - Aleo Blockchain Explorer"
   description="View Aleo blockchain nodes. Check validator nodes, uptime, geolocation, and consensus participation."
-  keywords="Aleo nodes, blockchain network, validator nodes, proof-of-stake, network security"
 />
 
 {#snippet before_container()}

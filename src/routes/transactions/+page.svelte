@@ -216,7 +216,6 @@
 <Seo
   title="Aleo Transaction List | AleoScan - Aleo Blockchain Explorer"
   description="Track the latest Aleo transactions. View transaction hash, sender, recipient, gas fees, and block confirmations."
-  keywords="Aleo transactions, blockchain transfers, transaction hash, zk transactions"
 />
 
 {#snippet before_container()}
