@@ -39,6 +39,7 @@
         "@fontsource-variable/open-sans": "^5.2.5",
         "@tanstack/svelte-table": "alpha",
         "decimal.js": "^10.5.0",
-        "svelte-rune-highlight": "^0.5.15"
+        "svelte-rune-highlight": "^0.5.15",
+        "@floating-ui/dom": "^1.4.7"
     }
 }

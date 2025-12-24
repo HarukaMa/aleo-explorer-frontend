@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte"
+  import { computePosition, flip, shift, offset, arrow, autoUpdate } from "@floating-ui/dom"
 
   type Props = {
     children: Snippet
@@ -8,31 +9,69 @@
   let { children }: Props = $props()
 
   let tooltipEl: HTMLDivElement
-  let position: "top" | "right" | "bottom" | "left" = $state("top")
+  let arrowEl: HTMLDivElement
+  let placement: "top" | "right" | "bottom" | "left" = $state("top")
+  let isVisible = $state(false)
+  let referenceEl: HTMLElement | null = null
+  let cleanup: (() => void) | null = null
+
+  function update() {
+    if (!referenceEl || !tooltipEl) return
+
+    computePosition(referenceEl, tooltipEl, {
+      placement: "top",
+      middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowEl })],
+    }).then(({ x, y, placement: finalPlacement, middlewareData }) => {
+      placement = finalPlacement.split("-")[0] as typeof placement
+
+      Object.assign(tooltipEl.style, {
+        left: `${x}px`,
+        top: `${y}px`,
+      })
+
+      const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {}
+      const staticSide = {
+        top: "bottom",
+        right: "left",
+        bottom: "top",
+        left: "right",
+      }[placement]
+
+      Object.assign(arrowEl.style, {
+        left: arrowX != null ? `${arrowX}px` : "",
+        top: arrowY != null ? `${arrowY}px` : "",
+        right: "",
+        bottom: "",
+        [staticSide]: "-4px",
+      })
+    })
+  }
+
+  export function show(reference: HTMLElement) {
+    referenceEl = reference
+    isVisible = true
+    cleanup = autoUpdate(referenceEl, tooltipEl, update)
+  }
+
+  export function hide() {
+    isVisible = false
+    cleanup?.()
+    cleanup = null
+  }
 
   $effect(() => {
-    if (tooltipEl) {
-      const rect = tooltipEl.getBoundingClientRect()
-      const padding = 8
-
-      if (rect.left < padding) {
-        position = "right"
-      } else if (rect.right > window.innerWidth - padding) {
-        position = "left"
-      } else if (rect.top < padding) {
-        position = "bottom"
-      } else {
-        position = "top"
-      }
+    return () => {
+      cleanup?.()
     }
   })
 </script>
 
 <style lang="scss">
-  @use "/static/styles/variables" as *;
-
   .tooltip {
+    display: none;
     position: absolute;
+    top: 0;
+    left: 0;
     padding: 0.5rem 0.75rem;
     background-color: black;
     color: white;
@@ -44,66 +83,21 @@
     width: max-content;
     max-width: 15rem;
 
-    &::after {
-      content: "";
-      position: absolute;
-      border: 0.5rem solid transparent;
+    &.visible {
+      display: block;
     }
+  }
 
-    &.top {
-      bottom: calc(100% + 0.5rem);
-      left: 50%;
-      transform: translateX(-50%);
-
-      &::after {
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        border-top-color: black;
-      }
-    }
-
-    &.bottom {
-      top: calc(100% + 0.5rem);
-      left: 50%;
-      transform: translateX(-50%);
-
-      &::after {
-        bottom: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        border-bottom-color: black;
-      }
-    }
-
-    &.right {
-      left: calc(100% + 0.5rem);
-      top: 50%;
-      transform: translateY(-50%);
-
-      &::after {
-        right: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-        border-right-color: black;
-      }
-    }
-
-    &.left {
-      right: calc(100% + 0.5rem);
-      top: 50%;
-      transform: translateY(-50%);
-
-      &::after {
-        left: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-        border-left-color: black;
-      }
-    }
+  .arrow {
+    position: absolute;
+    background: black;
+    width: 8px;
+    height: 8px;
+    transform: rotate(45deg);
   }
 </style>
 
-<div class="tooltip {position}" bind:this={tooltipEl}>
+<div class="tooltip" class:visible={isVisible} bind:this={tooltipEl}>
   {@render children()}
+  <div class="arrow" bind:this={arrowEl}></div>
 </div>
