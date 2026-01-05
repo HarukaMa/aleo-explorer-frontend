@@ -93,7 +93,7 @@
     margin-bottom: 2rem;
 
     @media (max-width: 768px) {
-        margin-top: 0;
+      margin-top: 0;
     }
   }
 
@@ -237,12 +237,8 @@
     height: 20px;
     flex-shrink: 0;
     background-color: $yellow-600;
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2L1 21h22L12 2zm0 4l7.53 13H4.47L12 6zm-1 4v4h2v-4h-2zm0 6v2h2v-2h-2z'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2L1 21h22L12 2zm0 4l7.53 13H4.47L12 6zm-1 4v4h2v-4h-2zm0 6v2h2v-2h-2z'/%3E%3C/svg%3E");
-    mask-size: contain;
-    -webkit-mask-size: contain;
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
+    mask-image: $alert-icon;
+    background-repeat: no-repeat;
   }
 
   .warning-text {
@@ -385,7 +381,7 @@
           </p>
         </div>
       {:else}
-<div class="callout-wrapper">
+        <div class="callout-wrapper">
           <Callout
             title="Waiting for input"
             description="Enter both fields and run the calculation to see results."

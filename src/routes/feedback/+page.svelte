@@ -77,9 +77,12 @@
   .container {
     max-width: 1620px;
     margin: 0 auto;
+    display: flex;
+    gap: 2.5rem;
   }
 
-  .content {
+  .content,
+  svg {
     margin-top: 2.5rem;
     max-width: 790px;
   }
@@ -138,12 +141,8 @@
     height: 20px;
     flex-shrink: 0;
     background-color: $yellow-600;
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2L1 21h22L12 2zm0 4l7.53 13H4.47L12 6zm-1 4v4h2v-4h-2zm0 6v2h2v-2h-2z'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2L1 21h22L12 2zm0 4l7.53 13H4.47L12 6zm-1 4v4h2v-4h-2zm0 6v2h2v-2h-2z'/%3E%3C/svg%3E");
-    mask-size: contain;
-    -webkit-mask-size: contain;
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
+    mask-image: $alert-icon;
+    background-repeat: no-repeat;
   }
 
   .success-icon {
@@ -363,4 +362,36 @@
       </form>
     {/if}
   </div>
+  <svg width="790" height="495" viewBox="0 0 790 495" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_7424_19769)">
+      <rect width="790" height="494.781" fill="white"></rect>
+      <path opacity="0.05" d="M268.672 -293.57L-134.894 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M314.356 -293.57L-93.4141 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M675.642 -293.57L267.872 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M362.143 -293.57L-47.729 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M723.429 -293.57L313.557 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M407.835 -293.57L0.0644531 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M769.121 -293.57L361.351 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M449.315 -293.57L45.749 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M810.601 -293.57L407.035 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M494.999 -293.57L87.229 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M856.285 -293.57L448.515 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M540.684 -293.57L132.914 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M90.1241 -293.57L-317.646 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M901.97 -293.57L494.2 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M588.471 -293.57L178.599 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M137.911 -293.57L-271.961 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M949.757 -293.57L539.885 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M629.958 -293.57L226.392 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M179.399 -293.57L-224.167 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M991.244 -293.57L587.678 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M227.185 -293.57L-182.688 930.188" stroke="black" stroke-width="2"></path>
+      <path opacity="0.05" d="M1039.03 -293.57L629.158 930.188" stroke="black" stroke-width="2"></path>
+    </g>
+    <defs>
+      <clipPath id="clip0_7424_19769">
+        <rect width="790" height="494.781" fill="white"></rect>
+      </clipPath>
+    </defs>
+  </svg>
 </div>
