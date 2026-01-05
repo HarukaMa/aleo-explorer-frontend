@@ -226,6 +226,55 @@
   .turnstile-wrapper {
     margin-bottom: 1.5rem;
   }
+
+  .success-card {
+    display: flex;
+    width: 100%;
+    min-height: 490px;
+    justify-content: center;
+    padding: 2.5rem 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    border-radius: 1rem;
+    border: 1px solid $grey-100;
+  }
+
+  .success-card-icon-container {
+    display: flex;
+    padding: 2rem;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6.25rem;
+    background-color: $grey-25;
+  }
+
+  .success-card-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  .success-card-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+  }
+
+  .success-card-title {
+    font-family: "Montserrat Variable", sans-serif;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+  }
+
+  .success-card-description {
+    line-height: 1.25rem;
+    text-align: center;
+  }
 </style>
 
 <svelte:head>
@@ -240,73 +289,78 @@
 
 <div class="container">
   <div class="content">
-    <h2 class="section-title">Help us improve AleoScan</h2>
-    <p class="section-description">
-      Your feedback helps us make the explorer better. Tell us what feels confusing, broken, or could work better.
-    </p>
-
     {#if success}
-      <div class="callout success">
-        <div class="success-icon"></div>
-        <p>Feedback submitted successfully!</p>
+      <div class="success-card">
+        <div class="success-card-icon-container">
+          <div class="success-card-icon"></div>
+        </div>
+        <div class="success-card-text">
+          <div class="success-card-title">Feedback received</div>
+          <div class="success-card-description">Thank you for helping us improve AleoScan.</div>
+        </div>
       </div>
-    {/if}
-
-    {#if urlMessage}
-      <div class="callout alert">
-        <div class="alert-icon"></div>
-        <p>{urlMessage}</p>
-      </div>
-    {/if}
-
-    {#if errorMessage}
-      <div class="callout alert">
-        <div class="alert-icon"></div>
-        <p>{errorMessage}</p>
-      </div>
-    {/if}
-
-    <div class="callout warning">
-      <div class="warning-icon"></div>
-      <p>
-        AleoScan does NOT provide support for wallets or exchanges. Requests related to them will not receive a
-        response.
+    {:else}
+      <h2 class="section-title">Help us improve AleoScan</h2>
+      <p class="section-description">
+        Your feedback helps us make the explorer better. Tell us what feels confusing, broken, or could work better.
       </p>
-    </div>
 
-    <form onsubmit={handleSubmit}>
-      <div class="form-group">
-        <label class="label" for="contact">Email</label>
-        <input
-          class="input"
-          type="text"
-          id="contact"
-          name="contact"
-          bind:value={contact}
-          placeholder="you@example.com"
+      {#if urlMessage}
+        <div class="callout alert">
+          <div class="alert-icon"></div>
+          <p>{urlMessage}</p>
+        </div>
+      {/if}
+
+      {#if errorMessage}
+        <div class="callout alert">
+          <div class="alert-icon"></div>
+          <p>{errorMessage}</p>
+        </div>
+      {/if}
+
+      <div class="callout warning">
+        <div class="warning-icon"></div>
+        <p>
+          AleoScan does NOT provide support for wallets or exchanges. Requests related to them will not receive a
+          response.
+        </p>
+      </div>
+
+      <form onsubmit={handleSubmit}>
+        <div class="form-group">
+          <label class="label" for="contact">Email</label>
+          <input
+            class="input"
+            type="text"
+            id="contact"
+            name="contact"
+            bind:value={contact}
+            placeholder="you@example.com"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="label" for="content">Feedback</label>
+          <textarea
+            class="textarea"
+            id="content"
+            name="content"
+            bind:value={content}
+            placeholder="Describe the issue, suggestion, or improvement you'd like to share."
+          ></textarea>
+        </div>
+
+        <div class="turnstile-wrapper">
+          <div id="cf-turnstile"></div>
+        </div>
+
+        <Button
+          cls={ButtonLinkClass.Primary}
+          Content={isSubmitting ? "Submitting..." : "Submit feedback"}
+          disabled={isSubmitting}
         />
-      </div>
-
-      <div class="form-group">
-        <label class="label" for="content">Feedback</label>
-        <textarea
-          class="textarea"
-          id="content"
-          name="content"
-          bind:value={content}
-          placeholder="Describe the issue, suggestion, or improvement you’d like to share."
-        ></textarea>
-      </div>
-
-      <div class="turnstile-wrapper">
-        <div id="cf-turnstile"></div>
-      </div>
-
-      <Button
-        cls={ButtonLinkClass.Primary}
-        Content={isSubmitting ? "Submitting..." : "Submit feedback"}
-        disabled={isSubmitting}
-      />
-    </form>
+      </form>
+    {/if}
   </div>
 </div>
