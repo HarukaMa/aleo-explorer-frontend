@@ -109,23 +109,6 @@
   })
 </script>
 
-<svelte:head>
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="AleoScan" />
-  <meta property="og:title" content="AleoScan - Aleo Blockchain Explorer" />
-  <meta property="og:description" content="AleoScan - open source Aleo explorer. Explore the Aleo blockchain, find information about blocks, transactions, validators, programs and more." />
-  <meta property="og:image" content="{$page.url.origin}/thumbnail.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AleoScan - Aleo Blockchain Explorer" />
-  <meta name="twitter:description" content="AleoScan - open source Aleo explorer. Explore the Aleo blockchain, find information about blocks, transactions, validators, programs and more." />
-  <meta name="twitter:image" content="{$page.url.origin}/thumbnail.png" />
-</svelte:head>
-
 <!-- Contains code from https://github.com/scosman/sveltekit-navigation-loader/ -->
 <!--
 MIT License
@@ -287,6 +270,29 @@ SOFTWARE.
   }
 </style>
 
+<svelte:head>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AleoScan" />
+  <meta property="og:title" content="AleoScan - Aleo Blockchain Explorer" />
+  <meta
+    property="og:description"
+    content="AleoScan - open source Aleo explorer. Explore the Aleo blockchain, find information about blocks, transactions, validators, programs and more."
+  />
+  <meta property="og:image" content="{$page.url.origin}/thumbnail.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AleoScan - Aleo Blockchain Explorer" />
+  <meta
+    name="twitter:description"
+    content="AleoScan - open source Aleo explorer. Explore the Aleo blockchain, find information about blocks, transactions, validators, programs and more."
+  />
+  <meta name="twitter:image" content="{$page.url.origin}/thumbnail.png" />
+</svelte:head>
+
 {#if $navigating}
   <!--
     Loading animation for next page since svelte doesn't show any indicator.
@@ -316,47 +322,47 @@ SOFTWARE.
   {@render before_container()}
 {/if}
 
-<div class="container">
+<div>
   {@render children()}
-  <footer>
-    <div id="footer-column">
-      <div id="footer-row">
-        <div id="footer-logo-copyright">
-          <div id="footer-logo"></div>
-          <div>
-            AleoScan - Aleo Explorer <span class="copyleft">&copy;</span>
-            {new Date().getFullYear()}
-            <br />
-            {analytic_notice}
-            {#if env.PUBLIC_HAS_PLAUSIBLE}
-              <button class="a" onclick={toggle_plausible_opt_out}>{toggle_text}</button>
-            {/if}
-          </div>
-        </div>
-        <div id="footer-settings">
-          <div id="footer-settings-timezone">
-            <div>Time display</div>
-            <div>
-              <button class="a" onclick={switch_timezone}>{time_display_mode}</button>
-            </div>
-          </div>
+</div>
+<footer class="container">
+  <div id="footer-column">
+    <div id="footer-row">
+      <div id="footer-logo-copyright">
+        <div id="footer-logo"></div>
+        <div>
+          AleoScan - Aleo Explorer <span class="copyleft">&copy;</span>
+          {new Date().getFullYear()}
+          <br />
+          {analytic_notice}
+          {#if env.PUBLIC_HAS_PLAUSIBLE}
+            <button class="a" onclick={toggle_plausible_opt_out}>{toggle_text}</button>
+          {/if}
         </div>
       </div>
-
-      <div class="footer-line"></div>
-
-      <div id="footer-row-links">
-        <div id="footer-links">
-          <a href="/faq">FAQ</a>
-          <a href="/feedback">Feedback</a>
-          <a href="/privacy">Privacy Policy</a>
-        </div>
-        <div id="footer-external-links">
-          <a href="https://status.aleoscan.io">Status</a>
-          <a href="https://github.com/HarukaMa/aleo-explorer" target="_blank">GitHub</a>
-          <a href="https://x.com/Aleo_Scan" target="_blank">Twitter (X)</a>
+      <div id="footer-settings">
+        <div id="footer-settings-timezone">
+          <div>Time display</div>
+          <div>
+            <button class="a" onclick={switch_timezone}>{time_display_mode}</button>
+          </div>
         </div>
       </div>
     </div>
-  </footer>
-</div>
+
+    <div class="footer-line"></div>
+
+    <div id="footer-row-links">
+      <div id="footer-links">
+        <a href="/faq">FAQ</a>
+        <a href="/feedback">Feedback</a>
+        <a href="/privacy">Privacy Policy</a>
+      </div>
+      <div id="footer-external-links">
+        <a href="https://status.aleoscan.io">Status</a>
+        <a href="https://github.com/HarukaMa/aleo-explorer" target="_blank">GitHub</a>
+        <a href="https://x.com/Aleo_Scan" target="_blank">Twitter (X)</a>
+      </div>
+    </div>
+  </div>
+</footer>

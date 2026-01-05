@@ -44,6 +44,7 @@
   <PageHeader content="Privacy Policy" />
 </div>
 
+<div class="container">
 <div class="content">
   <h2>Introduction</h2>
   <p>
@@ -116,4 +117,5 @@
     If you have any questions or suggestions regarding this privacy policy, please contact us at
     <a href="mailto:privacy@aleoscan.io">privacy@aleoscan.io</a>.
   </p>
+</div>
 </div>

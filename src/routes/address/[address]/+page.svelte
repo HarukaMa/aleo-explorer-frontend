@@ -480,6 +480,7 @@
   </div>
 {/snippet}
 
+<div class="container">
 <div class="details">
   {#if data.program_name}
     <div class="address-warning">
@@ -797,3 +798,4 @@
   description="An address in the Aleo blockchain serves as a unique identifier for users or entities. It is used to send and receive credits, interact with programs, and store transaction history. Addresses are essential for identifying participants on the network."
   icon="address-icon"
 />
+</div>

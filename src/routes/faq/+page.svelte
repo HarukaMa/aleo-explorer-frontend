@@ -46,6 +46,7 @@
   <PageHeader content="FAQ" />
 </div>
 
+<div class="container">
 <div class="content">
   <h2>General Questions</h2>
 
@@ -165,4 +166,5 @@
     directly. AleoScan feedback is NOT a support channel for your issues with them. Those "feedbacks" won't
     be answered.
   </p>
+</div>
 </div>

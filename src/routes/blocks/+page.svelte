@@ -197,37 +197,39 @@
   </Link>
 {/snippet}
 
-<div class="table-container">
-  <table>
-    <thead>
-      {#each table.getHeaderGroups() as header_group}
-        <tr>
-          {#each header_group.headers as header}
-            <th>{header.column.columnDef.header}</th>
-          {/each}
-        </tr>
-      {/each}
-    </thead>
-    <tbody>
-      {#each table.getRowModel().rows as row}
-        <tr>
-          {#each row.getVisibleCells() as cell}
-            <td>
-              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-            </td>
-          {/each}
-        </tr>
-      {/each}
-    </tbody>
-  </table>
+<div class="container">
+  <div class="table-container">
+    <table>
+      <thead>
+        {#each table.getHeaderGroups() as header_group}
+          <tr>
+            {#each header_group.headers as header}
+              <th>{header.column.columnDef.header}</th>
+            {/each}
+          </tr>
+        {/each}
+      </thead>
+      <tbody>
+        {#each table.getRowModel().rows as row}
+          <tr>
+            {#each row.getVisibleCells() as cell}
+              <td>
+                <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+              </td>
+            {/each}
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+
+  {#key pagination}
+    <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
+  {/key}
+
+  <PageInformation
+    title="Block"
+    description="A block in the Aleo blockchain is a fundamental unit that records transactions and state transitions. It is cryptographically secured and linked to the previous block, forming a chain. Each block contains data that is validated by the network's consensus mechanism."
+    icon="block-icon"
+  />
 </div>
-
-{#key pagination}
-  <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
-{/key}
-
-<PageInformation
-  title="Block"
-  description="A block in the Aleo blockchain is a fundamental unit that records transactions and state transitions. It is cryptographically secured and linked to the previous block, forming a chain. Each block contains data that is validated by the network’s consensus mechanism."
-  icon="block-icon"
-/>

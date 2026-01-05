@@ -238,33 +238,35 @@
   </div>
 {/snippet}
 
-<div class="table-container">
-  <table>
-    <thead>
-      {#each table.getHeaderGroups() as header_group}
-        <tr>
-          {#each header_group.headers as header}
-            <th>{header.column.columnDef.header}</th>
-          {/each}
-        </tr>
-      {/each}
-    </thead>
-    <tbody>
-      {#each table.getRowModel().rows as row}
-        <tr>
-          {#each row.getVisibleCells() as cell}
-            <td>
-              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-            </td>
-          {/each}
-        </tr>
-      {/each}
-    </tbody>
-  </table>
-</div>
+<div class="container">
+  <div class="table-container">
+    <table>
+      <thead>
+        {#each table.getHeaderGroups() as header_group}
+          <tr>
+            {#each header_group.headers as header}
+              <th>{header.column.columnDef.header}</th>
+            {/each}
+          </tr>
+        {/each}
+      </thead>
+      <tbody>
+        {#each table.getRowModel().rows as row}
+          <tr>
+            {#each row.getVisibleCells() as cell}
+              <td>
+                <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+              </td>
+            {/each}
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
 
-<PageInformation
-  title="Validator"
-  description="A validator is a crucial participant in the Aleo blockchain responsible for verifying transactions and adding new blocks. Validators stake credits to secure the network and ensure its integrity by solving cryptographic puzzles. Their role is essential for maintaining the consensus and stability of the network."
-  icon="validator-icon"
-/>
+  <PageInformation
+    title="Validator"
+    description="A validator is a crucial participant in the Aleo blockchain responsible for verifying transactions and adding new blocks. Validators stake credits to secure the network and ensure its integrity by solving cryptographic puzzles. Their role is essential for maintaining the consensus and stability of the network."
+    icon="validator-icon"
+  />
+</div>
