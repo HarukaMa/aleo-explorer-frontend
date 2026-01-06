@@ -482,7 +482,6 @@
   </div>
 {/snippet}
 
-<div class="container">
 <div class="details">
   <div class="group">
     <DetailLine label="Height" tooltip="The index of the block in the chain.">
@@ -728,7 +727,6 @@
 
 <PageInformation
   title="Block"
-  description="A block in the Aleo blockchain is a fundamental unit that records transactions and state transitions. It is cryptographically secured and linked to the previous block, forming a chain. Each block contains data that is validated by the network's consensus mechanism."
+  description="A block in the Aleo blockchain is a fundamental unit that records transactions and state transitions. It is cryptographically secured and linked to the previous block, forming a chain. Each block contains data that is validated by the network’s consensus mechanism."
   icon="block-icon"
 />
-</div>

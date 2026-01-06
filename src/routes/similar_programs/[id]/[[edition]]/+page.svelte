@@ -240,7 +240,6 @@
   {/if}
 {/snippet}
 
-<div class="container">
 <div class="table-container">
   <table>
     <thead>
@@ -269,4 +268,3 @@
 {#key pagination}
   <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
 {/key}
-</div>

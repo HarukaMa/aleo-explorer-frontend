@@ -258,7 +258,6 @@
   <span class="mono"><Link href="{result_link_part}{value}">{value}</Link></span>
 {/snippet}
 
-<div class="container">
 {#if error !== undefined}
   <div class="error-container">
     <div class="error-column">
@@ -329,4 +328,3 @@
     </div>
   {/if}
 {/if}
-</div>

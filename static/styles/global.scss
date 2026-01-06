@@ -112,10 +112,9 @@
   gap: 2.5rem;
   align-items: center;
   justify-content: center;
-  width: 100%;
 
   :global(> *) {
-    // max-width: 1620px;
+    max-width: 1620px;
     width: 100%;
   }
 
@@ -124,7 +123,6 @@
     justify-content: left;
     align-items: center;
     gap: 1rem;
-    
   }
 }
 
@@ -135,9 +133,4 @@
   font-weight: 600;
   line-height: 1.5rem; /* 133.333% */
   letter-spacing: -0.00563rem;
-}
-
-:global(.container) {
-  max-width: 1620px;
-  margin: 0 auto;
 }

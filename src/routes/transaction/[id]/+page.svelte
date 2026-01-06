@@ -312,7 +312,6 @@
   {/if}
 {/snippet}
 
-<div class="container">
 <div class="details">
   <div class="group">
     <DetailLine label="Transaction ID">
@@ -569,4 +568,3 @@
   description="A transaction in Aleo is an on-chain action that facilitates the transfer of credits, interaction with smart contracts, or execution of operations. Each transaction is processed by validators and added to a block. Transactions are a key component of maintaining the dynamic state of the blockchain."
   icon="transaction-icon"
 />
-</div>

@@ -297,7 +297,6 @@
   </div>
 {/snippet}
 
-<div class="container">
 <div class="details">
   <div class="group">
     <DetailLine label="Program ID">
@@ -500,4 +499,3 @@
   description="A program on the Aleo blockchain is a smart contract that allows users to interact with private computations. These programs leverage zero-knowledge cryptography to ensure that the details of transactions and operations remain private. Programs can be deployed and called by any participant on the network."
   icon="program-icon"
 />
-</div>

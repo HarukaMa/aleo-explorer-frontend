@@ -254,39 +254,37 @@
   {/if}
 {/snippet}
 
-<div class="container">
-  <div class="table-container">
-    <table>
-      <thead>
-        {#each table.getHeaderGroups() as header_group}
-          <tr>
-            {#each header_group.headers as header}
-              <th>{header.column.columnDef.header}</th>
-            {/each}
-          </tr>
-        {/each}
-      </thead>
-      <tbody>
-        {#each table.getRowModel().rows as row}
-          <tr>
-            {#each row.getVisibleCells() as cell}
-              <td>
-                <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-              </td>
-            {/each}
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
-
-  {#key pagination}
-    <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
-  {/key}
-
-  <PageInformation
-    title="Program"
-    description="A program on the Aleo blockchain is a smart contract that allows users to interact with private computations. These programs leverage zero-knowledge cryptography to ensure that the details of transactions and operations remain private. Programs can be deployed and called by any participant on the network."
-    icon="program-icon"
-  />
+<div class="table-container">
+  <table>
+    <thead>
+      {#each table.getHeaderGroups() as header_group}
+        <tr>
+          {#each header_group.headers as header}
+            <th>{header.column.columnDef.header}</th>
+          {/each}
+        </tr>
+      {/each}
+    </thead>
+    <tbody>
+      {#each table.getRowModel().rows as row}
+        <tr>
+          {#each row.getVisibleCells() as cell}
+            <td>
+              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+            </td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
 </div>
+
+{#key pagination}
+  <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
+{/key}
+
+<PageInformation
+  title="Program"
+  description="A program on the Aleo blockchain is a smart contract that allows users to interact with private computations. These programs leverage zero-knowledge cryptography to ensure that the details of transactions and operations remain private. Programs can be deployed and called by any participant on the network."
+  icon="program-icon"
+/>

@@ -144,7 +144,6 @@
   </div>
 {/snippet}
 
-<div class="container">
 <div class="details">
   <div class="group">
     <DetailLine label="Transition ID">
@@ -328,7 +327,6 @@
 
 <PageInformation
   title="Transition"
-  description="A transition in the Aleo blockchain represents a change in the program state, triggered by a specific transaction. It involves the execution of functions or operations within the network's smart contracts. Transitions are integral to updating the state and logic of deployed programs."
+  description="A transition in the Aleo blockchain represents a change in the program state, triggered by a specific transaction. It involves the execution of functions or operations within the network’s smart contracts. Transitions are integral to updating the state and logic of deployed programs."
   icon="transition-icon"
 />
-</div>
