@@ -65,9 +65,7 @@
     // Amount is always the last argument (remove u64 suffix if present)
     const amountArg = args[args.length - 1]
     const amount =
-      typeof amountArg === "string"
-        ? amountArg.replace("u64", "").replace(/[^\d]/g, "")
-        : String(amountArg)
+      typeof amountArg === "string" ? amountArg.replace("u64", "").replace(/[^\d]/g, "") : String(amountArg)
 
     let from: string | null = null
     let to: string | null = null
@@ -220,17 +218,18 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
-    align-self: stretch;
+    width: 100%;
   }
 
   .group {
     display: flex;
     flex-direction: column;
-    width: 100%;
     padding: 1.5rem;
+    width: 100%;
     border-radius: 1rem;
     gap: 1.5rem;
     border: 1px solid $grey-100;
+    box-sizing: border-box;
   }
 
   .group-title {
