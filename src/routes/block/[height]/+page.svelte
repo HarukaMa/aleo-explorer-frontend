@@ -453,7 +453,7 @@
   {:else}
     <div class="column">
       <span class="mono">{value.function}</span>
-      <Link href="/program/{value.program}">
+      <Link secondary href="/program/{value.program}">
         <span class="secondary mono">{value.program}</span>
       </Link>
     </div>
