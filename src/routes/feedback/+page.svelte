@@ -5,7 +5,7 @@
   import { ButtonLinkClass } from "$lib/types"
   import { env } from "$env/dynamic/public"
   import { onMount } from "svelte"
-  import { page } from "$app/stores"
+  import { page } from "$app/state"
 
   let contact = $state("")
   let content = $state("")
@@ -13,8 +13,8 @@
   let errorMessage = $state("")
 
   // Check URL params for success/message
-  let success = $derived($page.url.searchParams.get("success") === "1")
-  let urlMessage = $derived($page.url.searchParams.get("message"))
+  let success = $derived(page.url.searchParams.get("success") === "1")
+  let urlMessage = $derived(page.url.searchParams.get("message"))
 
   onMount(() => {
     // Load Turnstile widget
