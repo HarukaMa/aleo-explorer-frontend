@@ -7,7 +7,6 @@
   import { format_time, format_time_absolute_relative, TimeMode } from "$lib/time_mode.svelte.js"
   import Tabs from "$lib/components/Tabs.svelte"
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
-  import Fee from "$lib/components/Fee.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
   import Status from "$lib/components/Status.svelte"
@@ -147,20 +146,36 @@
     align-items: flex-start;
     gap: 1rem;
     align-self: stretch;
+  }
 
-    .group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      align-items: flex-start;
-      width: 100%;
-    }
+  .group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    gap: 1.5rem;
+    border: 1px solid $grey-100;
+  }
 
-    .details-line {
-      width: 100%;
-      height: 1px;
-      background-color: $grey-100;
-    }
+  .group-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .group-separator {
+    width: 100%;
+    height: 1px;
+    margin: 0.5rem 0;
+    background-color: $grey-100;
+  }
+
+  .group-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
   }
 
   .column {
@@ -284,134 +299,142 @@
 
 <div class="details">
   <div class="group">
-    <DetailLine label="Transaction ID">
-      <span class="mono">{data.tx_id}</span>
-    </DetailLine>
-    {#if state === "Rejected"}
-      <DetailLine label="Original transaction ID">
-        <span class="mono">{data.original_txid}</span>
+    <!-- TODO: Add information to transfer details -->
+    <p class="group-title">Transfer details</p>
+    <div class="group-content">
+      <DetailLine label="Transfer amount" tooltip="Tooltip">...</DetailLine>
+      <div class="group-separator"></div>
+      <DetailLine label="From" tooltip="Tooltip"
+        >aleo1d9a3maz8qvp9wkd7695nucue354j4j50f9xp0l9lqq4u6egwzqqs3cxrqx
       </DetailLine>
-    {/if}
-    {#if state !== "Unconfirmed"}
-      <DetailLine label="Block">
-        {#if data.first_seen < data.block_confirm_time}
-          <div class="column">
+      <DetailLine label="To" tooltip="Tooltip"
+        >aleo1d9a3maz8qvp9wkd7695nucue354j4j50f9xp0l9lqq4u6egwzqqs3cxrqx
+      </DetailLine>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="group-title">General information</p>
+    <div class="group-content">
+      <DetailLine label="Transaction ID" tooltip="Tooltip">
+        <span class="mono">{data.tx_id}</span>
+      </DetailLine>
+      {#if state === "Rejected"}
+        <DetailLine tooltip="Tooltip" label="Original transaction ID">
+          <span class="mono">{data.original_txid}</span>
+        </DetailLine>
+      {/if}
+      {#if state !== "Unconfirmed"}
+        <DetailLine tooltip="Tooltip" label="Block">
+          {#if data.first_seen < data.block_confirm_time}
+            <div class="column">
+              <Link href="/block/{data.height}">
+                <Number number={data.height} />
+              </Link>
+              <span class="secondary">
+                {#if state === "Accepted"}
+                  Confirmed
+                {:else if state === "Rejected"}
+                  Rejected
+                {:else if state === "Aborted"}
+                  Aborted
+                {/if}
+                {format_time_absolute_relative(data.block_confirm_time - data.first_seen, false)}
+              </span>
+            </div>
+          {:else}
             <Link href="/block/{data.height}">
               <Number number={data.height} />
             </Link>
-            <span class="secondary">
-              {#if state === "Accepted"}
-                Confirmed
-              {:else if state === "Rejected"}
-                Rejected
-              {:else if state === "Aborted"}
-                Aborted
-              {/if}
-              {format_time_absolute_relative(data.block_confirm_time - data.first_seen, false)}
-            </span>
-          </div>
-        {:else}
-          <Link href="/block/{data.height}">
-            <Number number={data.height} />
-          </Link>
-        {/if}
-      </DetailLine>
-      <DetailLine label="Timestamp">
-        {format_time(new Date(data.block_timestamp * 1000), TimeMode.Relative)}
-        <!-- @formatter:off -->
-        (<Time timestamp={data.block_timestamp} />)
-        <!-- @formatter:on -->
-      </DetailLine>
-    {:else}
-      <DetailLine label="First seen">
-        {format_time(new Date(data.first_seen * 1000), TimeMode.Relative)}
-        <!-- @formatter:off -->
-        (<Time timestamp={data.first_seen} />)
-        <!-- @formatter:on -->
-      </DetailLine>
-    {/if}
-  </div>
-  <div class="group">
-    <div class="details-line"></div>
-  </div>
-  <div class="group">
-    <DetailLine label="Status">
-      {#if state === "Accepted"}
-        <Status cls={StatusClass.Success}>Accepted</Status>
-      {:else if state === "Rejected"}
-        <div class="column">
-          <Status cls={StatusClass.Danger}>Rejected</Status>
-          {data.reject_reason}
-        </div>
-      {:else if state === "Aborted"}
-        <Status cls={StatusClass.Danger}>Aborted</Status>
+          {/if}
+        </DetailLine>
+        <DetailLine tooltip="Tooltip" label="Timestamp">
+          {format_time(new Date(data.block_timestamp * 1000), TimeMode.Relative)}
+          <!-- @formatter:off -->
+          (<Time timestamp={data.block_timestamp} />)
+          <!-- @formatter:on -->
+        </DetailLine>
       {:else}
-        <Status cls={StatusClass.Info}>Unconfirmed</Status>
+        <DetailLine tooltip="Tooltip" label="First seen">
+          {format_time(new Date(data.first_seen * 1000), TimeMode.Relative)}
+          <!-- @formatter:off -->
+          (<Time timestamp={data.first_seen} />)
+          <!-- @formatter:on -->
+        </DetailLine>
       {/if}
-    </DetailLine>
-  </div>
-  <div class="group">
-    <div class="details-line"></div>
-  </div>
-  <div class="group">
-    <DetailLine label="Type">
-      {type}
-    </DetailLine>
-    {#if type === "Deploy"}
-      <DetailLine label="Program">
+      <div class="group-separator"></div>
+      <DetailLine label="Status" tooltip="Tooltip">
         {#if state === "Accepted"}
-          <Link href="/program/{data.confirmed_transaction.transaction.deployment.program.id}">
-            <span class="mono">{data.confirmed_transaction.transaction.deployment.program.id}</span>
-          </Link>
+          <Status cls={StatusClass.Success}>Accepted</Status>
         {:else if state === "Rejected"}
-          <Link href="/program/{data.confirmed_transaction.rejected.deployment.program.id}">
-            <span class="mono">{data.confirmed_transaction.rejected.deployment.program.id}</span>
-          </Link>
+          <div class="column">
+            <Status cls={StatusClass.Danger}>Rejected</Status>
+            {data.reject_reason}
+          </div>
+        {:else if state === "Aborted"}
+          <Status cls={StatusClass.Danger}>Aborted</Status>
         {:else}
-          Not implemented
+          <Status cls={StatusClass.Info}>Unconfirmed</Status>
         {/if}
       </DetailLine>
-      <DetailLine label="Edition">
-        {#if state === "Accepted"}
-          {data.confirmed_transaction.transaction.deployment.edition}
-        {:else if state === "Rejected"}
-          {data.confirmed_transaction.rejected.deployment.edition}
-        {:else}
-          Not implemented
-        {/if}
+      <div class="group-separator"></div>
+      <DetailLine label="Type" tooltip="Tooltip">
+        {type}
       </DetailLine>
-    {/if}
-    {#if state === "Accepted" || state === "Rejected"}
-      <DetailLine label="Index">
-        {data.confirmed_transaction.index}
-      </DetailLine>
-    {/if}
-  </div>
-  <div class="group">
-    <div class="details-line"></div>
-  </div>
-  <div class="group">
-    {#if fee}
-      <DetailLine label="Total fee spent">
-        <AleoToken number={fee.amount[0] + fee.amount[1]} suffix />
-      </DetailLine>
-      <DetailLine label="Breakdown">
-        <div class="fee-breakdown">
-          <FeeBreakdown amount={fee.amount[0]} label="Base fee"></FeeBreakdown>
-          <FeeBreakdown amount={fee.amount[1]} label="Priority fee"></FeeBreakdown>
-        </div>
-      </DetailLine>
-    {:else}
-      <DetailLine label="Total fee spent">
-        <AleoToken number="10000" suffix />
-      </DetailLine>
-      <DetailLine label="Breakdown">
-        <div class="fee-breakdown">
-          <FeeBreakdown amount="10000" label="Base fee"></FeeBreakdown>
-          <FeeBreakdown amount="0" label="Priority fee"></FeeBreakdown>
-        </div>
-      </DetailLine>
-    {/if}
+      {#if type === "Deploy"}
+        <DetailLine tooltip="Tooltip" label="Program">
+          {#if state === "Accepted"}
+            <Link href="/program/{data.confirmed_transaction.transaction.deployment.program.id}">
+              <span class="mono">{data.confirmed_transaction.transaction.deployment.program.id}</span>
+            </Link>
+          {:else if state === "Rejected"}
+            <Link href="/program/{data.confirmed_transaction.rejected.deployment.program.id}">
+              <span class="mono">{data.confirmed_transaction.rejected.deployment.program.id}</span>
+            </Link>
+          {:else}
+            Not implemented
+          {/if}
+        </DetailLine>
+        <DetailLine tooltip="Tooltip" label="Edition">
+          {#if state === "Accepted"}
+            {data.confirmed_transaction.transaction.deployment.edition}
+          {:else if state === "Rejected"}
+            {data.confirmed_transaction.rejected.deployment.edition}
+          {:else}
+            Not implemented
+          {/if}
+        </DetailLine>
+      {/if}
+      {#if state === "Accepted" || state === "Rejected"}
+        <DetailLine tooltip="Tooltip" label="Index">
+          {data.confirmed_transaction.index}
+        </DetailLine>
+      {/if}
+      <div class="group-separator"></div>
+      {#if fee}
+        <DetailLine tooltip="Tooltip" label="Total fee spent">
+          <AleoToken number={fee.amount[0] + fee.amount[1]} suffix />
+        </DetailLine>
+        <div class="group-separator"></div>
+        <DetailLine tooltip="Tooltip" label="Breakdown">
+          <div class="fee-breakdown">
+            <FeeBreakdown amount={fee.amount[0]} label="Base fee"></FeeBreakdown>
+            <FeeBreakdown amount={fee.amount[1]} label="Priority fee"></FeeBreakdown>
+          </div>
+        </DetailLine>
+      {:else}
+        <DetailLine tooltip="Tooltip" label="Total fee spent">
+          <AleoToken number="10000" suffix />
+        </DetailLine>
+        <div class="group-separator"></div>
+        <DetailLine tooltip="Tooltip" label="Breakdown">
+          <div class="fee-breakdown">
+            <FeeBreakdown amount="10000" label="Base fee"></FeeBreakdown>
+            <FeeBreakdown amount="0" label="Priority fee"></FeeBreakdown>
+          </div>
+        </DetailLine>
+      {/if}
+    </div>
   </div>
 </div>
 
