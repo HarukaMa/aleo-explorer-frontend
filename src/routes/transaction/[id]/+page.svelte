@@ -8,7 +8,6 @@
   import { format_time, format_time_absolute_relative, TimeMode } from "$lib/time_mode.svelte.js"
   import Tabs from "$lib/components/Tabs.svelte"
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
-  import Fee from "$lib/components/Fee.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
   import Status from "$lib/components/Status.svelte"
@@ -169,20 +168,36 @@
     align-items: flex-start;
     gap: 1rem;
     align-self: stretch;
+  }
 
-    .group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      align-items: flex-start;
-      width: 100%;
-    }
+  .group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    gap: 1.5rem;
+    border: 1px solid $grey-100;
+  }
 
-    .details-line {
-      width: 100%;
-      height: 1px;
-      background-color: $grey-100;
-    }
+  .group-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .group-separator {
+    width: 100%;
+    height: 1px;
+    margin: 0.5rem 0;
+    background-color: $grey-100;
+  }
+
+  .group-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
   }
 
   .column {
@@ -313,260 +328,267 @@
 {/snippet}
 
 <div class="container">
-<div class="details">
-  <div class="group">
-    <DetailLine label="Transaction ID">
-      <span class="mono">{data.tx_id}</span>
-    </DetailLine>
-    {#if state === "Rejected"}
-      <DetailLine label="Original transaction ID">
-        <span class="mono">{data.original_txid}</span>
-      </DetailLine>
-    {/if}
-    {#if state !== "Unconfirmed"}
-      <DetailLine label="Block">
-        {#if data.first_seen < data.block_confirm_time}
-          <div class="column">
-            <Link href="/block/{data.height}">
-              <Number number={data.height} />
-            </Link>
-            <span class="secondary">
-              {#if state === "Accepted"}
-                Confirmed
-              {:else if state === "Rejected"}
-                Rejected
-              {:else if state === "Aborted"}
-                Aborted
-              {/if}
-              {format_time_absolute_relative(data.block_confirm_time - data.first_seen, false)}
-            </span>
-          </div>
-        {:else}
-          <Link href="/block/{data.height}">
-            <Number number={data.height} />
-          </Link>
-        {/if}
-      </DetailLine>
-      <DetailLine label="Timestamp">
-        {format_time(new Date(data.block_timestamp * 1000), TimeMode.Relative)}
-        <!-- @formatter:off -->
-        (<Time timestamp={data.block_timestamp} />)
-        <!-- @formatter:on -->
-      </DetailLine>
-    {:else}
-      <DetailLine label="First seen">
-        {format_time(new Date(data.first_seen * 1000), TimeMode.Relative)}
-        <!-- @formatter:off -->
-        (<Time timestamp={data.first_seen} />)
-        <!-- @formatter:on -->
-      </DetailLine>
-    {/if}
-  </div>
-  <div class="group">
-    <div class="details-line"></div>
-  </div>
-  <div class="group">
-    <DetailLine label="Status">
-      {#if state === "Accepted"}
-        <Status cls={StatusClass.Success}>Accepted</Status>
-      {:else if state === "Rejected"}
-        <div class="column">
-          <Status cls={StatusClass.Danger}>Rejected</Status>
-          {data.reject_reason}
-        </div>
-      {:else if state === "Aborted"}
-        <Status cls={StatusClass.Danger}>Aborted</Status>
-      {:else}
-        <Status cls={StatusClass.Info}>Unconfirmed</Status>
-      {/if}
-    </DetailLine>
-  </div>
-  <div class="group">
-    <div class="details-line"></div>
-  </div>
-  <div class="group">
-    <DetailLine label="Type">
-      {type}
-    </DetailLine>
-    {#if type === "Deploy"}
-      <DetailLine label="Program">
-        {#if state === "Accepted"}
-          <Link href="/program/{data.confirmed_transaction.transaction.deployment.program.id}">
-            <span class="mono">{data.confirmed_transaction.transaction.deployment.program.id}</span>
-          </Link>
-        {:else if state === "Rejected"}
-          <Link href="/program/{data.confirmed_transaction.rejected.deployment.program.id}">
-            <span class="mono">{data.confirmed_transaction.rejected.deployment.program.id}</span>
-          </Link>
-        {:else}
-          Not implemented
-        {/if}
-      </DetailLine>
-      <DetailLine label="Edition">
-        {#if state === "Accepted"}
-          {data.confirmed_transaction.transaction.deployment.edition}
-        {:else if state === "Rejected"}
-          {data.confirmed_transaction.rejected.deployment.edition}
-        {:else}
-          Not implemented
-        {/if}
-      </DetailLine>
-    {/if}
-    {#if state === "Accepted" || state === "Rejected"}
-      <DetailLine label="Index">
-        {data.confirmed_transaction.index}
-      </DetailLine>
-    {/if}
-  </div>
-  <div class="group">
-    <div class="details-line"></div>
-  </div>
-  <div class="group">
-    {#if fee}
-      <DetailLine label="Total fee spent">
-        <AleoToken number={fee.amount[0] + fee.amount[1]} suffix />
-      </DetailLine>
-      <DetailLine label="Breakdown">
-        <div class="fee-breakdown">
-          <FeeBreakdown amount={fee.amount[0]} label="Base fee"></FeeBreakdown>
-          <FeeBreakdown amount={fee.amount[1]} label="Priority fee"></FeeBreakdown>
-        </div>
-      </DetailLine>
-    {:else}
-      <DetailLine label="Total fee spent">
-        <AleoToken number="10000" suffix />
-      </DetailLine>
-      <DetailLine label="Breakdown">
-        <div class="fee-breakdown">
-          <FeeBreakdown amount="10000" label="Base fee"></FeeBreakdown>
-          <FeeBreakdown amount="0" label="Priority fee"></FeeBreakdown>
-        </div>
-      </DetailLine>
-    {/if}
-  </div>
-</div>
-
-<Tabs {tab_data}>
-  {#snippet transitions(binds)}
-    <div class="tab" bind:this={binds.transitions}>
-      <div class="table-container">
-        <table>
-          <thead>
-            {#each transition_table.getHeaderGroups() as header_group}
-              <tr>
-                {#each header_group.headers as header}
-                  <th>{header.column.columnDef.header}</th>
-                {/each}
-              </tr>
-            {/each}
-          </thead>
-          <tbody>
-            {#each transition_table.getRowModel().rows as row}
-              <tr>
-                {#each row.getVisibleCells() as cell}
-                  <td>
-                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                  </td>
-                {/each}
-              </tr>
-            {/each}
-          </tbody>
-        </table>
+  <div class="details">
+    <div class="group">
+      <!-- TODO: Add information to transfer details -->
+      <p class="group-title">Transfer details</p>
+      <div class="group-content">
+        <DetailLine tooltip="Tooltip" label="Transfer amount">...</DetailLine>
+        <div class="group-separator"></div>
+        <DetailLine tooltip="Tooltip" label="From"
+          >aleo1d9a3maz8qvp9wkd7695nucue354j4j50f9xp0l9lqq4u6egwzqqs3cxrqx</DetailLine
+        >
+        <DetailLine tooltip="Tooltip" label="To"
+          >aleo1d9a3maz8qvp9wkd7695nucue354j4j50f9xp0l9lqq4u6egwzqqs3cxrqx</DetailLine
+        >
       </div>
-      {#if state === "Rejected" && type === "Execute"}
-        <div class="aborted-header">Rejected transitions</div>
+    </div>
+
+    <div class="group">
+      <p class="group-title">General information</p>
+      <div class="group-content">
+        <DetailLine tooltip="Tooltip" label="Transaction ID">
+          <span class="mono">{data.tx_id}</span>
+        </DetailLine>
+        {#if state === "Rejected"}
+          <DetailLine tooltip="Tooltip" label="Original transaction ID">
+            <span class="mono">{data.original_txid}</span>
+          </DetailLine>
+        {/if}
+        {#if state !== "Unconfirmed"}
+          <DetailLine tooltip="Tooltip" label="Block">
+            {#if data.first_seen < data.block_confirm_time}
+              <div class="column">
+                <Link href="/block/{data.height}">
+                  <Number number={data.height} />
+                </Link>
+                <span class="secondary">
+                  {#if state === "Accepted"}
+                    Confirmed
+                  {:else if state === "Rejected"}
+                    Rejected
+                  {:else if state === "Aborted"}
+                    Aborted
+                  {/if}
+                  {format_time_absolute_relative(data.block_confirm_time - data.first_seen, false)}
+                </span>
+              </div>
+            {:else}
+              <Link href="/block/{data.height}">
+                <Number number={data.height} />
+              </Link>
+            {/if}
+          </DetailLine>
+          <DetailLine tooltip="Tooltip" label="Timestamp">
+            {format_time(new Date(data.block_timestamp * 1000), TimeMode.Relative)}
+            <!-- @formatter:off -->
+            (<Time timestamp={data.block_timestamp} />)
+            <!-- @formatter:on -->
+          </DetailLine>
+        {:else}
+          <DetailLine tooltip="Tooltip" label="First seen">
+            {format_time(new Date(data.first_seen * 1000), TimeMode.Relative)}
+            <!-- @formatter:off -->
+            (<Time timestamp={data.first_seen} />)
+            <!-- @formatter:on -->
+          </DetailLine>
+        {/if}
+        <div class="group-separator"></div>
+        <DetailLine tooltip="Tooltip" label="Status">
+          {#if state === "Accepted"}
+            <Status cls={StatusClass.Success}>Accepted</Status>
+          {:else if state === "Rejected"}
+            <div class="column">
+              <Status cls={StatusClass.Danger}>Rejected</Status>
+              {data.reject_reason}
+            </div>
+          {:else if state === "Aborted"}
+            <Status cls={StatusClass.Danger}>Aborted</Status>
+          {:else}
+            <Status cls={StatusClass.Info}>Unconfirmed</Status>
+          {/if}
+        </DetailLine>
+        <div class="group-separator"></div>
+        <DetailLine tooltip="Tooltip" label="Type">
+          {type}
+        </DetailLine>
+        {#if type === "Deploy"}
+          <DetailLine tooltip="Tooltip" label="Program">
+            {#if state === "Accepted"}
+              <Link href="/program/{data.confirmed_transaction.transaction.deployment.program.id}">
+                <span class="mono">{data.confirmed_transaction.transaction.deployment.program.id}</span>
+              </Link>
+            {:else if state === "Rejected"}
+              <Link href="/program/{data.confirmed_transaction.rejected.deployment.program.id}">
+                <span class="mono">{data.confirmed_transaction.rejected.deployment.program.id}</span>
+              </Link>
+            {:else}
+              Not implemented
+            {/if}
+          </DetailLine>
+          <DetailLine tooltip="Tooltip" label="Edition">
+            {#if state === "Accepted"}
+              {data.confirmed_transaction.transaction.deployment.edition}
+            {:else if state === "Rejected"}
+              {data.confirmed_transaction.rejected.deployment.edition}
+            {:else}
+              Not implemented
+            {/if}
+          </DetailLine>
+        {/if}
+        {#if state === "Accepted" || state === "Rejected"}
+          <DetailLine tooltip="Tooltip" label="Index">
+            {data.confirmed_transaction.index}
+          </DetailLine>
+        {/if}
+        <div class="group-separator"></div>
+        {#if fee}
+          <DetailLine tooltip="Tooltip" label="Total fee spent">
+            <AleoToken number={fee.amount[0] + fee.amount[1]} suffix />
+          </DetailLine>
+          <div class="group-separator"></div>
+          <DetailLine tooltip="Tooltip" label="Breakdown">
+            <div class="fee-breakdown">
+              <FeeBreakdown amount={fee.amount[0]} label="Base fee"></FeeBreakdown>
+              <FeeBreakdown amount={fee.amount[1]} label="Priority fee"></FeeBreakdown>
+            </div>
+          </DetailLine>
+        {:else}
+          <DetailLine tooltip="Tooltip" label="Total fee spent">
+            <AleoToken number="10000" suffix />
+          </DetailLine>
+          <div class="group-separator"></div>
+          <DetailLine tooltip="Tooltip" label="Breakdown">
+            <div class="fee-breakdown">
+              <FeeBreakdown amount="10000" label="Base fee"></FeeBreakdown>
+              <FeeBreakdown amount="0" label="Priority fee"></FeeBreakdown>
+            </div>
+          </DetailLine>
+        {/if}
+      </div>
+    </div>
+  </div>
+
+  <Tabs {tab_data}>
+    {#snippet transitions(binds)}
+      <div class="tab" bind:this={binds.transitions}>
         <div class="table-container">
           <table>
             <thead>
-              <tr>
-                <th>Index</th>
-                <th>Transition ID</th>
-                <th>Action</th>
-                <th>Status</th>
-              </tr>
+              {#each transition_table.getHeaderGroups() as header_group}
+                <tr>
+                  {#each header_group.headers as header}
+                    <th>{header.column.columnDef.header}</th>
+                  {/each}
+                </tr>
+              {/each}
             </thead>
             <tbody>
-              {#each data.confirmed_transaction.rejected.execution.transitions as transition, index}
+              {#each transition_table.getRowModel().rows as row}
                 <tr>
-                  <td>{index}</td>
-                  <td>
-                    <Link href="/transition/{transition.id}">
-                      <span class="mono">{transition.id}</span>
-                    </Link>
-                  </td>
-                  <td>
-                    <div class="column">
-                      <span class="mono">{transition.function_name}</span>
-                      <Link href="/program/{transition.program_id}">
-                        <span class="secondary mono">{transition.program_id}</span>
-                      </Link>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="column">
-                      {#if transition.status.startsWith("Accepted")}
-                        <Status cls={StatusClass.Success}>Accepted</Status>
-                      {:else if transition.status.startsWith("Rejected")}
-                        <Status cls={StatusClass.Danger}>Rejected</Status>
-                      {:else}
-                        <Status cls={StatusClass.Warning}>Unknown</Status>
-                      {/if}
-                    </div>
-                  </td>
+                  {#each row.getVisibleCells() as cell}
+                    <td>
+                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                    </td>
+                  {/each}
                 </tr>
               {/each}
             </tbody>
           </table>
         </div>
-      {/if}
-    </div>
-  {/snippet}
-  {#snippet mapping(binds)}
-    <div class="tab" bind:this={binds.mapping}>
-      <div class="mapping-operations">
-        {#if state === "Accepted" || state === "Rejected"}
-          {#each data.mapping_operations as op}
-            <div class="operation">
-              <div class="column">
-                <span class="dim">Program</span>
-                <Link href="/program/{op.program_id}">
-                  <span class="mono">{op.program_id}</span>
-                </Link>
-              </div>
-              <div class="column">
-                <span class="dim">Mapping</span>
-                <span class="mono">{op.mapping_name}[{op.key}]</span>
-              </div>
-              <div class="column">
-                <span class="dim">Before</span>
-                {#if op.limited_tracked}
-                  <Status cls={StatusClass.Warning}>Not tracked</Status>
-                {:else if op.previous_value === null}
-                  <Status cls={StatusClass.Info}>New</Status>
-                {:else}
-                  <span class="mono">{op.previous_value}</span>
-                {/if}
-              </div>
-              <div class="column">
-                <span class="dim">After</span>
-                {#if op.type === "Remove"}
-                  <Status cls={StatusClass.Danger}>Removed</Status>
-                {:else}
-                  <span class="mono">{op.value}</span>
-                {/if}
-              </div>
-            </div>
-          {/each}
-        {:else}{/if}
+        {#if state === "Rejected" && type === "Execute"}
+          <div class="aborted-header">Rejected transitions</div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Index</th>
+                  <th>Transition ID</th>
+                  <th>Action</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each data.confirmed_transaction.rejected.execution.transitions as transition, index}
+                  <tr>
+                    <td>{index}</td>
+                    <td>
+                      <Link href="/transition/{transition.id}">
+                        <span class="mono">{transition.id}</span>
+                      </Link>
+                    </td>
+                    <td>
+                      <div class="column">
+                        <span class="mono">{transition.function_name}</span>
+                        <Link href="/program/{transition.program_id}">
+                          <span class="secondary mono">{transition.program_id}</span>
+                        </Link>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="column">
+                        {#if transition.status.startsWith("Accepted")}
+                          <Status cls={StatusClass.Success}>Accepted</Status>
+                        {:else if transition.status.startsWith("Rejected")}
+                          <Status cls={StatusClass.Danger}>Rejected</Status>
+                        {:else}
+                          <Status cls={StatusClass.Warning}>Unknown</Status>
+                        {/if}
+                      </div>
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        {/if}
       </div>
-    </div>
-  {/snippet}
-</Tabs>
+    {/snippet}
+    {#snippet mapping(binds)}
+      <div class="tab" bind:this={binds.mapping}>
+        <div class="mapping-operations">
+          {#if state === "Accepted" || state === "Rejected"}
+            {#each data.mapping_operations as op}
+              <div class="operation">
+                <div class="column">
+                  <span class="dim">Program</span>
+                  <Link href="/program/{op.program_id}">
+                    <span class="mono">{op.program_id}</span>
+                  </Link>
+                </div>
+                <div class="column">
+                  <span class="dim">Mapping</span>
+                  <span class="mono">{op.mapping_name}[{op.key}]</span>
+                </div>
+                <div class="column">
+                  <span class="dim">Before</span>
+                  {#if op.limited_tracked}
+                    <Status cls={StatusClass.Warning}>Not tracked</Status>
+                  {:else if op.previous_value === null}
+                    <Status cls={StatusClass.Info}>New</Status>
+                  {:else}
+                    <span class="mono">{op.previous_value}</span>
+                  {/if}
+                </div>
+                <div class="column">
+                  <span class="dim">After</span>
+                  {#if op.type === "Remove"}
+                    <Status cls={StatusClass.Danger}>Removed</Status>
+                  {:else}
+                    <span class="mono">{op.value}</span>
+                  {/if}
+                </div>
+              </div>
+            {/each}
+          {:else}{/if}
+        </div>
+      </div>
+    {/snippet}
+  </Tabs>
 
-
-<PageInformation
-  title="Transaction"
-  description="A transaction in Aleo is an on-chain action that facilitates the transfer of credits, interaction with smart contracts, or execution of operations. Each transaction is processed by validators and added to a block. Transactions are a key component of maintaining the dynamic state of the blockchain."
-  icon="transaction-icon"
-/>
+  <PageInformation
+    title="Transaction"
+    description="A transaction in Aleo is an on-chain action that facilitates the transfer of credits, interaction with smart contracts, or execution of operations. Each transaction is processed by validators and added to a block. Transactions are a key component of maintaining the dynamic state of the blockchain."
+    icon="transaction-icon"
+  />
 </div>

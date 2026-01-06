@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte"
-  import Tooltip from "./Tooltip.svelte"
+    import Tooltip from "./Tooltip.svelte"
 
   interface DetailLine {
     label: string
@@ -74,6 +74,7 @@
         <div class="tooltip-icon"></div>
         {#if showTooltip}
           <Tooltip>{tooltip}</Tooltip>
+           {tooltip}
         {/if}
       </div>
     {/if}
