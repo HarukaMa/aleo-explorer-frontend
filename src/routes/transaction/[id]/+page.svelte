@@ -23,6 +23,81 @@
   let state = $derived(data.state)
   let type = $derived(data.type)
 
+  // Transfer details logic
+  const TRANSFER_ACTIONS = [
+    "transfer_public",
+    "transfer_public_to_private",
+    "transfer_private_to_public",
+    "transfer_private",
+  ]
+
+  type TransferDetails = {
+    amount: string
+    from: string | null // null means Private
+    to: string | null // null means Private
+  } | null
+
+  let transferDetails: TransferDetails = $derived.by(() => {
+    if (type !== "Execute") return null
+
+    // Use same pattern as the existing transitions derivation
+    const transaction = data.confirmed_transaction?.transaction ?? data.transaction
+    if (!transaction?.execution?.transitions) return null
+
+    const txTransitions = transaction.execution.transitions
+    if (txTransitions.length !== 1) return null
+
+    const transition = txTransitions[0]
+    if (transition.program_id !== "credits.aleo") return null
+    if (!TRANSFER_ACTIONS.includes(transition.function_name)) return null
+
+    // Get the future from the last output
+    const outputs = transition.outputs
+    if (!outputs || outputs.length === 0) return null
+
+    const lastOutput = outputs[outputs.length - 1]
+    const future = lastOutput?.future?.value ?? lastOutput?.future ?? lastOutput?.value
+    if (!future?.arguments) return null
+
+    const args = future.arguments
+    const action = transition.function_name
+
+    // Amount is always the last argument (remove u64 suffix if present)
+    const amountArg = args[args.length - 1]
+    const amount =
+      typeof amountArg === "string"
+        ? amountArg.replace("u64", "").replace(/[^\d]/g, "")
+        : String(amountArg)
+
+    let from: string | null = null
+    let to: string | null = null
+
+    switch (action) {
+      case "transfer_public":
+        // from: arg[0], to: arg[1]
+        from = args[0]
+        to = args[1]
+        break
+      case "transfer_public_to_private":
+        // from: arg[0], to: Private
+        from = args[0]
+        to = null
+        break
+      case "transfer_private_to_public":
+        // from: Private, to: arg[0]
+        from = null
+        to = args[0]
+        break
+      case "transfer_private":
+        // from: Private, to: Private
+        from = null
+        to = null
+        break
+    }
+
+    return { amount, from, to }
+  })
+
   const tab_data = [
     { title: "Transitions", id: "transitions" },
     { title: "Mapping operations", id: "mapping" },
@@ -275,6 +350,18 @@
       line-height: 1.25rem;
     }
   }
+
+  .private-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    .lock-icon {
+      width: 20px;
+      height: 20px;
+      background-image: $lock-icon;
+    }
+  }
 </style>
 
 <Seo
@@ -327,22 +414,44 @@
   {/if}
 {/snippet}
 
+{#snippet privateIndicator()}
+  <div class="private-indicator">
+    <div class="lock-icon"></div>
+    <span>Private</span>
+  </div>
+{/snippet}
+
 <div class="container">
   <div class="details">
-    <div class="group">
-      <!-- TODO: Add information to transfer details -->
-      <p class="group-title">Transfer details</p>
-      <div class="group-content">
-        <DetailLine tooltip="Tooltip" label="Transfer amount">...</DetailLine>
-        <div class="group-separator"></div>
-        <DetailLine tooltip="Tooltip" label="From"
-          >aleo1d9a3maz8qvp9wkd7695nucue354j4j50f9xp0l9lqq4u6egwzqqs3cxrqx</DetailLine
-        >
-        <DetailLine tooltip="Tooltip" label="To"
-          >aleo1d9a3maz8qvp9wkd7695nucue354j4j50f9xp0l9lqq4u6egwzqqs3cxrqx</DetailLine
-        >
+    {#if transferDetails}
+      <div class="group">
+        <p class="group-title">Transfer details</p>
+        <div class="group-content">
+          <DetailLine tooltip="The amount of ALEO credits transferred" label="Transfer amount">
+            <strong class="aleo-token"><AleoToken number={transferDetails.amount} suffix /></strong>
+          </DetailLine>
+          <div class="group-separator"></div>
+          <DetailLine tooltip="The sender address" label="From">
+            {#if transferDetails.from === null}
+              {@render privateIndicator()}
+            {:else}
+              <Link href="/address/{transferDetails.from}">
+                <span class="mono">{transferDetails.from}</span>
+              </Link>
+            {/if}
+          </DetailLine>
+          <DetailLine tooltip="The recipient address" label="To">
+            {#if transferDetails.to === null}
+              {@render privateIndicator()}
+            {:else}
+              <Link href="/address/{transferDetails.to}">
+                <span class="mono">{transferDetails.to}</span>
+              </Link>
+            {/if}
+          </DetailLine>
+        </div>
       </div>
-    </div>
+    {/if}
 
     <div class="group">
       <p class="group-title">General information</p>

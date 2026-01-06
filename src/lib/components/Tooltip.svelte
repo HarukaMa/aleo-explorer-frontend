@@ -18,39 +18,39 @@
   function update() {
     if (!referenceEl || !tooltipEl) return
 
-    // computePosition(referenceEl, tooltipEl, {
-    //   placement: "top",
-    //   middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowEl })],
-    // }).then(({ x, y, placement: finalPlacement, middlewareData }) => {
-    //   placement = finalPlacement.split("-")[0] as typeof placement
+    computePosition(referenceEl, tooltipEl, {
+      placement: "top",
+      middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowEl })],
+    }).then(({ x, y, placement: finalPlacement, middlewareData }) => {
+      placement = finalPlacement.split("-")[0] as typeof placement
 
-    //   Object.assign(tooltipEl.style, {
-    //     left: `${x}px`,
-    //     top: `${y}px`,
-    //   })
+      Object.assign(tooltipEl.style, {
+        left: `${x}px`,
+        top: `${y}px`,
+      })
 
-    //   const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {}
-    //   const staticSide = {
-    //     top: "bottom",
-    //     right: "left",
-    //     bottom: "top",
-    //     left: "right",
-    //   }[placement]
+      const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {}
+      const staticSide = {
+        top: "bottom",
+        right: "left",
+        bottom: "top",
+        left: "right",
+      }[placement]
 
-    //   Object.assign(arrowEl.style, {
-    //     left: arrowX != null ? `${arrowX}px` : "",
-    //     top: arrowY != null ? `${arrowY}px` : "",
-    //     right: "",
-    //     bottom: "",
-    //     [staticSide]: "-4px",
-    //   })
-    // })
+      Object.assign(arrowEl.style, {
+        left: arrowX != null ? `${arrowX}px` : "",
+        top: arrowY != null ? `${arrowY}px` : "",
+        right: "",
+        bottom: "",
+        [staticSide]: "-4px",
+      })
+    })
   }
 
   export function show(reference: HTMLElement) {
     referenceEl = reference
     isVisible = true
-    // cleanup = autoUpdate(referenceEl, tooltipEl, update)
+    cleanup = autoUpdate(referenceEl, tooltipEl, update)
   }
 
   export function hide() {

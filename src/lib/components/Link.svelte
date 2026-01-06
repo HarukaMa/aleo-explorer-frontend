@@ -18,7 +18,7 @@
   @use "/static/styles/variables" as *;
 
   a {
-    color: $grey-600;
+    color: $blue-600;
     text-decoration: none;
 
     &:hover {
