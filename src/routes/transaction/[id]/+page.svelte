@@ -461,14 +461,14 @@
         <DetailLine tooltip="Tooltip" label="Timestamp">
           {format_time(new Date(data.block_timestamp * 1000), TimeMode.Relative)}
           <!-- @formatter:off -->
-          (<Time timestamp={data.block_timestamp} />)
+          (<Time no_relative timestamp={data.block_timestamp} />)
           <!-- @formatter:on -->
         </DetailLine>
       {:else}
         <DetailLine tooltip="Tooltip" label="First seen">
           {format_time(new Date(data.first_seen * 1000), TimeMode.Relative)}
           <!-- @formatter:off -->
-          (<Time timestamp={data.first_seen} />)
+          (<Time no_relative timestamp={data.first_seen} />)
           <!-- @formatter:on -->
         </DetailLine>
       {/if}
