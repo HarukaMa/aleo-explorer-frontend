@@ -101,30 +101,12 @@
 
   let before_container: Snippet | undefined = $state()
 
-  // noinspection JSUnusedGlobalSymbols
   setContext("before_container", {
     set snippet(value: Snippet) {
       before_container = value
     },
   })
 </script>
-
-<svelte:head>
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="AleoScan" />
-  <meta property="og:title" content="AleoScan - Aleo Blockchain Explorer" />
-  <meta property="og:description" content="AleoScan - open source Aleo explorer. Explore the Aleo blockchain, find information about blocks, transactions, validators, programs and more." />
-  <meta property="og:image" content="{$page.url.origin}/thumbnail.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AleoScan - Aleo Blockchain Explorer" />
-  <meta name="twitter:description" content="AleoScan - open source Aleo explorer. Explore the Aleo blockchain, find information about blocks, transactions, validators, programs and more." />
-  <meta name="twitter:image" content="{$page.url.origin}/thumbnail.png" />
-</svelte:head>
 
 <!-- Contains code from https://github.com/scosman/sveltekit-navigation-loader/ -->
 <!--
@@ -286,6 +268,29 @@ SOFTWARE.
     background-color: $blue-600;
   }
 </style>
+
+<svelte:head>
+  <!-- Open Graph -->
+  <meta content="website" property="og:type" />
+  <meta content="AleoScan" property="og:site_name" />
+  <meta content="AleoScan - Aleo Blockchain Explorer" property="og:title" />
+  <meta
+    content="AleoScan - open source Aleo explorer. Explore the Aleo blockchain, find information about blocks, transactions, validators, programs and more."
+    property="og:description"
+  />
+  <meta content="{$page.url.origin}/thumbnail.png" property="og:image" />
+  <meta content="1200" property="og:image:width" />
+  <meta content="630" property="og:image:height" />
+
+  <!-- Twitter Card -->
+  <meta content="summary_large_image" name="twitter:card" />
+  <meta content="AleoScan - Aleo Blockchain Explorer" name="twitter:title" />
+  <meta
+    content="AleoScan - open source Aleo explorer. Explore the Aleo blockchain, find information about blocks, transactions, validators, programs and more."
+    name="twitter:description"
+  />
+  <meta content="{$page.url.origin}/thumbnail.png" name="twitter:image" />
+</svelte:head>
 
 {#if $navigating}
   <!--
