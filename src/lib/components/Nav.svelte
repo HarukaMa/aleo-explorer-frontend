@@ -163,6 +163,7 @@
     border-radius: 1rem;
     box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.07);
     background: white;
+    z-index: 1000;
   }
 
   .search {
