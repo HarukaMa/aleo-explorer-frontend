@@ -297,9 +297,7 @@
   description="Calculate the average time and credits for finding a solution based on your prover's solution rate and the current network difficulty."
 />
 
-<div class="header">
-  <PageHeader content="Proving Calculator" />
-</div>
+<PageHeader content="Proving Calculator" />
 
 <div class="container calculator-content">
   <div class="form-section">

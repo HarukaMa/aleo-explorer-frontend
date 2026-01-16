@@ -1,7 +1,5 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
-  import type { BeforeContainerState } from "$lib/types"
-  import { getContext } from "svelte"
   import Number from "$lib/components/Number.svelte"
   import DetailLine from "$lib/components/DetailLine.svelte"
   import AleoCredit from "$lib/components/AleoToken.svelte"
@@ -14,6 +12,7 @@
   import Callout from "$lib/components/Callout.svelte"
   import Time from "$lib/components/Time.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageHeader from "$lib/components/PageHeader.svelte"
 
   let { data: server_data } = $props()
   let { data, address } = $derived(server_data)
@@ -257,48 +256,37 @@
     columns: delegator_table_columns,
     getCoreRowModel: getCoreRowModel(),
   })
-
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
   @use "/static/styles/variables" as *;
 
-  div.header {
-    .address-icon {
-      height: 32px;
-      width: 32px;
-      background-image: $address-icon;
-    }
+  .address-icon {
+    height: 40px;
+    width: 40px;
+    background-image: url("$lib/assets/images/icons/address-icon.svg");
+  }
 
-    .external-icon {
-      height: 40px;
-      width: 40px;
+  .external-icon {
+    height: 40px;
+    width: 40px;
 
-      img {
-        height: 100%;
-        width: 100%;
-        object-fit: contain;
-      }
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
     }
+  }
 
-    .address-data {
-      font-size: 1.375rem;
-      font-weight: 600;
-      font-family: "Montserrat Variable", sans-serif;
-    }
+  .address-data {
+    font-size: 1.375rem;
+    font-weight: 600;
+    font-family: "Montserrat Variable", sans-serif;
+  }
 
-    .address-title {
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
+  .address-title {
+    font-size: 1rem;
+    line-height: 1.5rem;
   }
 
   .details {
@@ -458,27 +446,23 @@
   </div>
 {/snippet}
 
-{#snippet before_container()}
-  <div class="header">
-    <div class="flex">
-      {#if resolved.logo}
-        <div class="external-icon">
-          <img alt={resolved.tag} src="https://r2.aleoscan.io/{resolved.logo}" />
-        </div>
-      {:else}
-        <div class="address-icon"></div>
-      {/if}
-      <div class="vert">
-        <div class="address-title">
-          {#if data && data.committee_state}Validator{:else}Address{/if}
-        </div>
-        <div class="address-data">
-          <UIAddress {address} name_data={data.resolved_addresses} short_address keep_font />
-        </div>
-      </div>
+<PageHeader>
+  {#if resolved.logo}
+    <div class="external-icon">
+      <img alt={resolved.tag} src="https://r2.aleoscan.io/{resolved.logo}" />
+    </div>
+  {:else}
+    <div class="address-icon"></div>
+  {/if}
+  <div class="vert">
+    <div class="address-title">
+      {#if data && data.committee_state}Validator{:else}Address{/if}
+    </div>
+    <div class="address-data">
+      <UIAddress {address} keep_font name_data={data.resolved_addresses} short_address />
     </div>
   </div>
-{/snippet}
+</PageHeader>
 
 <div class="details">
   {#if data.program_name}

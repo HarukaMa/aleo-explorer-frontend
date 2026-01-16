@@ -4,7 +4,7 @@
   import { current_time_mode, format_time_relative, TimeMode } from "$lib/time_mode.svelte"
   import { browser } from "$app/environment"
   import { getCookie } from "$lib/utils"
-  import { setContext, type Snippet } from "svelte"
+  import { setContext } from "svelte"
   import TopBanner from "$lib/components/TopBanner.svelte"
   import { navigating, page } from "$app/stores"
   import { expoOut } from "svelte/easing"
@@ -98,14 +98,6 @@
   })
 
   setContext("time_mode", time_mode)
-
-  let before_container: Snippet | undefined = $state()
-
-  setContext("before_container", {
-    set snippet(value: Snippet) {
-      before_container = value
-    },
-  })
 </script>
 
 <!-- Contains code from https://github.com/scosman/sveltekit-navigation-loader/ -->
@@ -316,10 +308,6 @@ SOFTWARE.
 {/if}
 
 <Nav {is_index} />
-
-{#if before_container}
-  {@render before_container()}
-{/if}
 
 <div class="container">
   {@render children()}

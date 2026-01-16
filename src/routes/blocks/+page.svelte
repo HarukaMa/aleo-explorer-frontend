@@ -1,6 +1,6 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
-  import { type BeforeContainerState, type BlockList } from "$lib/types"
+  import { type BlockList } from "$lib/types"
   import {
     type ColumnDef,
     createTable,
@@ -14,7 +14,6 @@
   import Time from "$lib/components/Time.svelte"
   import Number from "$lib/components/Number.svelte"
   import AleoCredit from "$lib/components/AleoToken.svelte"
-  import { getContext } from "svelte"
   import TableNav from "$lib/components/TableNav.svelte"
   import Decimal from "decimal.js"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
@@ -129,9 +128,6 @@
     { name: "placeholder 2", value: "placeholder 2" },
   ])
 
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
   async function set_page(page: number) {
     table.setPageIndex(page - 1)
     const response = await fetch(`/api/blocks?p=${page}`)
@@ -148,12 +144,6 @@
     const new_url = `${location.pathname}?${current_params.toString()}`
     history.replaceState({}, "", new_url)
   }
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
@@ -171,31 +161,13 @@
   description="Explore recent Aleo blocks. View height, timestamp, transactions, block hash, and validators in real-time."
 />
 
-{#snippet before_container()}
-  <div class="header">
-    <PageHeader content="Blocks" />
-    <!--    <div class="info">-->
-    <!--      {#each header_data as data}-->
-    <!--        <div class="info-data">-->
-    <!--          <div class="info-data-title">{data.name}</div>-->
-    <!--          <div class="info-data-value">-->
-    <!--            {#if data.value instanceof Object}-->
-    <!--              <data.value.component {...data.value.props} />-->
-    <!--            {:else}-->
-    <!--              {data.value}-->
-    <!--            {/if}-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      {/each}-->
-    <!--    </div>-->
-  </div>
-{/snippet}
-
 {#snippet height_column(value)}
   <Link href="/block/{value}">
     <Number number={value} />
   </Link>
 {/snippet}
+
+<PageHeader content="Blocks" />
 
 <div class="table-container">
   <table>

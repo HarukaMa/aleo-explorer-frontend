@@ -1,7 +1,6 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
-  import { type BeforeContainerState, StatusClass } from "$lib/types"
-  import { getContext } from "svelte"
+  import { StatusClass } from "$lib/types"
   import Number from "$lib/components/Number.svelte"
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Time from "$lib/components/Time.svelte"
@@ -15,6 +14,7 @@
   import AleoToken from "$lib/components/AleoToken.svelte"
   import FeeBreakdown from "$lib/components/FeeBreakdown.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageHeader from "$lib/components/PageHeader.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -135,38 +135,10 @@
     columns: transition_table_columns,
     getCoreRowModel: getCoreRowModel(),
   })
-
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
   @use "/static/styles/variables" as *;
-
-  div.header {
-    .transaction-icon {
-      height: 32px;
-      width: 32px;
-      background-image: $transaction-icon;
-    }
-
-    .transaction-id {
-      font-size: 1.375rem;
-      font-weight: 600;
-      font-family: "Montserrat Variable", sans-serif;
-    }
-
-    .transaction-title {
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
-  }
 
   .details {
     margin-top: 2.5rem;
@@ -294,20 +266,6 @@
   {/if}
 {/snippet}
 
-{#snippet before_container()}
-  <div class="header">
-    <div class="flex">
-      <div class="transaction-icon"></div>
-      <div class="vert">
-        <div class="transaction-title">Transaction</div>
-        <div class="transaction-id">
-          {data.tx_id.slice(0, 11) + "..." + data.tx_id.slice(-6)}
-        </div>
-      </div>
-    </div>
-  </div>
-{/snippet}
-
 {#snippet status_column(value)}
   {#if value?.startsWith("Accepted")}
     <Status cls={StatusClass.Success}>Accepted</Status>
@@ -317,6 +275,12 @@
     <Status cls={StatusClass.Info}>Unconfirmed</Status>
   {/if}
 {/snippet}
+
+<PageHeader
+  content={data.tx_id.slice(0, 11) + "..." + data.tx_id.slice(-6)}
+  icon="transaction-icon"
+  title="Transaction"
+/>
 
 <div class="details">
   <div class="group">

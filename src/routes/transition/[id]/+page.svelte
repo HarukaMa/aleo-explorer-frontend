@@ -1,12 +1,12 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
-  import { type BeforeContainerState, StatusClass } from "$lib/types"
-  import { getContext } from "svelte"
+  import { StatusClass } from "$lib/types"
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
   import Link from "$lib/components/Link.svelte"
   import Status from "$lib/components/Status.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageHeader from "$lib/components/PageHeader.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -26,16 +26,7 @@
     return tabs
   })
 
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
   let tabs: Tabs
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
@@ -136,13 +127,17 @@
       <div class="transition-icon"></div>
       <div class="vert">
         <div class="transition-title">Transition</div>
-        <div class="transition-id">
-          {transition.id.slice(0, 11) + "..." + transition.id.slice(-6)}
-        </div>
+        <div class="transition-id"></div>
       </div>
     </div>
   </div>
 {/snippet}
+
+<PageHeader
+  content={transition.id.slice(0, 11) + "..." + transition.id.slice(-6)}
+  icon="transition-icon"
+  title="Transition"
+/>
 
 <div class="details">
   <div class="group">

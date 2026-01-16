@@ -2,9 +2,9 @@
   import Seo from "$lib/components/Seo.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
   import Button from "$lib/components/Button.svelte"
-  import { type BeforeContainerState, ButtonLinkClass } from "$lib/types"
+  import { ButtonLinkClass } from "$lib/types"
   import { env } from "$env/dynamic/public"
-  import { getContext, onMount } from "svelte"
+  import { onMount } from "svelte"
   import { page } from "$app/state"
 
   let contact = $state("")
@@ -53,7 +53,7 @@
         window.location.href = "/feedback?success=1"
       } else {
         const data = await response.json()
-        errorMessage = data.message || "Failed to submit feedback. Please try again."
+        errorMessage = "Failed to submit feedback. Please try again: " + data.message
       }
     } catch (error) {
       errorMessage = "An error occurred. Please try again."
@@ -61,15 +61,6 @@
       isSubmitting = false
     }
   }
-
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
@@ -284,11 +275,7 @@
 
 <Seo title="Feedback | AleoScan" description="Submit feedback to help us improve AleoScan." />
 
-{#snippet before_container()}
-  <div class="header">
-    <PageHeader content="Feedback" />
-  </div>
-{/snippet}
+<PageHeader content="Feedback" />
 
 <div class="container">
   <div class="content">
