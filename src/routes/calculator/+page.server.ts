@@ -7,10 +7,10 @@ import { APIError } from "$lib/types"
 export const load: PageServerLoad = async () => {
   try {
     const summary = await API.instance.summary()
+    const calc = await API.instance.calc()
     return {
       proof_target: summary.proof_target,
-      // TODO: fetch real data
-      avg_reward: 839921,
+      avg_reward: calc.avg_reward,
     }
   } catch (err) {
     console.error(err)

@@ -104,5 +104,9 @@ export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
       }
       return await super.get(`/similar_programs/${id}/${edition || 0}`, params)
     }
+
+    public async calc(this: API): Promise<any> {
+      return await super.get("/calc")
+    }
   }
 }
