@@ -224,6 +224,7 @@
 
   .turnstile-wrapper {
     margin-bottom: 1.5rem;
+    height: 65px;
   }
 
   .success-card {
