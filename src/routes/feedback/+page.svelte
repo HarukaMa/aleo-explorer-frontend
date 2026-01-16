@@ -2,9 +2,9 @@
   import Seo from "$lib/components/Seo.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
   import Button from "$lib/components/Button.svelte"
-  import { ButtonLinkClass } from "$lib/types"
+  import { type BeforeContainerState, ButtonLinkClass } from "$lib/types"
   import { env } from "$env/dynamic/public"
-  import { onMount } from "svelte"
+  import { getContext, onMount } from "svelte"
   import { page } from "$app/state"
 
   let contact = $state("")
@@ -18,23 +18,14 @@
 
   onMount(() => {
     // Load Turnstile widget
-    if ((window as any).turnstile && env.PUBLIC_TURNSTILE_SITE_KEY) {
-      ;(window as any).turnstile.render("#cf-turnstile", {
-        sitekey: env.PUBLIC_TURNSTILE_SITE_KEY,
-      })
-    }
-  })
-
-  // Define global callback for Turnstile
-  if (typeof window !== "undefined") {
-    ;(window as any).load_turnstile_widget = function () {
-      if (env.PUBLIC_TURNSTILE_SITE_KEY) {
+    setTimeout(() => {
+      if ((window as any).turnstile && env.PUBLIC_TURNSTILE_SITE_KEY) {
         ;(window as any).turnstile.render("#cf-turnstile", {
           sitekey: env.PUBLIC_TURNSTILE_SITE_KEY,
         })
       }
-    }
-  }
+    }, 1000)
+  })
 
   async function handleSubmit(event: Event) {
     event.preventDefault()
@@ -69,6 +60,15 @@
       isSubmitting = false
     }
   }
+
+  let before_container_state: BeforeContainerState = getContext("before_container")
+  before_container_state.snippet = before_container
+
+  $effect(() => {
+    return () => {
+      before_container_state.snippet = undefined
+    }
+  })
 </script>
 
 <style lang="scss">
@@ -277,14 +277,16 @@
 </style>
 
 <svelte:head>
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=load_turnstile_widget" async defer></script>
+  <script defer src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
 </svelte:head>
 
 <Seo title="Feedback | AleoScan" description="Submit feedback to help us improve AleoScan." />
 
-<div class="header">
-  <PageHeader content="Feedback" />
-</div>
+{#snippet before_container()}
+  <div class="header">
+    <PageHeader content="Feedback" />
+  </div>
+{/snippet}
 
 <div class="container">
   <div class="content">
