@@ -1,30 +1,28 @@
 <script lang="ts">
   import type { Snippet } from "svelte"
-  import { computePosition, flip, shift, offset, arrow, autoUpdate } from "@floating-ui/dom"
+  import { arrow, computePosition, flip, offset, shift } from "@floating-ui/dom"
 
   type Props = {
-    children: Snippet
+    children: Snippet // original content
+    tooltip_snippet: Snippet // tooltip content
   }
 
-  let { children }: Props = $props()
+  let { children, tooltip_snippet }: Props = $props()
 
-  let tooltipEl: HTMLDivElement
-  let arrowEl: HTMLDivElement
+  let root_element: HTMLDivElement
+  let popup_element: HTMLDivElement
+  let arrow_element: HTMLDivElement
   let placement: "top" | "right" | "bottom" | "left" = $state("top")
-  let isVisible = $state(false)
-  let referenceEl: HTMLElement | null = null
-  let cleanup: (() => void) | null = null
 
-  function update() {
-    if (!referenceEl || !tooltipEl) return
-
-    computePosition(referenceEl, tooltipEl, {
+  function show_popup() {
+    popup_element.style.display = "flex"
+    computePosition(root_element, popup_element, {
       placement: "top",
-      middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrowEl })],
+      middleware: [offset(8), flip(), shift({ padding: 8 }), arrow({ element: arrow_element })],
     }).then(({ x, y, placement: finalPlacement, middlewareData }) => {
       placement = finalPlacement.split("-")[0] as typeof placement
 
-      Object.assign(tooltipEl.style, {
+      Object.assign(popup_element.style, {
         left: `${x}px`,
         top: `${y}px`,
       })
@@ -37,33 +35,17 @@
         left: "right",
       }[placement]
 
-      Object.assign(arrowEl.style, {
+      Object.assign(arrow_element.style, {
         left: arrowX != null ? `${arrowX}px` : "",
         top: arrowY != null ? `${arrowY}px` : "",
-        right: "",
-        bottom: "",
         [staticSide]: "-4px",
       })
     })
   }
 
-  export function show(reference: HTMLElement) {
-    referenceEl = reference
-    isVisible = true
-    cleanup = autoUpdate(referenceEl, tooltipEl, update)
+  function hide_popup() {
+    popup_element.style.display = "none"
   }
-
-  export function hide() {
-    isVisible = false
-    cleanup?.()
-    cleanup = null
-  }
-
-  $effect(() => {
-    return () => {
-      cleanup?.()
-    }
-  })
 </script>
 
 <style lang="scss">
@@ -97,7 +79,11 @@
   }
 </style>
 
-<div class="tooltip" class:visible={isVisible} bind:this={tooltipEl}>
+<div bind:this={root_element} class="content" onmouseenter={show_popup} onmouseleave={hide_popup} role="tooltip">
   {@render children()}
-  <div class="arrow" bind:this={arrowEl}></div>
+</div>
+
+<div bind:this={popup_element} class="tooltip">
+  {@render tooltip_snippet()}
+  <div bind:this={arrow_element} class="arrow"></div>
 </div>

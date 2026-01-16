@@ -65,16 +65,13 @@
 <div class="line">
   <div class="left">
     {#if tooltip}
-      <div
-        class="tooltip-trigger"
-        onmouseenter={() => (showTooltip = true)}
-        onmouseleave={() => (showTooltip = false)}
-        role="tooltip"
-      >
-        <div class="tooltip-icon"></div>
-        {#if showTooltip}
-          <Tooltip>{tooltip}</Tooltip>
-        {/if}
+      <div class="tooltip-trigger">
+        <Tooltip>
+          <div class="tooltip-icon"></div>
+          {#snippet tooltip_snippet()}
+            {tooltip}
+          {/snippet}
+        </Tooltip>
       </div>
     {/if}
     <div class="label">{label}</div>
