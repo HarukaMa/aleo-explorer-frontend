@@ -42,9 +42,7 @@
   }
 </style>
 
-<div class="header">
-  <PageHeader content="FAQ" />
-</div>
+<PageHeader content="FAQ" />
 
 <div class="content">
   <h2>General Questions</h2>
@@ -57,38 +55,32 @@
   </p>
 
   <h3>Is Aleoscan an official Aleo product?</h3>
-  <p>
-    No, Aleoscan is an independent open-source blockchain explorer built for the Aleo network.
-  </p>
+  <p>No, Aleoscan is an independent open-source blockchain explorer built for the Aleo network.</p>
 
   <h3>Can I use Aleoscan to send or receive transactions?</h3>
   <p>
-    No, Aleoscan is a read-only blockchain explorer. To send or receive transactions, you need a wallet that
-    supports Aleo.
+    No, Aleoscan is a read-only blockchain explorer for now. To send or receive transactions, you need a wallet that
+    supports Aleo. In the future you will be able to execute transactions from Aleoscan.
   </p>
 
   <h2>Transactions & Blocks</h2>
 
   <h3>Why can't I see my transaction on Aleoscan?</h3>
   <p>
-    Transactions might take time to be confirmed. If it remains missing for a long time, check if it was
-    broadcasted correctly in your wallet.
+    Transactions might take time to be confirmed. If it remains missing for a long time, check if it was broadcasted
+    correctly in your wallet.
   </p>
 
   <h3>Why is my transaction marked as 'Rejected'?</h3>
-  <p>
-    A transaction may be rejected due to insufficient funds, incorrect parameters, or network congestion.
-  </p>
+  <p>A transaction may be rejected due to insufficient funds or incorrect parameters.</p>
 
   <h3>What does an unconfirmed transaction mean?</h3>
-  <p>
-    An unconfirmed transaction means it has been submitted but has not yet been included in a block.
-  </p>
+  <p>An unconfirmed transaction means it has been submitted but has not yet been included in a block.</p>
 
   <h3>How can I check block details?</h3>
   <p>
-    You can search for a block number or hash in Aleoscan to see details such as transactions, timestamp, and
-    miner information.
+    You can search for a block number or hash in Aleoscan to see details such as transactions, timestamp, and miner
+    information.
   </p>
 
   <h2>Addresses & Validators</h2>
@@ -100,59 +92,46 @@
   </p>
 
   <h3>Why is my address balance not updating?</h3>
-  <p>
-    Aleoscan does not display private balances. Only public token balances are visible.
-  </p>
+  <p>Aleoscan does not display private balances. Only public token balances are visible.</p>
 
   <h3>What is a validator?</h3>
-  <p>
-    Validators participate in securing the Aleo network by processing transactions and producing blocks.
-  </p>
+  <p>Validators participate in securing the Aleo network by processing transactions and producing blocks.</p>
 
   <h3>How can I see if a validator is active?</h3>
-  <p>
-    Each validator's status is displayed on Aleoscan, showing if they are actively participating in the network.
-  </p>
+  <p>Each validator's status is displayed on Aleoscan, showing if they are actively participating in the network.</p>
 
   <h2>Privacy & Security</h2>
 
   <h3>Can Aleoscan see my private transactions?</h3>
   <p>
-    No, private transactions remain encrypted and cannot be viewed on Aleoscan. Only the involved parties
-    can see the details in their wallet.
+    No, private transactions remain encrypted and cannot be viewed on Aleoscan for now. Only the involved parties can
+    see the details in their wallet. In the future, you will be able to decrypt the private data on Aleoscan if you own
+    the transaction.
   </p>
 
   <h3>Is Aleoscan safe to use?</h3>
-  <p>
-    Yes, Aleoscan is a read-only explorer and does not interact with your wallet or private keys.
-  </p>
+  <p>Yes, Aleoscan is a read-only explorer and does not interact with your wallet or private keys.</p>
 
   <h3>Can I track private tokens on Aleoscan?</h3>
-  <p>
-    No, Aleoscan only supports tracking public tokens. Private transactions and balances are not visible.
-  </p>
+  <p>No, Aleoscan only supports tracking public tokens. Private transactions and balances are not visible.</p>
 
   <h2>Other Questions</h2>
 
   <h3>Can I use Aleoscan for analytics?</h3>
-  <p>
-    Yes, Aleoscan provides insights into network activity, validator performance, and transaction trends.
-  </p>
+  <p>Yes, Aleoscan provides insights into network activity, validator performance, and transaction trends.</p>
 
   <h3>How often is Aleoscan updated?</h3>
-  <p>
-    Aleoscan continuously syncs with the Aleo blockchain to provide up-to-date data.
-  </p>
+  <p>Aleoscan continuously syncs with the Aleo blockchain to provide up-to-date data.</p>
 
   <h3>Who can I contact for support?</h3>
   <p>
-    Aleoscan is an explorer, not a support channel for exchanges or wallets. If you need help with transactions,
-    contact your wallet or exchange provider.
+    Aleoscan is an explorer, not a support channel for exchanges or wallets. If you need help with transactions, contact
+    your wallet or exchange provider.
   </p>
 
   <h3>Does Aleoscan have an API?</h3>
   <p>
-    API users can find documentation here: <a href="https://aleoscan.io/api/docs/" target="_blank" rel="noopener noreferrer">Aleoscan API Docs</a>
+    API users can find documentation here: <a href="https://aleoscan.io/api/docs/" target="_blank">Aleoscan API Docs</a>
   </p>
 
   <h3>How can I report a bug or suggest a feature?</h3>
@@ -161,8 +140,7 @@
   </p>
 
   <p>
-    AleoScan is just an explorer. If you have issues with exchanges and / or wallets, please contact them
-    directly. AleoScan feedback is NOT a support channel for your issues with them. Those "feedbacks" won't
-    be answered.
+    AleoScan is just an explorer. If you have issues with exchanges and / or wallets, please contact them directly.
+    AleoScan feedback is NOT a support channel for your issues with them. Those "feedbacks" won't be answered.
   </p>
 </div>
