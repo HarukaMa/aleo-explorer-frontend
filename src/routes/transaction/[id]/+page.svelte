@@ -46,30 +46,34 @@
   }
 
   let transitions = $derived.by(() => {
-    switch (type) {
-      case "Execute": {
-        const currentState = state ?? "Unconfirmed"
-        const transaction = data.confirmed_transaction?.transaction ?? data
-
-        if (currentState === "Rejected") {
-          return [{ ...transaction.fee.transition, state: currentState }]
+    if (type === "Execute") {
+      if (state === "Accepted") {
+        const tx = data.confirmed_transaction.transaction
+        let list = [...tx.execution.transitions]
+        if (tx.fee) {
+          list.push(tx.fee.transition)
         }
-
-        const transitions = [...transaction.execution.transitions]
-        if (transaction.fee) {
-          transitions.push(transaction.fee.transition)
+        return list
+      } else if (state === "Rejected") {
+        return [
+          ...data.confirmed_transaction.rejected.execution.transitions,
+          data.confirmed_transaction.transaction.fee.transition,
+        ]
+      } else {
+        let list = [...data.transaction.execution.transitions]
+        if (data.transaction.fee) {
+          list.push(data.transaction.fee.transition)
         }
-
-        return transitions.map((transition) => ({ ...transition, state: currentState }))
+        return list
       }
-
-      case "Deploy": {
-        const transaction = data.confirmed_transaction?.transaction ?? data.transaction
-        return [{ ...transaction.fee.transition, state }]
+    } else if (type === "Deploy") {
+      if (data.confirmed_transaction) {
+        return [data.confirmed_transaction.transaction.fee.transition]
+      } else {
+        return [data.transaction.fee.transition]
       }
-
-      default:
-        return []
+    } else {
+      return []
     }
   })
 
@@ -78,6 +82,7 @@
   let transition_table_data: TransitionList[] = $derived(
     transitions.map((transition: any, index: number) => {
       let display_index = index.toString()
+      let status = state
 
       if (
         index === transitions.length - 1 &&
@@ -85,6 +90,7 @@
         transition.function_name.startsWith("fee_")
       ) {
         display_index = "Fee"
+        status = "Accepted"
       }
 
       return {
@@ -94,7 +100,7 @@
           program: transition.program_id,
           function: transition.function_name,
         },
-        status: transition.state,
+        status: status,
       }
     }),
   )
@@ -308,7 +314,7 @@
   {:else if value?.startsWith("Rejected")}
     <Status cls={StatusClass.Danger}>Rejected</Status>
   {:else}
-    <Status cls={StatusClass.Warning}>Unknown</Status>
+    <Status cls={StatusClass.Info}>Unconfirmed</Status>
   {/if}
 {/snippet}
 
@@ -472,52 +478,6 @@
           </tbody>
         </table>
       </div>
-      {#if state === "Rejected" && type === "Execute"}
-        <div class="aborted-header">Rejected transitions</div>
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Index</th>
-                <th>Transition ID</th>
-                <th>Action</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each data.confirmed_transaction.rejected.execution.transitions as transition, index}
-                <tr>
-                  <td>{index}</td>
-                  <td>
-                    <Link href="/transition/{transition.id}">
-                      <span class="mono">{transition.id}</span>
-                    </Link>
-                  </td>
-                  <td>
-                    <div class="column">
-                      <span class="mono">{transition.function_name}</span>
-                      <Link href="/program/{transition.program_id}">
-                        <span class="secondary mono">{transition.program_id}</span>
-                      </Link>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="column">
-                      {#if transition.status.startsWith("Accepted")}
-                        <Status cls={StatusClass.Success}>Accepted</Status>
-                      {:else if transition.status.startsWith("Rejected")}
-                        <Status cls={StatusClass.Danger}>Rejected</Status>
-                      {:else}
-                        <Status cls={StatusClass.Warning}>Unknown</Status>
-                      {/if}
-                    </div>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
     </div>
   {/snippet}
   {#snippet mapping(binds)}
@@ -561,7 +521,6 @@
     </div>
   {/snippet}
 </Tabs>
-
 
 <PageInformation
   title="Transaction"
