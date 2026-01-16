@@ -27,6 +27,8 @@
     }, 1000)
   })
 
+  let form: HTMLFormElement | undefined
+
   async function handleSubmit(event: Event) {
     event.preventDefault()
 
@@ -38,7 +40,6 @@
     isSubmitting = true
     errorMessage = ""
 
-    const form = event.target as HTMLFormElement
     const formData = new FormData(form)
 
     try {
@@ -329,7 +330,7 @@
         </p>
       </div>
 
-      <form onsubmit={handleSubmit}>
+      <form onsubmit={handleSubmit} bind:this={form}>
         <div class="form-group">
           <label class="label" for="contact">Email</label>
           <input
@@ -361,6 +362,7 @@
           cls={ButtonLinkClass.Primary}
           Content={isSubmitting ? "Submitting..." : "Submit feedback"}
           disabled={isSubmitting}
+          action={handleSubmit}
         />
       </form>
     {/if}
