@@ -390,39 +390,38 @@
   title="Transaction"
 />
 
-<div class="container">
-  <div class="details">
-    {#if transferDetails}
-      <div class="group">
-        <p class="group-title">Transfer details</p>
-        <div class="group-content">
-          <DetailLine tooltip="The amount of ALEO credits transferred" label="Transfer amount">
-            <strong class="aleo-token">
-              <AleoToken number={transferDetails.amount} suffix />
-            </strong>
-          </DetailLine>
-          <div class="group-separator"></div>
-          <DetailLine tooltip="The sender address" label="From">
-            {#if transferDetails.from === null}
-              {@render privateIndicator()}
-            {:else}
-              <Link href="/address/{transferDetails.from}">
-                <span class="mono">{transferDetails.from}</span>
-              </Link>
-            {/if}
-          </DetailLine>
-          <DetailLine tooltip="The recipient address" label="To">
-            {#if transferDetails.to === null}
-              {@render privateIndicator()}
-            {:else}
-              <Link href="/address/{transferDetails.to}">
-                <span class="mono">{transferDetails.to}</span>
-              </Link>
-            {/if}
-          </DetailLine>
-        </div>
+<div class="details">
+  {#if transferDetails}
+    <div class="group">
+      <p class="group-title">Transfer details</p>
+      <div class="group-content">
+        <DetailLine tooltip="The amount of ALEO credits transferred" label="Transfer amount">
+          <strong class="aleo-token">
+            <AleoToken number={transferDetails.amount} suffix />
+          </strong>
+        </DetailLine>
+        <div class="group-separator"></div>
+        <DetailLine tooltip="The sender address" label="From">
+          {#if transferDetails.from === null}
+            {@render privateIndicator()}
+          {:else}
+            <Link href="/address/{transferDetails.from}">
+              <span class="mono">{transferDetails.from}</span>
+            </Link>
+          {/if}
+        </DetailLine>
+        <DetailLine tooltip="The recipient address" label="To">
+          {#if transferDetails.to === null}
+            {@render privateIndicator()}
+          {:else}
+            <Link href="/address/{transferDetails.to}">
+              <span class="mono">{transferDetails.to}</span>
+            </Link>
+          {/if}
+        </DetailLine>
       </div>
-    {/if}
+    </div>
+  {/if}
 
   <div class="group">
     <p class="group-title">General information</p>
