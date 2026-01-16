@@ -172,6 +172,7 @@
 
   .tab {
     margin-top: 2rem;
+    display: none;
   }
 
   .ellipsis {
@@ -218,6 +219,7 @@
 
   .tab {
     line-height: 1.25rem;
+    display: none;
   }
 
   .source-code {

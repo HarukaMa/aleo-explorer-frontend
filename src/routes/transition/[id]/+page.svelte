@@ -81,6 +81,7 @@
 
   .tab {
     margin-top: 2rem;
+    display: none;
   }
 
   .header-xs {

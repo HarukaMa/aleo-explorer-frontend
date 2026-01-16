@@ -349,6 +349,7 @@
 
   .tab {
     margin-top: 2rem;
+    display: none;
   }
 
   .ellipsis {
