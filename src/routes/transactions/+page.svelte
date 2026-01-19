@@ -1,6 +1,6 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
-  import { type BeforeContainerState, type BlockList } from "$lib/types"
+  import { type BlockList } from "$lib/types"
   import {
     type ColumnDef,
     createTable,
@@ -14,7 +14,6 @@
   import Time from "$lib/components/Time.svelte"
   import Number from "$lib/components/Number.svelte"
   import AleoCredit from "$lib/components/AleoToken.svelte"
-  import { getContext } from "svelte"
   import TableNav from "$lib/components/TableNav.svelte"
   import Decimal from "decimal.js"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
@@ -128,9 +127,6 @@
     { name: "placeholder 2", value: "placeholder 2" },
   ])
 
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
   async function set_page(page: number) {
     table.setPageIndex(page - 1)
     const response = await fetch(`/api/blocks?p=${page}`)
@@ -147,12 +143,6 @@
     const new_url = `${location.pathname}?${current_params.toString()}`
     history.replaceState({}, "", new_url)
   }
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
@@ -244,39 +234,37 @@
   </Link>
 {/snippet}
 
-<div class="container">
-  <div class="table-container">
-    <table>
-      <thead>
-        {#each table.getHeaderGroups() as header_group}
-          <tr>
-            {#each header_group.headers as header}
-              <th>{header.column.columnDef.header}</th>
-            {/each}
-          </tr>
-        {/each}
-      </thead>
-      <tbody>
-        {#each table.getRowModel().rows as row}
-          <tr>
-            {#each row.getVisibleCells() as cell}
-              <td>
-                <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-              </td>
-            {/each}
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
-
-  {#key pagination}
-    <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
-  {/key}
-
-  <PageInformation
-    title="Transaction"
-    description="A transaction in Aleo is an on-chain action that facilitates the transfer of credits, interaction with smart contracts, or execution of operations. Each transaction is processed by validators and added to a block. Transactions are a key component of maintaining the dynamic state of the blockchain."
-    icon="transaction-icon"
-  />
+<div class="table-container">
+  <table>
+    <thead>
+      {#each table.getHeaderGroups() as header_group}
+        <tr>
+          {#each header_group.headers as header}
+            <th>{header.column.columnDef.header}</th>
+          {/each}
+        </tr>
+      {/each}
+    </thead>
+    <tbody>
+      {#each table.getRowModel().rows as row}
+        <tr>
+          {#each row.getVisibleCells() as cell}
+            <td>
+              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+            </td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
 </div>
+
+{#key pagination}
+  <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
+{/key}
+
+<PageInformation
+  title="Transaction"
+  description="A transaction in Aleo is an on-chain action that facilitates the transfer of credits, interaction with smart contracts, or execution of operations. Each transaction is processed by validators and added to a block. Transactions are a key component of maintaining the dynamic state of the blockchain."
+  icon="transaction-icon"
+/>

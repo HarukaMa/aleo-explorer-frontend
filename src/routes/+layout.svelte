@@ -4,7 +4,7 @@
   import { current_time_mode, format_time_relative, TimeMode } from "$lib/time_mode.svelte"
   import { browser } from "$app/environment"
   import { getCookie } from "$lib/utils"
-  import { setContext, type Snippet } from "svelte"
+  import { setContext } from "svelte"
   import TopBanner from "$lib/components/TopBanner.svelte"
   import { navigating, page } from "$app/stores"
   import { expoOut } from "svelte/easing"
@@ -98,15 +98,6 @@
   })
 
   setContext("time_mode", time_mode)
-
-  let before_container: Snippet | undefined = $state()
-
-  // noinspection JSUnusedGlobalSymbols
-  setContext("before_container", {
-    set snippet(value: Snippet) {
-      before_container = value
-    },
-  })
 </script>
 
 <!-- Contains code from https://github.com/scosman/sveltekit-navigation-loader/ -->
@@ -272,25 +263,25 @@ SOFTWARE.
 
 <svelte:head>
   <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="AleoScan" />
-  <meta property="og:title" content="AleoScan - Aleo Blockchain Explorer" />
+  <meta content="website" property="og:type" />
+  <meta content="AleoScan" property="og:site_name" />
+  <meta content="AleoScan - Aleo Blockchain Explorer" property="og:title" />
   <meta
-    property="og:description"
     content="AleoScan - open source Aleo explorer. Explore the Aleo blockchain, find information about blocks, transactions, validators, programs and more."
+    property="og:description"
   />
-  <meta property="og:image" content="{$page.url.origin}/thumbnail.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
+  <meta content="{$page.url.origin}/thumbnail.png" property="og:image" />
+  <meta content="1200" property="og:image:width" />
+  <meta content="630" property="og:image:height" />
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AleoScan - Aleo Blockchain Explorer" />
+  <meta content="summary_large_image" name="twitter:card" />
+  <meta content="AleoScan - Aleo Blockchain Explorer" name="twitter:title" />
   <meta
-    name="twitter:description"
     content="AleoScan - open source Aleo explorer. Explore the Aleo blockchain, find information about blocks, transactions, validators, programs and more."
+    name="twitter:description"
   />
-  <meta name="twitter:image" content="{$page.url.origin}/thumbnail.png" />
+  <meta content="{$page.url.origin}/thumbnail.png" name="twitter:image" />
 </svelte:head>
 
 {#if $navigating}
@@ -318,51 +309,47 @@ SOFTWARE.
 
 <Nav {is_index} />
 
-{#if before_container}
-  {@render before_container()}
-{/if}
-
-<div>
+<div class="container">
   {@render children()}
-</div>
-<footer class="container">
-  <div id="footer-column">
-    <div id="footer-row">
-      <div id="footer-logo-copyright">
-        <div id="footer-logo"></div>
-        <div>
-          AleoScan - Aleo Explorer <span class="copyleft">&copy;</span>
-          {new Date().getFullYear()}
-          <br />
-          {analytic_notice}
-          {#if env.PUBLIC_HAS_PLAUSIBLE}
-            <button class="a" onclick={toggle_plausible_opt_out}>{toggle_text}</button>
-          {/if}
-        </div>
-      </div>
-      <div id="footer-settings">
-        <div id="footer-settings-timezone">
-          <div>Time display</div>
+  <footer>
+    <div id="footer-column">
+      <div id="footer-row">
+        <div id="footer-logo-copyright">
+          <div id="footer-logo"></div>
           <div>
-            <button class="a" onclick={switch_timezone}>{time_display_mode}</button>
+            AleoScan - Aleo Explorer <span class="copyleft">&copy;</span>
+            {new Date().getFullYear()}
+            <br />
+            {analytic_notice}
+            {#if env.PUBLIC_HAS_PLAUSIBLE}
+              <button class="a" onclick={toggle_plausible_opt_out}>{toggle_text}</button>
+            {/if}
+          </div>
+        </div>
+        <div id="footer-settings">
+          <div id="footer-settings-timezone">
+            <div>Time display</div>
+            <div>
+              <button class="a" onclick={switch_timezone}>{time_display_mode}</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="footer-line"></div>
+      <div class="footer-line"></div>
 
-    <div id="footer-row-links">
-      <div id="footer-links">
-        <a href="/faq">FAQ</a>
-        <a href="/feedback">Feedback</a>
-        <a href="/privacy">Privacy Policy</a>
-      </div>
-      <div id="footer-external-links">
-        <a href="https://status.aleoscan.io">Status</a>
-        <a href="https://github.com/HarukaMa/aleo-explorer" target="_blank">GitHub</a>
-        <a href="https://x.com/Aleo_Scan" target="_blank">Twitter (X)</a>
+      <div id="footer-row-links">
+        <div id="footer-links">
+          <a href="/faq">FAQ</a>
+          <a href="/feedback">Feedback</a>
+          <a href="/privacy">Privacy Policy</a>
+        </div>
+        <div id="footer-external-links">
+          <a href="https://status.aleoscan.io">Status</a>
+          <a href="https://github.com/HarukaMa/aleo-explorer" target="_blank">GitHub</a>
+          <a href="https://x.com/Aleo_Scan" target="_blank">Twitter (X)</a>
+        </div>
       </div>
     </div>
-  </div>
-</footer>
+  </footer>
+</div>

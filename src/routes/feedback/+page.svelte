@@ -5,7 +5,7 @@
   import { ButtonLinkClass } from "$lib/types"
   import { env } from "$env/dynamic/public"
   import { onMount } from "svelte"
-  import { page } from "$app/stores"
+  import { page } from "$app/state"
 
   let contact = $state("")
   let content = $state("")
@@ -13,28 +13,21 @@
   let errorMessage = $state("")
 
   // Check URL params for success/message
-  let success = $derived($page.url.searchParams.get("success") === "1")
-  let urlMessage = $derived($page.url.searchParams.get("message"))
+  let success = $derived(page.url.searchParams.get("success") === "1")
+  let urlMessage = $derived(page.url.searchParams.get("message"))
 
   onMount(() => {
     // Load Turnstile widget
-    if ((window as any).turnstile && env.PUBLIC_TURNSTILE_SITE_KEY) {
-      ;(window as any).turnstile.render("#cf-turnstile", {
-        sitekey: env.PUBLIC_TURNSTILE_SITE_KEY,
-      })
-    }
-  })
-
-  // Define global callback for Turnstile
-  if (typeof window !== "undefined") {
-    ;(window as any).load_turnstile_widget = function () {
-      if (env.PUBLIC_TURNSTILE_SITE_KEY) {
+    setTimeout(() => {
+      if ((window as any).turnstile && env.PUBLIC_TURNSTILE_SITE_KEY) {
         ;(window as any).turnstile.render("#cf-turnstile", {
           sitekey: env.PUBLIC_TURNSTILE_SITE_KEY,
         })
       }
-    }
-  }
+    }, 1000)
+  })
+
+  let form: HTMLFormElement | undefined
 
   async function handleSubmit(event: Event) {
     event.preventDefault()
@@ -47,7 +40,6 @@
     isSubmitting = true
     errorMessage = ""
 
-    const form = event.target as HTMLFormElement
     const formData = new FormData(form)
 
     try {
@@ -61,7 +53,7 @@
         window.location.href = "/feedback?success=1"
       } else {
         const data = await response.json()
-        errorMessage = data.message || "Failed to submit feedback. Please try again."
+        errorMessage = "Failed to submit feedback. Please try again: " + data.message
       }
     } catch (error) {
       errorMessage = "An error occurred. Please try again."
@@ -75,6 +67,8 @@
   @use "/static/styles/variables" as *;
 
   .container {
+    max-width: 1620px;
+    margin: 0 auto;
     display: flex;
     gap: 2.5rem;
   }
@@ -222,6 +216,7 @@
 
   .turnstile-wrapper {
     margin-bottom: 1.5rem;
+    height: 65px;
   }
 
   .success-card {
@@ -272,23 +267,15 @@
     line-height: 1.25rem;
     text-align: center;
   }
-
-  @media (max-width: 768px) {
-    svg {
-      display: none;
-    }
-  }
 </style>
 
 <svelte:head>
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=load_turnstile_widget" async defer></script>
+  <script defer src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
 </svelte:head>
 
 <Seo title="Feedback | AleoScan" description="Submit feedback to help us improve AleoScan." />
 
-<div class="header">
-  <PageHeader content="Feedback" />
-</div>
+<PageHeader content="Feedback" />
 
 <div class="container">
   <div class="content">
@@ -330,7 +317,7 @@
         </p>
       </div>
 
-      <form onsubmit={handleSubmit}>
+      <form onsubmit={handleSubmit} bind:this={form}>
         <div class="form-group">
           <label class="label" for="contact">Email</label>
           <input
@@ -362,6 +349,7 @@
           cls={ButtonLinkClass.Primary}
           Content={isSubmitting ? "Submitting..." : "Submit feedback"}
           disabled={isSubmitting}
+          action={handleSubmit}
         />
       </form>
     {/if}

@@ -51,7 +51,7 @@
 
     // Calculate average credits per solution
     // avg_reward is in microcredits, convert to ALEO
-    const credits = new Decimal(avg_reward).div(1000000)
+    const credits = new Decimal(avg_reward).div(1000000).mul(86400 / avg_seconds)
 
     result = { days, hours, minutes, seconds, credits }
   }
@@ -297,17 +297,10 @@
   description="Calculate the average time and credits for finding a solution based on your prover's solution rate and the current network difficulty."
 />
 
-<div class="header">
-  <PageHeader content="Proving Calculator" />
-</div>
+<PageHeader content="Proving Calculator" />
 
 <div class="container calculator-content">
   <div class="form-section">
-    <p class="disclaimer">
-      Please note that the network difficulty is constantly changing, so the results are approximate and cannot be used
-      as a prediction for earnings.
-    </p>
-
     <div class="form-group">
       <label class="label" for="proof_target">Proof Target</label>
       <div class="input-wrapper">

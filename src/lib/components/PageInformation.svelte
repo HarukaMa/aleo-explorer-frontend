@@ -6,6 +6,8 @@
   }
 
   let { title, description, icon }: PageInformation = $props()
+
+  const icons = import.meta.glob<string>("/src/lib/assets/images/icons/*", { eager: true, import: "default" })
 </script>
 
 <style lang="scss">
@@ -26,6 +28,7 @@
     margin-top: 0.25rem;
     background-repeat: no-repeat;
     background-position: center;
+    background-size: contain;
     flex-shrink: 0;
   }
 
@@ -41,7 +44,10 @@
 
 <div class="page-information">
   {#if icon}
-    <div class="icon" style:background-image="var(--{icon})"></div>
+    <div
+      class="icon"
+      style:background-image="url(&quot;{icons[`/src/lib/assets/images/icons/${icon}.svg`]}&quot;)"
+    ></div>
   {/if}
   <div class="text">
     <span class="title">{title}.</span>

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { type BeforeContainerState, ButtonLinkClass, SearchError } from "$lib/types"
-  import { getContext } from "svelte"
+  import { ButtonLinkClass, SearchError } from "$lib/types"
   import Button from "$lib/components/Button.svelte"
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
+  import PageHeader from "$lib/components/PageHeader.svelte"
 
   let { data: server_data } = $props()
   let { query, result, error } = $derived(server_data)
@@ -157,15 +157,6 @@
     },
     getCoreRowModel: getCoreRowModel(),
   })
-
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
@@ -242,23 +233,14 @@
   }
 </style>
 
-{#snippet before_container()}
-  {#if error === undefined}
-    <div class="header">
-      <div class="flex">
-        <div class="vert">
-          <div class="search-title">Search results ({search_type}) - {query}</div>
-        </div>
-      </div>
-    </div>
-  {/if}
-{/snippet}
+{#if error === undefined}
+  <PageHeader content={`Search results (${search_type}) - ${query}`} />
+{/if}
 
 {#snippet data_column(value)}
   <span class="mono"><Link href="{result_link_part}{value}">{value}</Link></span>
 {/snippet}
 
-<div class="container">
 {#if error !== undefined}
   <div class="error-container">
     <div class="error-column">
@@ -329,4 +311,3 @@
     </div>
   {/if}
 {/if}
-</div>

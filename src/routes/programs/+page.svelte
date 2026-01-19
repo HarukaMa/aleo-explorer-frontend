@@ -1,6 +1,5 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
-  import { type BeforeContainerState } from "$lib/types"
   import {
     type ColumnDef,
     createTable,
@@ -12,10 +11,10 @@
   } from "@tanstack/svelte-table"
   import Link from "$lib/components/Link.svelte"
   import Number from "$lib/components/Number.svelte"
-  import { getContext } from "svelte"
   import TableNav from "$lib/components/TableNav.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageHeader from "$lib/components/PageHeader.svelte"
 
   let { data } = $props()
 
@@ -118,9 +117,6 @@
     pagination = updaterOrValue
   }
 
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
   async function set_page(page: number) {
     table.setPageIndex(page - 1)
     const response = await fetch(`/api/programs?p=${page}`)
@@ -137,12 +133,6 @@
     const new_url = `${location.pathname}?${current_params.toString()}`
     history.replaceState({}, "", new_url)
   }
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
@@ -208,26 +198,6 @@
   description="Discover Aleo smart programs. View deployed contracts, execution data, and transaction logs."
 />
 
-{#snippet before_container()}
-  <div class="header">
-    <div class="title">Program Registry</div>
-    <!--    <div class="info">-->
-    <!--      {#each header_data as data}-->
-    <!--        <div class="info-data">-->
-    <!--          <div class="info-data-title">{data.name}</div>-->
-    <!--          <div class="info-data-value">-->
-    <!--            {#if data.value instanceof Object}-->
-    <!--              <data.value.component {...data.value.props} />-->
-    <!--            {:else}-->
-    <!--              {data.value}-->
-    <!--            {/if}-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      {/each}-->
-    <!--    </div>-->
-  </div>
-{/snippet}
-
 {#snippet id_column(value)}
   <span class="mono ellipsis">
     <Link href="/program/{value.id}/{value.edition}">{value.id}</Link>
@@ -254,39 +224,39 @@
   {/if}
 {/snippet}
 
-<div class="container">
-  <div class="table-container">
-    <table>
-      <thead>
-        {#each table.getHeaderGroups() as header_group}
-          <tr>
-            {#each header_group.headers as header}
-              <th>{header.column.columnDef.header}</th>
-            {/each}
-          </tr>
-        {/each}
-      </thead>
-      <tbody>
-        {#each table.getRowModel().rows as row}
-          <tr>
-            {#each row.getVisibleCells() as cell}
-              <td>
-                <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-              </td>
-            {/each}
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
+<PageHeader content="Program Registry" />
 
-  {#key pagination}
-    <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
-  {/key}
-
-  <PageInformation
-    title="Program"
-    description="A program on the Aleo blockchain is a smart contract that allows users to interact with private computations. These programs leverage zero-knowledge cryptography to ensure that the details of transactions and operations remain private. Programs can be deployed and called by any participant on the network."
-    icon="program-icon"
-  />
+<div class="table-container">
+  <table>
+    <thead>
+      {#each table.getHeaderGroups() as header_group}
+        <tr>
+          {#each header_group.headers as header}
+            <th>{header.column.columnDef.header}</th>
+          {/each}
+        </tr>
+      {/each}
+    </thead>
+    <tbody>
+      {#each table.getRowModel().rows as row}
+        <tr>
+          {#each row.getVisibleCells() as cell}
+            <td>
+              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+            </td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
 </div>
+
+{#key pagination}
+  <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
+{/key}
+
+<PageInformation
+  title="Program"
+  description="A program on the Aleo blockchain is a smart contract that allows users to interact with private computations. These programs leverage zero-knowledge cryptography to ensure that the details of transactions and operations remain private. Programs can be deployed and called by any participant on the network."
+  icon="program-icon"
+/>

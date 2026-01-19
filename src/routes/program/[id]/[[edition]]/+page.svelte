@@ -1,7 +1,6 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
-  import { type BeforeContainerState, ButtonLinkClass, StatusClass } from "$lib/types"
-  import { getContext } from "svelte"
+  import { ButtonLinkClass, StatusClass } from "$lib/types"
   import Number from "$lib/components/Number.svelte"
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Time from "$lib/components/Time.svelte"
@@ -113,15 +112,6 @@
 
   let total_pages = $derived(Math.ceil(data.recent_calls.length / pagination.pageSize))
   let transition_rows = $derived(transition_table.getPaginationRowModel().flatRows)
-
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
@@ -182,6 +172,7 @@
 
   .tab {
     margin-top: 2rem;
+    display: none;
   }
 
   .ellipsis {
@@ -228,6 +219,7 @@
 
   .tab {
     line-height: 1.25rem;
+    display: none;
   }
 
   .source-code {
@@ -291,13 +283,8 @@
   {/if}
 {/snippet}
 
-{#snippet before_container()}
-  <div class="header">
-    <PageHeader icon="program-icon" title="Program" content={data.program_id} />
-  </div>
-{/snippet}
+<PageHeader content={data.program_id} icon="program-icon" title="Program" />
 
-<div class="container">
 <div class="details">
   <div class="group">
     <DetailLine label="Program ID">
@@ -500,4 +487,3 @@
   description="A program on the Aleo blockchain is a smart contract that allows users to interact with private computations. These programs leverage zero-knowledge cryptography to ensure that the details of transactions and operations remain private. Programs can be deployed and called by any participant on the network."
   icon="program-icon"
 />
-</div>

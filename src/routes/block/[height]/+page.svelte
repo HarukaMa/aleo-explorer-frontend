@@ -1,7 +1,6 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
-  import { type BeforeContainerState, StatusClass } from "$lib/types"
-  import { getContext } from "svelte"
+  import { StatusClass } from "$lib/types"
   import Number from "$lib/components/Number.svelte"
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Time from "$lib/components/Time.svelte"
@@ -18,6 +17,7 @@
   import Callout from "$lib/components/Callout.svelte"
   import Status from "$lib/components/Status.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageHeader from "$lib/components/PageHeader.svelte"
 
   let { data } = $props()
   let { block, height } = $derived(data)
@@ -310,15 +310,6 @@
     columns: aborted_solution_table_columns,
     getCoreRowModel: getCoreRowModel(),
   })
-
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
@@ -398,6 +389,7 @@
 
   .tab {
     margin-top: 2rem;
+    display: none;
   }
 
   .ellipsis {
@@ -453,7 +445,7 @@
   {:else}
     <div class="column">
       <span class="mono">{value.function}</span>
-      <Link href="/program/{value.program}">
+      <Link secondary href="/program/{value.program}">
         <span class="secondary mono">{value.program}</span>
       </Link>
     </div>
@@ -468,34 +460,21 @@
   {/if}
 {/snippet}
 
-{#snippet before_container()}
-  <div class="header">
-    <div class="flex">
-      <div class="block-icon"></div>
-      <div class="vert">
-        <div class="block-title">Block</div>
-        <div class="block-num">
-          <Number number={height} />
-        </div>
-      </div>
-    </div>
-  </div>
-{/snippet}
+<PageHeader content={height} icon="block-icon" is_number title="Block" />
 
-<div class="container">
 <div class="details">
   <div class="group">
     <DetailLine label="Height" tooltip="The index of the block in the chain.">
       <Number number={block.block.header.metadata.height} />
     </DetailLine>
-    <DetailLine label="Timestamp" tooltip="The exact time the block was added.">
+    <DetailLine label="Block hash" tooltip="A cryptographic identifier for this block.">
+      <span class="mono">{block.block.block_hash}</span>
+    </DetailLine>
+    <DetailLine label="Timestamp" tooltip="The block timestamp from the consensus algorithm.">
       {format_time(new Date(block.block.header.metadata.timestamp * 1000), TimeMode.Relative)}
       <!-- @formatter:off -->
       (<Time no_relative timestamp={block.block.header.metadata.timestamp} />)
       <!-- @formatter:on -->
-    </DetailLine>
-    <DetailLine label="Block hash" tooltip="A cryptographic identifier for this block.">
-      <span class="mono">{block.block.block_hash}</span>
     </DetailLine>
     <DetailLine label="Epoch" tooltip="The consensus period in which the block was produced.">
       <div class="column">
@@ -531,13 +510,16 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Proof target" tooltip="The difficulty level needed to validate a block.">
+    <DetailLine label="Proof target" tooltip="The difficulty needed to generate a valid puzzle solution.">
       <Number number={block.block.header.metadata.proof_target}></Number>
     </DetailLine>
-    <DetailLine label="Coinbase target" tooltip="The difficulty required to generate validator rewards.">
+    <DetailLine label="Coinbase target" tooltip="The total difficulty limit for a puzzle reward cycle.">
       <Number number={block.block.header.metadata.coinbase_target}></Number>
     </DetailLine>
-    <DetailLine label="Cumulative proof target" tooltip="The total difficulty for all validated blocks up to this one.">
+    <DetailLine
+      label="Cumulative proof target"
+      tooltip="The total difficulty of solutions in the current puzzle reward cycle."
+    >
       <div class="column">
         <Number number={block.block.header.metadata.cumulative_proof_target}></Number>
         <!-- @formatter:off -->
@@ -628,7 +610,10 @@
           <DetailLine label="Round" tooltip="The iteration used for consensus and block production.">
             <Number number={block.block.header.metadata.round} />
           </DetailLine>
-          <DetailLine label="Cumulative weight" tooltip="The total weight of all previous blocks, measuring overall difficulty.">
+          <DetailLine
+            label="Cumulative weight"
+            tooltip="The total weight of all previous blocks, measuring overall difficulty."
+          >
             <Number number={block.block.header.metadata.cumulative_weight} />
           </DetailLine>
         </div>
@@ -639,7 +624,10 @@
           <DetailLine label="Previous block hash" tooltip="The hash of the block immediately before this one.">
             <span class="mono">{block.block.previous_hash}</span>
           </DetailLine>
-          <DetailLine label="Previous state root" tooltip="The state root representing the global state before this block.">
+          <DetailLine
+            label="Previous state root"
+            tooltip="The state root representing the global state before this block."
+          >
             <span class="mono">{block.block.header.previous_state_root}</span>
           </DetailLine>
         </div>
@@ -656,7 +644,10 @@
           <DetailLine label="Ratifications root" tooltip="The state root after all ratifications.">
             <span class="mono">{block.block.header.ratifications_root}</span>
           </DetailLine>
-          <DetailLine label="Solutions root" tooltip="The state root reflecting all proving solutions submitted for this block.">
+          <DetailLine
+            label="Solutions root"
+            tooltip="The state root reflecting all proving solutions submitted for this block."
+          >
             <span class="mono">{block.block.header.solutions_root}</span>
           </DetailLine>
         </div>
@@ -728,7 +719,6 @@
 
 <PageInformation
   title="Block"
-  description="A block in the Aleo blockchain is a fundamental unit that records transactions and state transitions. It is cryptographically secured and linked to the previous block, forming a chain. Each block contains data that is validated by the network's consensus mechanism."
+  description="A block in the Aleo blockchain is a fundamental unit that records transactions and state transitions. It is cryptographically secured and linked to the previous block, forming a chain. Each block contains data that is validated by the network’s consensus mechanism."
   icon="block-icon"
 />
-</div>

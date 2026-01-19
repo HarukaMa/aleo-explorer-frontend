@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { type BeforeContainerState } from "$lib/types"
   import {
     type ColumnDef,
     createTable,
@@ -11,9 +10,9 @@
   } from "@tanstack/svelte-table"
   import Link from "$lib/components/Link.svelte"
   import Number from "$lib/components/Number.svelte"
-  import { getContext } from "svelte"
   import TableNav from "$lib/components/TableNav.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import PageHeader from "$lib/components/PageHeader.svelte"
 
   let { data } = $props()
 
@@ -109,9 +108,6 @@
     pagination = updaterOrValue
   }
 
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
   async function set_page(page: number) {
     table.setPageIndex(page - 1)
     const response = await fetch(`/api/similar_programs/${id}/${edition || 0}?p=${page}`)
@@ -128,12 +124,6 @@
     const new_url = `${location.pathname}?${current_params.toString()}`
     history.replaceState({}, "", new_url)
   }
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
@@ -194,26 +184,6 @@
   }
 </style>
 
-{#snippet before_container()}
-  <div class="header">
-    <div class="title">Similar Programs</div>
-    <!--    <div class="info">-->
-    <!--      {#each header_data as data}-->
-    <!--        <div class="info-data">-->
-    <!--          <div class="info-data-title">{data.name}</div>-->
-    <!--          <div class="info-data-value">-->
-    <!--            {#if data.value instanceof Object}-->
-    <!--              <data.value.component {...data.value.props} />-->
-    <!--            {:else}-->
-    <!--              {data.value}-->
-    <!--            {/if}-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      {/each}-->
-    <!--    </div>-->
-  </div>
-{/snippet}
-
 {#snippet id_column(value)}
   <span class="mono ellipsis">
     <Link href="/program/{value}">{value}</Link>
@@ -240,7 +210,8 @@
   {/if}
 {/snippet}
 
-<div class="container">
+<PageHeader content="Similar Programs" />
+
 <div class="table-container">
   <table>
     <thead>
@@ -269,4 +240,3 @@
 {#key pagination}
   <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
 {/key}
-</div>

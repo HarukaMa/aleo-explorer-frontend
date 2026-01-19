@@ -2,14 +2,14 @@
   import Seo from "$lib/components/Seo.svelte"
   import Decimal from "decimal.js"
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
-  import { type BeforeContainerState, StatusClass } from "$lib/types"
-  import { getContext } from "svelte"
+  import { StatusClass } from "$lib/types"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
   import AleoCredit from "$lib/components/AleoToken.svelte"
   import Number from "$lib/components/Number.svelte"
   import Status from "$lib/components/Status.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
+  import PageHeader from "$lib/components/PageHeader.svelte"
 
   let { data: load_data } = $props()
 
@@ -85,15 +85,6 @@
     },
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
-
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
   })
 </script>
 
@@ -195,12 +186,6 @@
   description="Browse Aleo validators. View staking rewards, commission rates, uptime, and delegation stats."
 />
 
-{#snippet before_container()}
-  <div class="header">
-    <div class="title">Validators</div>
-  </div>
-{/snippet}
-
 {#snippet address_column(value)}
   <div class="address-cell">
     {#if data.resolved_addresses[value]?.logo}
@@ -238,35 +223,35 @@
   </div>
 {/snippet}
 
-<div class="container">
-  <div class="table-container">
-    <table>
-      <thead>
-        {#each table.getHeaderGroups() as header_group}
-          <tr>
-            {#each header_group.headers as header}
-              <th>{header.column.columnDef.header}</th>
-            {/each}
-          </tr>
-        {/each}
-      </thead>
-      <tbody>
-        {#each table.getRowModel().rows as row}
-          <tr>
-            {#each row.getVisibleCells() as cell}
-              <td>
-                <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-              </td>
-            {/each}
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
+<PageHeader content="Validators" />
 
-  <PageInformation
-    title="Validator"
-    description="A validator is a crucial participant in the Aleo blockchain responsible for verifying transactions and adding new blocks. Validators stake credits to secure the network and ensure its integrity by solving cryptographic puzzles. Their role is essential for maintaining the consensus and stability of the network."
-    icon="validator-icon"
-  />
+<div class="table-container">
+  <table>
+    <thead>
+      {#each table.getHeaderGroups() as header_group}
+        <tr>
+          {#each header_group.headers as header}
+            <th>{header.column.columnDef.header}</th>
+          {/each}
+        </tr>
+      {/each}
+    </thead>
+    <tbody>
+      {#each table.getRowModel().rows as row}
+        <tr>
+          {#each row.getVisibleCells() as cell}
+            <td>
+              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+            </td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
 </div>
+
+<PageInformation
+  title="Validator"
+  description="A validator is a crucial participant in the Aleo blockchain responsible for verifying transactions and adding new blocks. Validators stake credits to secure the network and ensure its integrity by participating in the consensus protocol. Their role is essential for maintaining the consensus and stability of the network."
+  icon="validator-icon"
+/>

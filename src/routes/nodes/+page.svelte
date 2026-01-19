@@ -4,8 +4,6 @@
   import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Number from "$lib/components/Number.svelte"
-  import type { BeforeContainerState } from "$lib/types"
-  import { getContext } from "svelte"
   import Link from "$lib/components/Link.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
 
@@ -81,24 +79,16 @@
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
-
-  let before_container_state: BeforeContainerState = getContext("before_container")
-  before_container_state.snippet = before_container
-
-  $effect(() => {
-    return () => {
-      before_container_state.snippet = undefined
-    }
-  })
 </script>
 
 <style lang="scss">
   @use "/static/styles/variables" as *;
 
-  div.header {
+  .header {
     display: flex;
+    margin: 0 -100%;
+    margin: 0 calc(50% - 50vw + 1.5rem);
     flex-direction: column;
-    margin: 0;
     background-color: $blue-50;
     padding: 1.5rem 1.5rem;
     border-radius: 1rem;
@@ -193,25 +183,23 @@
   description="View Aleo blockchain nodes. Check validator nodes, uptime, geolocation, and consensus participation."
 />
 
-{#snippet before_container()}
-  <div class="header">
-    <div class="title">Nodes</div>
-    <div class="info">
-      {#each header_data as data}
-        <div class="info-data">
-          <div class="info-data-title">{data.name}</div>
-          <div class="info-data-value">
-            {#if data.value instanceof Object}
-              <data.value.component {...data.value.props} />
-            {:else}
-              {data.value}
-            {/if}
-          </div>
+<div class="header">
+  <div class="title">Nodes</div>
+  <div class="info">
+    {#each header_data as data}
+      <div class="info-data">
+        <div class="info-data-title">{data.name}</div>
+        <div class="info-data-value">
+          {#if data.value instanceof Object}
+            <data.value.component {...data.value.props} />
+          {:else}
+            {data.value}
+          {/if}
         </div>
-      {/each}
-    </div>
+      </div>
+    {/each}
   </div>
-{/snippet}
+</div>
 
 {#snippet ip_column(value)}
   <div class="ip-cell">
@@ -256,34 +244,32 @@
   {/if}
 {/snippet}
 
-<div class="container">
-  <div class="table-container">
-    <table>
-      <thead>
-        {#each table.getHeaderGroups() as header_group}
-          <tr>
-            {#each header_group.headers as header}
-              <th>{header.column.columnDef.header}</th>
-            {/each}
-          </tr>
-        {/each}
-      </thead>
-      <tbody>
-        {#each table.getRowModel().rows as row}
-          <tr>
-            {#each row.getVisibleCells() as cell}
-              <td>
-                <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-              </td>
-            {/each}
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
-
-  <PageInformation
-    title="Node"
-    description="A node in the Aleo blockchain is a device or computer that participates in the network by running the blockchain's software. Nodes can validate transactions, store blockchain data, and relay information across the network. They are essential for maintaining the decentralized nature and security of the blockchain."
-  />
+<div class="table-container">
+  <table>
+    <thead>
+      {#each table.getHeaderGroups() as header_group}
+        <tr>
+          {#each header_group.headers as header}
+            <th>{header.column.columnDef.header}</th>
+          {/each}
+        </tr>
+      {/each}
+    </thead>
+    <tbody>
+      {#each table.getRowModel().rows as row}
+        <tr>
+          {#each row.getVisibleCells() as cell}
+            <td>
+              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+            </td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
 </div>
+
+<PageInformation
+  title="Node"
+  description="A node in the Aleo blockchain is a device or computer that participates in the network by running the blockchain’s software. Nodes can validate transactions, store blockchain data, and relay information across the network. They are essential for maintaining the decentralized nature and security of the blockchain."
+/>
