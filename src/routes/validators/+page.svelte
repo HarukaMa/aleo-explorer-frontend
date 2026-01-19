@@ -1,7 +1,8 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
   import Decimal from "decimal.js"
-  import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
+  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import DataTable from "$lib/components/DataTable.svelte"
   import { StatusClass } from "$lib/types"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
@@ -10,6 +11,8 @@
   import Status from "$lib/components/Status.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
+  import TableContainer from "$lib/components/TableContainer.svelte"
+  import Callout from "$lib/components/Callout.svelte"
 
   let { data: load_data } = $props()
 
@@ -79,13 +82,6 @@
     },
   ]
 
-  const table = createTable<ValidatorList>({
-    get data() {
-      return table_data
-    },
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
 </script>
 
 <style lang="scss">
@@ -115,13 +111,6 @@
       font-family: "Montserrat Variable", sans-serif;
     }
   }
-
-  table {
-    width: 100%;
-    margin-top: 2.5rem;
-    white-space: nowrap;
-  }
-
   .address-cell {
     display: flex;
     gap: 0.5rem;
@@ -225,30 +214,13 @@
 
 <PageHeader content="Validators" />
 
-<div class="table-container">
-  <table>
-    <thead>
-      {#each table.getHeaderGroups() as header_group}
-        <tr>
-          {#each header_group.headers as header}
-            <th>{header.column.columnDef.header}</th>
-          {/each}
-        </tr>
-      {/each}
-    </thead>
-    <tbody>
-      {#each table.getRowModel().rows as row}
-        <tr>
-          {#each row.getVisibleCells() as cell}
-            <td>
-              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-            </td>
-          {/each}
-        </tr>
-      {/each}
-    </tbody>
-  </table>
-</div>
+<TableContainer>
+  <DataTable {columns} data={table_data}>
+    {#snippet emptyState()}
+      <Callout title="No validators" description="There are no validators available." icon="list-icon" />
+    {/snippet}
+  </DataTable>
+</TableContainer>
 
 <PageInformation
   title="Validator"

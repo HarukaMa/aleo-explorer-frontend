@@ -6,13 +6,15 @@
   import UIAddress from "$lib/components/UIAddress.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
   import Decimal from "decimal.js"
-  import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
+  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import DataTable from "$lib/components/DataTable.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
   import Callout from "$lib/components/Callout.svelte"
   import Time from "$lib/components/Time.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
+    import TableContainer from "$lib/components/TableContainer.svelte"
 
   let { data: server_data } = $props()
   let { data, address } = $derived(server_data)
@@ -86,13 +88,6 @@
     },
   ]
 
-  const transition_table = createTable<TransitionList>({
-    get data() {
-      return transition_table_data
-    },
-    columns: transition_table_columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
 
   type SolutionList = {
     height: number
@@ -162,13 +157,6 @@
     },
   ]
 
-  const solution_table = createTable<SolutionList>({
-    get data() {
-      return solution_table_data
-    },
-    columns: solution_table_columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
 
   type ProgramList = {
     height: number
@@ -211,13 +199,6 @@
     },
   ]
 
-  const program_table = createTable<ProgramList>({
-    get data() {
-      return program_table_data
-    },
-    columns: program_table_columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
 
   type DelegatorList = {
     address: string
@@ -249,13 +230,6 @@
     },
   ]
 
-  const delegator_table = createTable<DelegatorList>({
-    get data() {
-      return delegator_table_data
-    },
-    columns: delegator_table_columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
 </script>
 
 <style lang="scss">
@@ -340,11 +314,6 @@
     gap: 0.5rem;
     flex-wrap: wrap;
     margin-top: 0.5rem;
-  }
-
-  table {
-    width: 100%;
-    white-space: nowrap;
   }
 
   .tab {
@@ -637,142 +606,58 @@
 <Tabs {tab_data}>
   {#snippet delegators(binds)}
     <div class="tab" bind:this={binds.delegators}>
-      {#if data.delegated > 0}
-        <div class="table-container">
-          <table>
-            <thead>
-              {#each delegator_table.getHeaderGroups() as header_group}
-                <tr>
-                  {#each header_group.headers as header}
-                    <th>{header.column.columnDef.header}</th>
-                  {/each}
-                </tr>
-              {/each}
-            </thead>
-            <tbody>
-              {#each delegator_table.getRowModel().rows as row}
-                <tr>
-                  {#each row.getVisibleCells() as cell}
-                    <td>
-                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                    </td>
-                  {/each}
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {:else}
-        <Callout
-          title="No delegators"
-          description="This address has not staked any credits to other addresses."
-          icon="list-icon"
-        />
-      {/if}
+      <TableContainer>
+        <DataTable columns={delegator_table_columns} data={delegator_table_data}>
+          {#snippet emptyState()}
+            <Callout
+              title="No delegators"
+              description="This address has not staked any credits to other addresses."
+              icon="list-icon"
+            />
+          {/snippet}
+        </DataTable>
+      </TableContainer>
     </div>
   {/snippet}
   {#snippet transitions(binds)}
     <div class="tab" bind:this={binds.transitions}>
-      {#if data.transitions.length === 0}
-        <Callout
-          title="No transitions"
-          description="This address has not publicly appeared in any transition."
-          icon="list-icon"
-        />
-      {:else}
-        <div class="table-container">
-          <table>
-            <thead>
-              {#each transition_table.getHeaderGroups() as header_group}
-                <tr>
-                  {#each header_group.headers as header}
-                    <th>{header.column.columnDef.header}</th>
-                  {/each}
-                </tr>
-              {/each}
-            </thead>
-            <tbody>
-              {#each transition_table.getRowModel().rows as row}
-                <tr>
-                  {#each row.getVisibleCells() as cell}
-                    <td>
-                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                    </td>
-                  {/each}
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
+      <TableContainer>
+        <DataTable columns={transition_table_columns} data={transition_table_data}>
+          {#snippet emptyState()}
+            <Callout
+              title="No transitions"
+              description="This address has not publicly appeared in any transition."
+              icon="list-icon"
+            />
+          {/snippet}
+        </DataTable>
+      </TableContainer>
     </div>
   {/snippet}
   {#snippet solutions(binds)}
     <div class="tab" bind:this={binds.solutions}>
-      {#if data.solutions.length === 0}
-        <Callout
-          title="No solutions"
-          description="This address has not submitted any valid puzzle solutions."
-          icon="list-icon"
-        />
-      {:else}
-        <div class="table-container">
-          <table>
-            <thead>
-              {#each solution_table.getHeaderGroups() as header_group}
-                <tr>
-                  {#each header_group.headers as header}
-                    <th>{header.column.columnDef.header}</th>
-                  {/each}
-                </tr>
-              {/each}
-            </thead>
-            <tbody>
-              {#each solution_table.getRowModel().rows as row}
-                <tr>
-                  {#each row.getVisibleCells() as cell}
-                    <td>
-                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                    </td>
-                  {/each}
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
+      <TableContainer>
+        <DataTable columns={solution_table_columns} data={solution_table_data}>
+          {#snippet emptyState()}
+            <Callout
+              title="No solutions"
+              description="This address has not submitted any valid puzzle solutions."
+              icon="list-icon"
+            />
+          {/snippet}
+        </DataTable>
+      </TableContainer>
     </div>
   {/snippet}
   {#snippet programs(binds)}
     <div class="tab" bind:this={binds.programs}>
-      {#if data.programs.length === 0}
-        <Callout title="No programs" description="This address has not deployed any programs." icon="list-icon" />
-      {:else}
-        <div class="table-container">
-          <table>
-            <thead>
-              {#each program_table.getHeaderGroups() as header_group}
-                <tr>
-                  {#each header_group.headers as header}
-                    <th>{header.column.columnDef.header}</th>
-                  {/each}
-                </tr>
-              {/each}
-            </thead>
-            <tbody>
-              {#each program_table.getRowModel().rows as row}
-                <tr>
-                  {#each row.getVisibleCells() as cell}
-                    <td>
-                      <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                    </td>
-                  {/each}
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
+      <TableContainer>
+        <DataTable columns={program_table_columns} data={program_table_data}>
+          {#snippet emptyState()}
+            <Callout title="No programs" description="This address has not deployed any programs." icon="list-icon" />
+          {/snippet}
+        </DataTable>
+      </TableContainer>
     </div>
   {/snippet}
 </Tabs>

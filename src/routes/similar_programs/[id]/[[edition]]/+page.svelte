@@ -2,17 +2,19 @@
   import {
     type ColumnDef,
     createTable,
-    FlexRender,
     getCoreRowModel,
     type PaginationState,
     renderComponent,
     type Updater,
   } from "@tanstack/svelte-table"
+  import DataTable from "$lib/components/DataTable.svelte"
   import Link from "$lib/components/Link.svelte"
   import Number from "$lib/components/Number.svelte"
   import TableNav from "$lib/components/TableNav.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
+  import TableContainer from "$lib/components/TableContainer.svelte"
+  import Callout from "$lib/components/Callout.svelte"
 
   let { data } = $props()
 
@@ -176,12 +178,6 @@
       }
     }
   }
-
-  table {
-    width: 100%;
-    margin-top: 2.5rem;
-    white-space: nowrap;
-  }
 </style>
 
 {#snippet id_column(value)}
@@ -212,30 +208,13 @@
 
 <PageHeader content="Similar Programs" />
 
-<div class="table-container">
-  <table>
-    <thead>
-      {#each table.getHeaderGroups() as header_group}
-        <tr>
-          {#each header_group.headers as header}
-            <th>{header.column.columnDef.header}</th>
-          {/each}
-        </tr>
-      {/each}
-    </thead>
-    <tbody>
-      {#each table.getRowModel().rows as row}
-        <tr>
-          {#each row.getVisibleCells() as cell}
-            <td>
-              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-            </td>
-          {/each}
-        </tr>
-      {/each}
-    </tbody>
-  </table>
-</div>
+<TableContainer>
+  <DataTable {columns} data={table_data}>
+    {#snippet emptyState()}
+      <Callout title="No similar programs" description="There are no similar programs found." icon="list-icon" />
+    {/snippet}
+  </DataTable>
+</TableContainer>
 
 {#key pagination}
   <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />

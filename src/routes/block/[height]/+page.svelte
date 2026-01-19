@@ -10,7 +10,8 @@
   import UIAddress from "$lib/components/UIAddress.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
   import Decimal from "decimal.js"
-  import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
+  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import DataTable from "$lib/components/DataTable.svelte"
   import Fee from "$lib/components/Fee.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
@@ -18,6 +19,7 @@
   import Status from "$lib/components/Status.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
+    import TableContainer from "$lib/components/TableContainer.svelte"
 
   let { data } = $props()
   let { block, height } = $derived(data)
@@ -203,13 +205,6 @@
     },
   ]
 
-  const transaction_table = createTable<TransactionList>({
-    get data() {
-      return transaction_table_data
-    },
-    columns: transaction_table_columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
 
   const aborted_transaction_table_columns: ColumnDef<string, string>[] = [
     {
@@ -219,13 +214,6 @@
     },
   ]
 
-  const aborted_transaction_table = createTable<string>({
-    get data() {
-      return block.block.aborted_transaction_ids
-    },
-    columns: aborted_transaction_table_columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
 
   type SolutionList = {
     solution_id: string
@@ -275,13 +263,6 @@
     },
   ]
 
-  const solution_table = createTable<SolutionList>({
-    get data() {
-      return solution_table_data
-    },
-    columns: solution_table_columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
 
   type AbortedSolutionList = {
     solution_id: string
@@ -303,13 +284,6 @@
     },
   ]
 
-  const aborted_solution_table = createTable<AbortedSolutionList>({
-    get data() {
-      return aborted_solution_table_data
-    },
-    columns: aborted_solution_table_columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
 </script>
 
 <style lang="scss">
@@ -380,11 +354,6 @@
     gap: 0.5rem;
     flex-wrap: wrap;
     margin-top: 0.5rem;
-  }
-
-  table {
-    width: 100%;
-    white-space: nowrap;
   }
 
   .tab {
@@ -572,30 +541,9 @@
         <Callout title="No transactions" description="This block has no transactions." icon="list-icon" />
       {:else}
         {#if block.block.transactions.length > 0}
-          <div class="table-container">
-            <table>
-              <thead>
-                {#each transaction_table.getHeaderGroups() as header_group}
-                  <tr>
-                    {#each header_group.headers as header}
-                      <th>{header.column.columnDef.header}</th>
-                    {/each}
-                  </tr>
-                {/each}
-              </thead>
-              <tbody>
-                {#each transaction_table.getRowModel().rows as row}
-                  <tr>
-                    {#each row.getVisibleCells() as cell}
-                      <td>
-                        <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                      </td>
-                    {/each}
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
+          <TableContainer>
+            <DataTable columns={transaction_table_columns} data={transaction_table_data} />
+          </TableContainer>
         {/if}
         {#if block.block.aborted_transaction_ids.length > 0}
           <div class="aborted-header">Aborted transactions</div>
@@ -660,57 +608,15 @@
         <Callout title="No solutions" description="This block has no puzzle solutions." icon="list-icon" />
       {:else}
         {#if block.solutions.length > 0}
-          <div class="table-container">
-            <table>
-              <thead>
-                {#each solution_table.getHeaderGroups() as header_group}
-                  <tr>
-                    {#each header_group.headers as header}
-                      <th>{header.column.columnDef.header}</th>
-                    {/each}
-                  </tr>
-                {/each}
-              </thead>
-              <tbody>
-                {#each solution_table.getRowModel().rows as row}
-                  <tr>
-                    {#each row.getVisibleCells() as cell}
-                      <td>
-                        <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                      </td>
-                    {/each}
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
+          <TableContainer>
+            <DataTable columns={solution_table_columns} data={solution_table_data} />
+          </TableContainer>
         {/if}
         {#if block.block.aborted_solution_ids.length > 0}
           <div class="aborted-header">Aborted solutions</div>
-          <div class="table-container">
-            <table>
-              <thead>
-                {#each aborted_solution_table.getHeaderGroups() as header_group}
-                  <tr>
-                    {#each header_group.headers as header}
-                      <th>{header.column.columnDef.header}</th>
-                    {/each}
-                  </tr>
-                {/each}
-              </thead>
-              <tbody>
-                {#each aborted_solution_table.getRowModel().rows as row}
-                  <tr>
-                    {#each row.getVisibleCells() as cell}
-                      <td>
-                        <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                      </td>
-                    {/each}
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
+          <TableContainer>
+            <DataTable columns={aborted_solution_table_columns} data={aborted_solution_table_data} />
+          </TableContainer>
         {/if}
       {/if}
     </div>

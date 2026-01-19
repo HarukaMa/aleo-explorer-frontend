@@ -1,10 +1,12 @@
 <script lang="ts">
   import { ButtonLinkClass, SearchError } from "$lib/types"
   import Button from "$lib/components/Button.svelte"
-  import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
+  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import DataTable from "$lib/components/DataTable.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
+    import TableContainer from "$lib/components/TableContainer.svelte"
 
   let { data: server_data } = $props()
   let { query, result, error } = $derived(server_data)
@@ -117,15 +119,6 @@
     ]
   })
 
-  const table = createTable<TableItem>({
-    get data() {
-      return table_data
-    },
-    get columns() {
-      return columns
-    },
-    getCoreRowModel: getCoreRowModel(),
-  })
 
   let program_table_data: TableItem[] = $derived.by(() => {
     if (result.type !== "ans_program") {
@@ -148,15 +141,6 @@
     ]
   })
 
-  const program_table = createTable<TableItem>({
-    get data() {
-      return program_table_data
-    },
-    get columns() {
-      return program_columns
-    },
-    getCoreRowModel: getCoreRowModel(),
-  })
 </script>
 
 <style lang="scss">
@@ -202,15 +186,6 @@
 
   .spacer {
     padding-top: 1.25rem;
-  }
-
-  .table-container {
-    margin-top: 2.5rem;
-
-    table {
-      width: 100%;
-      white-space: nowrap;
-    }
   }
 
   .too-many-warning {
@@ -260,54 +235,12 @@
       Your search has returned too many results. Showing only 50 results below.
     </div>
   {/if}
-  <div class="table-container">
-    <table>
-      <thead>
-        {#each table.getHeaderGroups() as header_group}
-          <tr>
-            {#each header_group.headers as header}
-              <th>{header.column.columnDef.header}</th>
-            {/each}
-          </tr>
-        {/each}
-      </thead>
-      <tbody>
-        {#each table.getRowModel().rows as row}
-          <tr>
-            {#each row.getVisibleCells() as cell}
-              <td>
-                <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-              </td>
-            {/each}
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
+  <TableContainer>
+    <DataTable {columns} data={table_data} />
+  </TableContainer>
   {#if result.type === "ans_program"}
-    <div class="table-container">
-      <table>
-        <thead>
-          {#each program_table.getHeaderGroups() as header_group}
-            <tr>
-              {#each header_group.headers as header}
-                <th>{header.column.columnDef.header}</th>
-              {/each}
-            </tr>
-          {/each}
-        </thead>
-        <tbody>
-          {#each program_table.getRowModel().rows as row}
-            <tr>
-              {#each row.getVisibleCells() as cell}
-                <td>
-                  <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                </td>
-              {/each}
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-    </div>
+    <TableContainer>
+      <DataTable columns={program_columns} data={program_table_data} />
+    </TableContainer>
   {/if}
 {/if}
