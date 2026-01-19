@@ -549,35 +549,32 @@
   </div>
 </div>
 
-<div class="container">
-  <div class="details">
-    {#if transferDetails}
-      <div class="group">
-        <p class="group-title">Transfer details</p>
-        <div class="group-content">
-          <DetailLine tooltip="The amount of ALEO credits transferred" label="Transfer amount">
-            <strong class="aleo-token"><AleoToken number={transferDetails.amount} suffix /></strong>
-          </DetailLine>
-          <div class="group-separator"></div>
-          <DetailLine tooltip="The sender address" label="From">
-            {#if transferDetails.from === null}
-              {@render privateIndicator()}
-            {:else}
-              <Link href="/address/{transferDetails.from}">
-                <span class="mono">{transferDetails.from}</span>
-              </Link>
-            {/if}
-          </DetailLine>
-          <DetailLine tooltip="The recipient address" label="To">
-            {#if transferDetails.to === null}
-              {@render privateIndicator()}
-            {:else}
-              <Link href="/address/{transferDetails.to}">
-                <span class="mono">{transferDetails.to}</span>
-              </Link>
-            {/if}
-          </DetailLine>
-        </div>
+<Tabs {tab_data}>
+  {#snippet transitions(binds)}
+    <div class="tab" bind:this={binds.transitions}>
+      <div class="table-container">
+        <table>
+          <thead>
+            {#each transition_table.getHeaderGroups() as header_group}
+              <tr>
+                {#each header_group.headers as header}
+                  <th>{header.column.columnDef.header}</th>
+                {/each}
+              </tr>
+            {/each}
+          </thead>
+          <tbody>
+            {#each transition_table.getRowModel().rows as row}
+              <tr>
+                {#each row.getVisibleCells() as cell}
+                  <td>
+                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+                  </td>
+                {/each}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
       </div>
     </div>
   {/snippet}
@@ -619,48 +616,9 @@
           {/each}
         {:else}{/if}
       </div>
-    {/snippet}
-    {#snippet mapping(binds)}
-      <div class="tab" bind:this={binds.mapping}>
-        <div class="mapping-operations">
-          {#if state === "Accepted" || state === "Rejected"}
-            {#each data.mapping_operations as op}
-              <div class="operation">
-                <div class="column">
-                  <span class="dim">Program</span>
-                  <Link href="/program/{op.program_id}">
-                    <span class="mono">{op.program_id}</span>
-                  </Link>
-                </div>
-                <div class="column">
-                  <span class="dim">Mapping</span>
-                  <span class="mono">{op.mapping_name}[{op.key}]</span>
-                </div>
-                <div class="column">
-                  <span class="dim">Before</span>
-                  {#if op.limited_tracked}
-                    <Status cls={StatusClass.Warning}>Not tracked</Status>
-                  {:else if op.previous_value === null}
-                    <Status cls={StatusClass.Info}>New</Status>
-                  {:else}
-                    <span class="mono">{op.previous_value}</span>
-                  {/if}
-                </div>
-                <div class="column">
-                  <span class="dim">After</span>
-                  {#if op.type === "Remove"}
-                    <Status cls={StatusClass.Danger}>Removed</Status>
-                  {:else}
-                    <span class="mono">{op.value}</span>
-                  {/if}
-                </div>
-              </div>
-            {/each}
-          {:else}{/if}
-        </div>
-      </div>
-    {/snippet}
-  </Tabs>
+    </div>
+  {/snippet}
+</Tabs>
 
 <PageInformation
   title="Transaction"
