@@ -49,7 +49,7 @@ export async function POST({ request }) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${env.API_TOKEN}`,
+        Authorization: `Token ${env.API_TOKEN}`,
       },
       body: JSON.stringify({
         contact,
