@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte"
-    import Tooltip from "./Tooltip.svelte"
+  import Tooltip from "./Tooltip.svelte"
 
   interface DetailLine {
     label: string
