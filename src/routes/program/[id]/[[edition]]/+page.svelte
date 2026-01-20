@@ -7,14 +7,10 @@
   import Tabs from "$lib/components/Tabs.svelte"
   import {
     type ColumnDef,
-    createTable,
-    FlexRender,
-    getCoreRowModel,
-    getPaginationRowModel,
     type PaginationState,
     renderComponent,
-    type Updater,
   } from "@tanstack/svelte-table"
+  import DataTable from "$lib/components/DataTable.svelte"
   import { Highlight } from "svelte-rune-highlight"
   import aleo from "$lib/hljs.aleo.js"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
@@ -27,6 +23,7 @@
   import Callout from "$lib/components/Callout.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
+    import TableContainer from "$lib/components/TableContainer.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -83,35 +80,17 @@
     pageSize: 10,
   })
 
-  const transition_table = createTable<TransitionList>({
-    get data() {
-      return transition_table_data
-    },
-    columns: transition_table_columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    get rowCount() {
-      return data.recent_calls.length
-    },
-    get state() {
-      return { pagination }
-    },
-    onPaginationChange: onPaginationChange,
-  })
-
-  async function onPaginationChange(updaterOrValue: Updater<PaginationState>) {
-    if (updaterOrValue instanceof Function) {
-      updaterOrValue = updaterOrValue(pagination)
-    }
-    pagination = updaterOrValue
-  }
-
   function set_page(page: number) {
-    transition_table.setPageIndex(page - 1)
+    pagination = { ...pagination, pageIndex: page - 1 }
   }
 
   let total_pages = $derived(Math.ceil(data.recent_calls.length / pagination.pageSize))
-  let transition_rows = $derived(transition_table.getPaginationRowModel().flatRows)
+  let paginated_transition_data = $derived(
+    transition_table_data.slice(
+      pagination.pageIndex * pagination.pageSize,
+      (pagination.pageIndex + 1) * pagination.pageSize
+    )
+  )
 </script>
 
 <style lang="scss">
@@ -163,11 +142,6 @@
     gap: 0.5rem;
     flex-wrap: wrap;
     margin-top: 0.5rem;
-  }
-
-  table {
-    width: 100%;
-    white-space: nowrap;
   }
 
   .tab {
@@ -404,38 +378,17 @@
   {/snippet}
   {#snippet recent_calls(binds)}
     <div class="tab" bind:this={binds.recent_calls}>
-      {#if transition_rows.length === 0}
+      {#if transition_table_data.length === 0}
         <Callout title="No transitions" description="There are no transitions in this program yet." icon="list-icon" />
       {:else}
-        <div class="table-container">
-          <table>
-            <thead>
-              {#each transition_table.getHeaderGroups() as header_group}
-                <tr>
-                  {#each header_group.headers as header}
-                    <th>{header.column.columnDef.header}</th>
-                  {/each}
-                </tr>
-              {/each}
-            </thead>
-            <tbody>
-              {#key pagination}
-                {#each transition_rows as row}
-                  <tr>
-                    {#each row.getVisibleCells() as cell}
-                      <td>
-                        <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                      </td>
-                    {/each}
-                  </tr>
-                {/each}
-              {/key}
-            </tbody>
-          </table>
+        <TableContainer>
+          {#key pagination}
+            <DataTable columns={transition_table_columns} data={paginated_transition_data} />
+          {/key}
           {#key pagination}
             <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
           {/key}
-        </div>
+        </TableContainer>
       {/if}
     </div>
   {/snippet}

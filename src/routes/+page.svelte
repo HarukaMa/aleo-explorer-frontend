@@ -3,7 +3,8 @@
   import home_bg from "$lib/assets/images/home_bg.svg"
   import SearchBar from "$lib/components/SearchBar.svelte"
   import Number from "$lib/components/Number.svelte"
-  import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
+  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import DataTable from "$lib/components/DataTable.svelte"
   import Epoch from "$lib/components/Epoch.svelte"
   import AleoCredit from "$lib/components/AleoToken.svelte"
   import Time from "$lib/components/Time.svelte"
@@ -13,6 +14,7 @@
   import { type BlockList, ButtonLinkClass } from "$lib/types"
   import Decimal from "decimal.js"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import TableContainer from "$lib/components/TableContainer.svelte"
 
   let { data } = $props()
 
@@ -111,14 +113,6 @@
     },
   ]
 
-  const table = createTable<BlockList>({
-    get data() {
-      return table_data
-    },
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
-
   if (browser) {
     let requesting = false
     const interval = setInterval(async () => {
@@ -207,11 +201,6 @@
     margin-top: 0px;
   }
 
-  table {
-    width: 100%;
-    white-space: nowrap;
-  }
-
   .spacer {
     margin: 2rem auto 0;
     display: flex;
@@ -230,11 +219,6 @@
     display: flex;
     flex-direction: column;
     gap: 120px;
-  }
-
-  .table-container {
-    max-width: 100%;
-    overflow-x: auto;
   }
 </style>
 
@@ -275,30 +259,9 @@
   </div>
   <div id="blocks">
     <h2>Blocks</h2>
-    <div class="table-container">
-      <table>
-        <thead>
-          {#each table.getHeaderGroups() as header_group}
-            <tr>
-              {#each header_group.headers as header}
-                <th>{header.column.columnDef.header}</th>
-              {/each}
-            </tr>
-          {/each}
-        </thead>
-        <tbody>
-          {#each table.getRowModel().rows as row}
-            <tr>
-              {#each row.getVisibleCells() as cell}
-                <td>
-                  <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                </td>
-              {/each}
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-    </div>
+    <TableContainer>
+      <DataTable {columns} data={table_data} />
+    </TableContainer>
   </div>
 </div>
 

@@ -6,7 +6,8 @@
   import Time from "$lib/components/Time.svelte"
   import { format_time, format_time_absolute_relative, TimeMode } from "$lib/time_mode.svelte.js"
   import Tabs from "$lib/components/Tabs.svelte"
-  import { type ColumnDef, createTable, FlexRender, getCoreRowModel, renderComponent } from "@tanstack/svelte-table"
+  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import DataTable from "$lib/components/DataTable.svelte"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
   import Status from "$lib/components/Status.svelte"
@@ -14,6 +15,8 @@
   import FeeBreakdown from "$lib/components/FeeBreakdown.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
+  import TableContainer from "$lib/components/TableContainer.svelte"
+  import Callout from "$lib/components/Callout.svelte"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -200,13 +203,6 @@
     },
   ]
 
-  const transition_table = createTable<TransitionList>({
-    get data() {
-      return transition_table_data
-    },
-    columns: transition_table_columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
 </script>
 
 <style lang="scss">
@@ -275,11 +271,6 @@
     gap: 0.5rem;
     flex-wrap: wrap;
     margin-top: 0.5rem;
-  }
-
-  table {
-    width: 100%;
-    white-space: nowrap;
   }
 
   .tab {
@@ -552,30 +543,13 @@
 <Tabs {tab_data}>
   {#snippet transitions(binds)}
     <div class="tab" bind:this={binds.transitions}>
-      <div class="table-container">
-        <table>
-          <thead>
-            {#each transition_table.getHeaderGroups() as header_group}
-              <tr>
-                {#each header_group.headers as header}
-                  <th>{header.column.columnDef.header}</th>
-                {/each}
-              </tr>
-            {/each}
-          </thead>
-          <tbody>
-            {#each transition_table.getRowModel().rows as row}
-              <tr>
-                {#each row.getVisibleCells() as cell}
-                  <td>
-                    <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-                  </td>
-                {/each}
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
+      <TableContainer>
+        <DataTable columns={transition_table_columns} data={transition_table_data}>
+          {#snippet emptyState()}
+            <Callout title="No transitions" description="This transaction has no transitions." icon="list-icon" />
+          {/snippet}
+        </DataTable>
+      </TableContainer>
     </div>
   {/snippet}
   {#snippet mapping(binds)}

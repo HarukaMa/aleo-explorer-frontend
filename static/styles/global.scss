@@ -97,10 +97,6 @@
   color: $grey-400;
 }
 
-:global(.table-container) {
-  overflow-x: auto;
-}
-
 :global(.container) {
   max-width: 1620px;
   margin: 0 auto;
