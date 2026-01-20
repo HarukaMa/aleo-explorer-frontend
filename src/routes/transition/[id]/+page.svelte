@@ -7,6 +7,7 @@
   import Status from "$lib/components/Status.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
+  import { tooltips } from "$lib/tooltips"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -142,10 +143,10 @@
 
 <div class="details">
   <div class="group">
-    <DetailLine label="Transition ID">
+    <DetailLine label="Transition ID" tooltip={tooltips.transition.transitionId}>
       <span class="mono">{transition.id}</span>
     </DetailLine>
-    <DetailLine label="Transaction">
+    <DetailLine label="Transaction" tooltip={tooltips.transition.transaction}>
       <Link href="/transaction/{data.transaction_id}">
         <span class="mono">{data.transaction_id}</span>
       </Link>
@@ -155,7 +156,7 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Status">
+    <DetailLine label="Status" tooltip={tooltips.transition.status}>
       {#if data.is_aborted}
         <Status cls={StatusClass.Danger}>Aborted</Status>
       {:else if !data.is_confirmed}
@@ -171,12 +172,12 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Program ID">
+    <DetailLine label="Program ID" tooltip={tooltips.transition.programId}>
       <Link href="/program/{transition.program_id}">
         <span class="mono">{transition.program_id}</span>
       </Link>
     </DetailLine>
-    <DetailLine label="Function name">
+    <DetailLine label="Function name" tooltip={tooltips.transition.functionName}>
       <span class="mono">{transition.function_name}</span>
     </DetailLine>
   </div>
@@ -184,13 +185,13 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Transition public key">
+    <DetailLine label="Transition public key" tooltip={tooltips.transition.transitionPublicKey}>
       <span class="mono">{transition.tpk}</span>
     </DetailLine>
-    <DetailLine label="Transition commitment">
+    <DetailLine label="Transition commitment" tooltip={tooltips.transition.transitionCommitment}>
       <span class="mono">{transition.tcm}</span>
     </DetailLine>
-    <DetailLine label="Signer commitment">
+    <DetailLine label="Signer commitment" tooltip={tooltips.transition.signerCommitment}>
       <span class="mono">{transition.scm}</span>
     </DetailLine>
   </div>

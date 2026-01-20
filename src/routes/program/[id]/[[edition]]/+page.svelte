@@ -23,7 +23,8 @@
   import Callout from "$lib/components/Callout.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
-    import TableContainer from "$lib/components/TableContainer.svelte"
+  import TableContainer from "$lib/components/TableContainer.svelte"
+  import { tooltips } from "$lib/tooltips"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -261,10 +262,10 @@
 
 <div class="details">
   <div class="group">
-    <DetailLine label="Program ID">
+    <DetailLine label="Program ID" tooltip={tooltips.program.programId}>
       <span class="mono">{data.program_id}</span>
     </DetailLine>
-    <DetailLine label="Program address">
+    <DetailLine label="Program address" tooltip={tooltips.program.programAddress}>
       <Link href="/address/{data.address}">
         <UIAddress address={data.address} name_data={{}} />
       </Link>
@@ -275,12 +276,12 @@
   </div>
   {#if data.transaction_id !== null}
     <div class="group">
-      <DetailLine label="Deployment transaction">
+      <DetailLine label="Deployment transaction" tooltip={tooltips.program.deploymentTransaction}>
         <Link href="/transaction/{data.transaction_id}">
           <span class="mono">{data.transaction_id}</span>
         </Link>
       </DetailLine>
-      <DetailLine label="Program owner">
+      <DetailLine label="Program owner" tooltip={tooltips.program.programOwner}>
         <Link href="/address/{data.owner}">
           <UIAddress address={data.owner} name_data={data.resolved_addresses} />
         </Link>
@@ -291,10 +292,10 @@
     </div>
   {/if}
   <div class="group">
-    <DetailLine label="Times called">
+    <DetailLine label="Times called" tooltip={tooltips.program.timesCalled}>
       <Number number={data.times_called} />
     </DetailLine>
-    <DetailLine label="Similar programs">
+    <DetailLine label="Similar programs" tooltip={tooltips.program.similarPrograms}>
       {#if data.similar_count === 0}
         0
       {:else}

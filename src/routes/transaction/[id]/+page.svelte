@@ -17,6 +17,7 @@
   import PageHeader from "$lib/components/PageHeader.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
   import Callout from "$lib/components/Callout.svelte"
+  import { tooltips } from "$lib/tooltips"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -418,16 +419,16 @@
   <div class="group">
     <p class="group-title">General information</p>
     <div class="group-content">
-      <DetailLine label="Transaction ID" tooltip="Tooltip">
+      <DetailLine label="Transaction ID" tooltip={tooltips.transaction.transactionId}>
         <span class="mono">{data.tx_id}</span>
       </DetailLine>
       {#if state === "Rejected"}
-        <DetailLine tooltip="Tooltip" label="Original transaction ID">
+        <DetailLine label="Original transaction ID">
           <span class="mono">{data.original_txid}</span>
         </DetailLine>
       {/if}
       {#if state !== "Unconfirmed"}
-        <DetailLine tooltip="Tooltip" label="Block">
+        <DetailLine tooltip={tooltips.transaction.block} label="Block">
           {#if data.first_seen < data.block_confirm_time}
             <div class="column">
               <Link href="/block/{data.height}">
@@ -450,14 +451,14 @@
             </Link>
           {/if}
         </DetailLine>
-        <DetailLine tooltip="Tooltip" label="Timestamp">
+        <DetailLine tooltip={tooltips.transaction.timestamp} label="Timestamp">
           {format_time(new Date(data.block_timestamp * 1000), TimeMode.Relative)}
           <!-- @formatter:off -->
           (<Time no_relative timestamp={data.block_timestamp} />)
           <!-- @formatter:on -->
         </DetailLine>
       {:else}
-        <DetailLine tooltip="Tooltip" label="First seen">
+        <DetailLine label="First seen">
           {format_time(new Date(data.first_seen * 1000), TimeMode.Relative)}
           <!-- @formatter:off -->
           (<Time no_relative timestamp={data.first_seen} />)
@@ -465,7 +466,7 @@
         </DetailLine>
       {/if}
       <div class="group-separator"></div>
-      <DetailLine label="Status" tooltip="Tooltip">
+      <DetailLine label="Status" tooltip={tooltips.transaction.status}>
         {#if state === "Accepted"}
           <Status cls={StatusClass.Success}>Accepted</Status>
         {:else if state === "Rejected"}
@@ -480,11 +481,11 @@
         {/if}
       </DetailLine>
       <div class="group-separator"></div>
-      <DetailLine label="Type" tooltip="Tooltip">
+      <DetailLine label="Type" tooltip={tooltips.transaction.type}>
         {type}
       </DetailLine>
       {#if type === "Deploy"}
-        <DetailLine tooltip="Tooltip" label="Program">
+        <DetailLine label="Program">
           {#if state === "Accepted"}
             <Link href="/program/{data.confirmed_transaction.transaction.deployment.program.id}">
               <span class="mono">{data.confirmed_transaction.transaction.deployment.program.id}</span>
@@ -497,7 +498,7 @@
             Not implemented
           {/if}
         </DetailLine>
-        <DetailLine tooltip="Tooltip" label="Edition">
+        <DetailLine label="Edition">
           {#if state === "Accepted"}
             {data.confirmed_transaction.transaction.deployment.edition}
           {:else if state === "Rejected"}
@@ -508,28 +509,28 @@
         </DetailLine>
       {/if}
       {#if state === "Accepted" || state === "Rejected"}
-        <DetailLine tooltip="Tooltip" label="Index">
+        <DetailLine tooltip={tooltips.transaction.index} label="Index">
           {data.confirmed_transaction.index}
         </DetailLine>
       {/if}
       <div class="group-separator"></div>
       {#if fee}
-        <DetailLine tooltip="Tooltip" label="Total fee spent">
+        <DetailLine tooltip={tooltips.transaction.totalFeeSpent} label="Total fee spent">
           <AleoToken number={fee.amount[0] + fee.amount[1]} suffix />
         </DetailLine>
         <div class="group-separator"></div>
-        <DetailLine tooltip="Tooltip" label="Breakdown">
+        <DetailLine tooltip={tooltips.transaction.breakdown} label="Breakdown">
           <div class="fee-breakdown">
             <FeeBreakdown amount={fee.amount[0]} label="Base fee"></FeeBreakdown>
             <FeeBreakdown amount={fee.amount[1]} label="Priority fee"></FeeBreakdown>
           </div>
         </DetailLine>
       {:else}
-        <DetailLine tooltip="Tooltip" label="Total fee spent">
+        <DetailLine tooltip={tooltips.transaction.totalFeeSpent} label="Total fee spent">
           <AleoToken number="10000" suffix />
         </DetailLine>
         <div class="group-separator"></div>
-        <DetailLine tooltip="Tooltip" label="Breakdown">
+        <DetailLine tooltip={tooltips.transaction.breakdown} label="Breakdown">
           <div class="fee-breakdown">
             <FeeBreakdown amount="10000" label="Base fee"></FeeBreakdown>
             <FeeBreakdown amount="0" label="Priority fee"></FeeBreakdown>
