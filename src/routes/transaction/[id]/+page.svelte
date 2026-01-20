@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte"
   import Seo from "$lib/components/Seo.svelte"
   import { StatusClass } from "$lib/types"
   import Number from "$lib/components/Number.svelte"
@@ -18,9 +19,26 @@
   import TableContainer from "$lib/components/TableContainer.svelte"
   import Callout from "$lib/components/Callout.svelte"
   import { tooltips } from "$lib/tooltips"
+  import Decimal from "decimal.js"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
+
+  let aleoPrice = $state(0)
+  let priceChange24h = $state(0)
+
+  onMount(async () => {
+    try {
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=aleo&vs_currencies=usd&include_24hr_change=true",
+      )
+      const data = await response.json()
+      aleoPrice = data.aleo.usd
+      priceChange24h = data.aleo.usd_24h_change
+    } catch (error) {
+      console.error("Failed to fetch ALEO price:", error)
+    }
+  })
 
   $inspect(data)
 
@@ -203,7 +221,6 @@
       cell: (info) => renderComponent(SnippetWrapper, { snippet: status_column, value: info.getValue() }),
     },
   ]
-
 </script>
 
 <style lang="scss">
@@ -332,6 +349,45 @@
       background-image: $lock-icon;
     }
   }
+
+  .transfer-type-badge {
+    height: 1.25rem;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    justify-content: center;
+    padding: 2px 0.75rem;
+    border: 1px solid $grey-100;
+    border-radius: 100px;
+  }
+
+  .transfer-amount-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .amount-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .aleo-logo {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .amount-secondary {
+    font-size: 14px;
+    color: $grey-600;
+    margin-top: 0.25rem;
+    line-height: 1;
+  }
 </style>
 
 <Seo
@@ -388,11 +444,17 @@
     <div class="group">
       <p class="group-title">Transfer details</p>
       <div class="group-content">
-        <DetailLine tooltip="The amount of ALEO credits transferred" label="Transfer amount">
-          <strong class="aleo-token">
-            <AleoToken number={transferDetails.amount} suffix />
-          </strong>
-        </DetailLine>
+        <div class="transfer-amount-display">
+          <div class="amount-primary">
+            {new Decimal(transferDetails.amount).div(1000000).toFixed(2)}
+            <img src="/src/lib/assets/images/icons/aleo-logo.svg" class="aleo-logo" alt="Logo" />
+          </div>
+          {#if aleoPrice > 0}
+            <div class="amount-secondary">
+              ~${(new Decimal(transferDetails.amount).div(1000000).toNumber() * aleoPrice).toFixed(2)}
+            </div>
+          {/if}
+        </div>
         <div class="group-separator"></div>
         <DetailLine tooltip="The sender address" label="From">
           {#if transferDetails.from === null}
@@ -411,6 +473,14 @@
               <span class="mono">{transferDetails.to}</span>
             </Link>
           {/if}
+        </DetailLine>
+        <div class="group-separator"></div>
+        <DetailLine tooltip={tooltips.transaction.transferType} label="Transfer Type">
+          <div class="transfer-type-badge">
+            {transferDetails.from === null ? "Private" : "Public"} to {transferDetails.to === null
+              ? "Private"
+              : "Public"}
+          </div>
         </DetailLine>
       </div>
     </div>

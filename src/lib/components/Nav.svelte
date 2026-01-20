@@ -332,6 +332,11 @@
   .price-tag-data[data-state="negative"] > .price-tag-trend {
     color: $red-500;
   }
+
+  .aleo-logo {
+    width: 14px;
+    height: 14px;
+  }
 </style>
 
 <nav>
@@ -344,15 +349,7 @@
         <span class="title-network-indicator-name">{network}</span>
       </div>
       <div class="price-tag">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="14" height="14" rx="7" fill="#121212"></rect>
-          <path
-            d="M7.89829 3.17188H7.05454H6.13179L4.59863 7.64795H5.5323L6.77419 3.99634H7.22386L8.4656 7.64795H6.75381H5.5323L5.24336 8.47241H7.03219H8.74398L9.54676 10.8281H10.5103L7.89829 3.17188Z"
-            fill="white"
-          ></path>
-          <path d="M3.50879 10.8284H4.44013L5.24309 8.47266H4.31586L3.50879 10.8284Z" fill="white"></path>
-          <path d="M3.67312 7.64795L3.39062 8.4724H4.31606L4.59856 7.64795H3.67312Z" fill="white"></path>
-        </svg>
+        <img src="/src/lib/assets/images/icons/aleo-logo.svg" class="aleo-logo" alt="Logo" />
         <div
           class="price-tag-data"
           data-state={priceChange24h !== null && priceChange24h >= 0 ? "positive" : "negative"}

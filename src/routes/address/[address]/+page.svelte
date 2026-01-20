@@ -447,7 +447,7 @@
       <span class="mono">{data.address}</span>
     </DetailLine>
     {#if data.program_name}
-      <DetailLine label="Program name">
+      <DetailLine label="Program name" tooltip={tooltips.address.programName}>
         <Link href="/program/{data.program_name}">
           <span class="mono">{data.program_name}</span>
         </Link>

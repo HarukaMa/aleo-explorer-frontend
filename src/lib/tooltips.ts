@@ -26,9 +26,11 @@ export const tooltips = {
     index: "The position of this transaction within the block.",
     totalFeeSpent: "The total transaction fee paid to process this transaction.",
     breakdown: "A detailed view of transaction costs and resources used.",
+    transferType: "The type of transfer (e.g., public, private, public to private, private to public).",
   },
   address: {
     address: "The unique identifier for this account on the blockchain.",
+    programName: "The name of the program that owns this address.",
     addressTag: "Name of wallet.",
     publicAnsNames: "Public Aleo Name Service names linked to this address.",
     website: "The official website or external page for this validator.",
