@@ -66,15 +66,9 @@
 <style lang="scss">
   @use "/static/styles/variables" as *;
 
-  .container {
-    max-width: 1140px;
-    margin: 0 auto;
-  }
-
   .calculator-content {
     display: flex;
-    gap: 2rem;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     gap: 5rem;
     @media (max-width: 768px) {
       flex-direction: column;
@@ -84,7 +78,7 @@
 
   .form-section {
     flex: 1;
-    max-width: 600px;
+    width: 100%;
   }
 
   .disclaimer {
@@ -154,11 +148,11 @@
 
   .results-section {
     flex: 1;
-    max-width: 500px;
+    width: 100%;
   }
 
   .results-card {
-    border: 1px solid $grey-200;
+    border: 1px solid $grey-100;
     border-radius: 1rem;
     padding: 1.5rem;
   }
@@ -332,7 +326,7 @@
       <p class="error-message">{error_message}</p>
     {/if}
 
-    <Button cls={ButtonLinkClass.Primary} Content="Calculate Time and Credits" action={calculate} />
+    <Button cls={ButtonLinkClass.Primary} Content="Estimate Results" action={calculate} />
   </div>
 
   <div class="results-section">
