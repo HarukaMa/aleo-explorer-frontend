@@ -40,11 +40,6 @@
 
   const proving_routes = [{ name: "Calculator", path: "/calculator" }]
 
-  const developers_routes = [
-    { name: "Tools", path: "/tools" },
-    { name: "API", path: "/api/docs" },
-  ]
-
   let mobileMenuOpen = $state(false)
 
   function toggleMobileMenu() {
@@ -400,16 +395,7 @@
         </div>
       </div>
 
-      <div class="nav-link">
-        Developers
-        <span class="chevron"></span>
-
-        <div class="nav-link-menu">
-          {#each developers_routes as { name, path }}
-            <NavItem {name} {path} />
-          {/each}
-        </div>
-      </div>
+      <NavItem path="/api/docs" name="Docs" />
     </div>
 
     <button class="mobile-menu-btn" onclick={toggleMobileMenu} aria-label="Open menu">
@@ -454,11 +440,8 @@
     </div>
 
     <div class="mobile-section">
-      <div class="mobile-section-title">Developers</div>
       <div class="mobile-section-links">
-        {#each developers_routes as { name, path }}
-          <a class="mobile-link" href={path} onclick={closeMobileMenu}>{name}</a>
-        {/each}
+        <a class="mobile-link" href="/api/docs" onclick={closeMobileMenu}>Docs</a>
       </div>
     </div>
   </div>
