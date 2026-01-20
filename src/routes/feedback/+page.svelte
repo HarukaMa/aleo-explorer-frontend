@@ -267,6 +267,12 @@
     line-height: 1.25rem;
     text-align: center;
   }
+
+  @media (max-width: 767px) {
+    .background-image {
+      display: none;
+    }
+  }
 </style>
 
 <svelte:head>
@@ -354,7 +360,7 @@
       </form>
     {/if}
   </div>
-  <svg width="790" height="495" viewBox="0 0 790 495" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="790" class="background-image" height="495" viewBox="0 0 790 495" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_7424_19769)">
       <rect width="790" height="494.781" fill="white"></rect>
       <path opacity="0.05" d="M268.672 -293.57L-134.894 930.188" stroke="black" stroke-width="2"></path>
