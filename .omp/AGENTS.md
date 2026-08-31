@@ -6,6 +6,12 @@
 - ESM modules
 - pnpm package manager
 
+## Upstream backend
+
+- Frontend API behavior is implemented by the separate [`aleo-explorer`](https://github.com/HarukaMa/aleo-explorer)
+  backend repository under `src/webapi`.
+- Locate the backend checkout from the current developer environment. Do not assume a machine-specific path.
+
 ## Commands
 
 - Install: `pnpm install`

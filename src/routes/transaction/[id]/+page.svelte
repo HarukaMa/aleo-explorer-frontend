@@ -20,6 +20,7 @@
   import Callout from "$lib/components/Callout.svelte"
   import { tooltips } from "$lib/tooltips"
   import Decimal from "decimal.js"
+  import aleo_logo from "$lib/assets/images/icons/aleo-logo.svg"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -433,7 +434,7 @@
         <div class="transfer-amount-display">
           <div class="amount-primary">
             {new Decimal(transferDetails.amount).div(1000000).toFixed(6)}
-            <img src="/src/lib/assets/images/icons/aleo-logo.svg" class="aleo-logo" alt="ALEO" />
+            <img src={aleo_logo} class="aleo-logo" alt="ALEO" />
           </div>
           {#if aleo_price.price > 0}
             <div class="amount-secondary">

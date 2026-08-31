@@ -2,6 +2,7 @@
   import { PUBLIC_NETWORK } from "$env/static/public"
   import NavItem from "./NavItem.svelte"
   import SearchBar from "$lib/components/SearchBar.svelte"
+  import aleo_logo from "$lib/assets/images/icons/aleo-logo.svg"
   import { getContext } from "svelte"
 
   let { is_index }: { is_index: boolean } = $props()
@@ -336,7 +337,7 @@
         <span class="title-network-indicator-name">{network}</span>
       </div>
       <div class="price-tag">
-        <img src="/src/lib/assets/images/icons/aleo-logo.svg" class="aleo-logo" alt="Logo" />
+        <img alt="Logo" class="aleo-logo" src={aleo_logo} />
         <div
           class="price-tag-data"
           data-state={aleo_price.change24h !== null && aleo_price.change24h >= 0 ? "positive" : "negative"}

@@ -33,6 +33,9 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20260116.0
         version: 4.20260116.0
+      '@eslint/js':
+        specifier: 9.39.2
+        version: 9.39.2
       '@sveltejs/adapter-cloudflare':
         specifier: ^5.1.0
         version: 5.1.0(@sveltejs/kit@2.49.5(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.46.4)(vite@6.4.1(sass@1.97.2)))(svelte@5.46.4)(typescript@5.9.3)(vite@6.4.1(sass@1.97.2)))(wrangler@3.114.17(@cloudflare/workers-types@4.20260116.0))
