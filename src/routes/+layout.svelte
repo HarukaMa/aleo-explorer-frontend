@@ -1,11 +1,12 @@
 <script lang="ts">
   import Nav from "$lib/components/Nav.svelte"
   import { env } from "$env/dynamic/public"
-  import { current_time_mode, format_time_relative, TimeMode } from "$lib/time_mode.svelte"
+  import { current_time_mode, TimeMode } from "$lib/time_mode.svelte"
   import { browser } from "$app/environment"
   import { getCookie } from "$lib/utils"
   import { onMount, setContext } from "svelte"
   import TopBanner from "$lib/components/TopBanner.svelte"
+  import Time from "$lib/components/Time.svelte"
   import { navigating, page } from "$app/stores"
   import { expoOut } from "svelte/easing"
   import { slide } from "svelte/transition"
@@ -33,6 +34,13 @@
   }
 
   let time_mode = current_time_mode(stored_time_mode)
+
+  onMount(() => {
+    const interval = setInterval(() => {
+      time_mode.now = Date.now()
+    }, 1000)
+    return () => clearInterval(interval)
+  })
 
   let plausible_opt_out_value: boolean
   if (browser) {
@@ -315,9 +323,9 @@ SOFTWARE.
   <TopBanner>
     {#snippet content()}
       <div>
-        The explorer is out of date. The last block synced was {format_time_relative(
-          new Date(data.sync_info.last_timestamp * 1000),
-        )}.
+        The explorer is out of date. The last block synced was
+        <Time relative timestamp={data.sync_info.last_timestamp} />
+        .
       </div>
     {/snippet}
   </TopBanner>

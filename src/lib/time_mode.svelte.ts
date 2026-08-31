@@ -7,18 +7,25 @@ export enum TimeMode {
 }
 
 export const current_time_mode = (init?: TimeMode) => {
-  let mode = $state(init)
   if (hasContext("time_mode")) {
-    return getContext<{ value: TimeMode }>("time_mode")
+    return getContext<{ value: TimeMode; now: number }>("time_mode")
   } else if (init === undefined) {
     throw new Error("No initial value provided")
   }
+  let mode = $state(init)
+  let now = $state(Date.now())
   const state = {
     get value() {
-      return mode!
+      return mode
     },
     set value(value: TimeMode) {
       mode = value
+    },
+    get now() {
+      return now
+    },
+    set now(value: number) {
+      now = value
     },
   }
   setContext("time_mode", state)
@@ -107,8 +114,7 @@ export function format_time_absolute_relative(seconds: number, past: boolean = t
   }
 }
 
-export function format_time_relative(date: Date) {
-  const now = new Date()
+export function format_time_relative(date: Date, now: Date = new Date()) {
   const diff = now.getTime() - date.getTime()
   const seconds = diff / 1000
   return format_time_absolute_relative(seconds)

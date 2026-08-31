@@ -36,6 +36,8 @@
 
 - Run the smallest command that covers the changed behavior.
 - For UI changes, run the development server and verify the affected route in a browser.
+- Do not run a local production build solely for verification. Use the automatically built Worker deployment for
+  production validation.
 - Report project-wide check failures exactly when existing diagnostics prevent a clean result.
 
 ## Figma design reference

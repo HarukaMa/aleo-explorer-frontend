@@ -4,7 +4,6 @@
   import Number from "$lib/components/Number.svelte"
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Time from "$lib/components/Time.svelte"
-  import { format_time, TimeMode } from "$lib/time_mode.svelte.js"
   import AleoCredit from "$lib/components/AleoToken.svelte"
   import Chip from "$lib/components/Chip.svelte"
   import UIAddress from "$lib/components/UIAddress.svelte"
@@ -19,7 +18,7 @@
   import Status from "$lib/components/Status.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
-    import TableContainer from "$lib/components/TableContainer.svelte"
+  import TableContainer from "$lib/components/TableContainer.svelte"
 
   let { data } = $props()
   let { block, height } = $derived(data)
@@ -205,7 +204,6 @@
     },
   ]
 
-
   const aborted_transaction_table_columns: ColumnDef<string, string>[] = [
     {
       accessorKey: "transaction_id",
@@ -213,7 +211,6 @@
       cell: (info) => info.getValue(),
     },
   ]
-
 
   type SolutionList = {
     solution_id: string
@@ -263,7 +260,6 @@
     },
   ]
 
-
   type AbortedSolutionList = {
     solution_id: string
   }
@@ -283,7 +279,6 @@
       cell: (info) => renderComponent(SnippetWrapper, { snippet: solution_id_column, value: info.getValue() }),
     },
   ]
-
 </script>
 
 <style lang="scss">
@@ -440,7 +435,7 @@
       <span class="mono">{block.block.block_hash}</span>
     </DetailLine>
     <DetailLine label="Timestamp" tooltip="The block timestamp from the consensus algorithm.">
-      {format_time(new Date(block.block.header.metadata.timestamp * 1000), TimeMode.Relative)}
+      <Time relative timestamp={block.block.header.metadata.timestamp} />
       <!-- @formatter:off -->
       (<Time no_relative timestamp={block.block.header.metadata.timestamp} />)
       <!-- @formatter:on -->

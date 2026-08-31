@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { current_time_mode, format_time, format_time_utc, TimeMode } from "$lib/time_mode.svelte.js"
+  import {
+    current_time_mode,
+    format_time,
+    format_time_relative,
+    format_time_utc,
+    TimeMode,
+  } from "$lib/time_mode.svelte.js"
 
   const time_mode = current_time_mode()
 
@@ -7,20 +13,29 @@
     timestamp,
     flash = false,
     no_relative = false,
-  }: { timestamp: number; flash?: boolean; no_relative?: boolean } = $props()
+    relative = false,
+  }: { timestamp: number; flash?: boolean; no_relative?: boolean; relative?: boolean } = $props()
 
-  let prev_timestamp = timestamp
+  let prev_timestamp: number | undefined = $state()
 
   let date = $derived.by(() => {
-    if (time_mode.value === TimeMode.Relative && no_relative) {
-      return format_time_utc(new Date(timestamp * 1000))
+    const value = new Date(timestamp * 1000)
+    if (relative || (time_mode.value === TimeMode.Relative && !no_relative)) {
+      return format_time_relative(value, new Date(time_mode.now))
     }
-    return format_time(new Date(timestamp * 1000), time_mode.value)
+    if (time_mode.value === TimeMode.Relative) {
+      return format_time_utc(value)
+    }
+    return format_time(value, time_mode.value)
   })
 
   let span: HTMLSpanElement
 
   $effect(() => {
+    if (prev_timestamp === undefined) {
+      prev_timestamp = timestamp
+      return
+    }
     if (flash && prev_timestamp !== timestamp) {
       prev_timestamp = timestamp
       span.classList.add("flash")

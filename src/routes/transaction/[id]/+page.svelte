@@ -5,7 +5,7 @@
   import Number from "$lib/components/Number.svelte"
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Time from "$lib/components/Time.svelte"
-  import { format_time, format_time_absolute_relative, TimeMode } from "$lib/time_mode.svelte.js"
+  import { format_time_absolute_relative } from "$lib/time_mode.svelte.js"
   import Tabs from "$lib/components/Tabs.svelte"
   import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
@@ -509,14 +509,14 @@
           {/if}
         </DetailLine>
         <DetailLine tooltip={tooltips.transaction.timestamp} label="Timestamp">
-          {format_time(new Date(data.block_timestamp * 1000), TimeMode.Relative)}
+          <Time relative timestamp={data.block_timestamp} />
           <!-- @formatter:off -->
           (<Time no_relative timestamp={data.block_timestamp} />)
           <!-- @formatter:on -->
         </DetailLine>
       {:else}
         <DetailLine label="First seen">
-          {format_time(new Date(data.first_seen * 1000), TimeMode.Relative)}
+          <Time relative timestamp={data.first_seen} />
           <!-- @formatter:off -->
           (<Time no_relative timestamp={data.first_seen} />)
           <!-- @formatter:on -->
