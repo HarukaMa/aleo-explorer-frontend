@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte"
+  import { getContext } from "svelte"
   import Seo from "$lib/components/Seo.svelte"
   import { StatusClass } from "$lib/types"
   import Number from "$lib/components/Number.svelte"
@@ -24,21 +24,7 @@
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
 
-  let aleoPrice = $state(0)
-  let priceChange24h = $state(0)
-
-  onMount(async () => {
-    try {
-      const response = await fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=aleo&vs_currencies=usd&include_24hr_change=true",
-      )
-      const data = await response.json()
-      aleoPrice = data.aleo.usd
-      priceChange24h = data.aleo.usd_24h_change
-    } catch (error) {
-      console.error("Failed to fetch ALEO price:", error)
-    }
-  })
+  let aleo_price = getContext<{ price: number }>("aleo_price")
 
   $inspect(data)
 
@@ -446,12 +432,12 @@
       <div class="group-content">
         <div class="transfer-amount-display">
           <div class="amount-primary">
-            {new Decimal(transferDetails.amount).div(1000000).toFixed(2)}
-            <img src="/src/lib/assets/images/icons/aleo-logo.svg" class="aleo-logo" alt="Logo" />
+            {new Decimal(transferDetails.amount).div(1000000).toFixed(6)}
+            <img src="/src/lib/assets/images/icons/aleo-logo.svg" class="aleo-logo" alt="ALEO" />
           </div>
-          {#if aleoPrice > 0}
+          {#if aleo_price.price > 0}
             <div class="amount-secondary">
-              ~${(new Decimal(transferDetails.amount).div(1000000).toNumber() * aleoPrice).toFixed(2)}
+              ~${(new Decimal(transferDetails.amount).div(1000000).toNumber() * aleo_price.price).toFixed(2)}
             </div>
           {/if}
         </div>

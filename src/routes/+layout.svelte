@@ -4,7 +4,7 @@
   import { current_time_mode, format_time_relative, TimeMode } from "$lib/time_mode.svelte"
   import { browser } from "$app/environment"
   import { getCookie } from "$lib/utils"
-  import { setContext } from "svelte"
+  import { onMount, setContext } from "svelte"
   import TopBanner from "$lib/components/TopBanner.svelte"
   import { navigating, page } from "$app/stores"
   import { expoOut } from "svelte/easing"
@@ -42,6 +42,21 @@
   }
 
   let plausible_opt_out = $state(plausible_opt_out_value)
+
+  let aleo_price: { price: number; change24h: number | null } = $state({ price: 0, change24h: 0 })
+
+  onMount(async () => {
+    try {
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=aleo&vs_currencies=usd&include_24hr_change=true",
+      )
+      const price_data = await response.json()
+      aleo_price.price = price_data.aleo.usd
+      aleo_price.change24h = price_data.aleo.usd_24h_change
+    } catch (error) {
+      console.error("Failed to fetch ALEO price:", error)
+    }
+  })
 
   $effect(() => {
     if (!browser) return
@@ -98,6 +113,7 @@
   })
 
   setContext("time_mode", time_mode)
+  setContext("aleo_price", aleo_price)
 </script>
 
 <!-- Contains code from https://github.com/scosman/sveltekit-navigation-loader/ -->

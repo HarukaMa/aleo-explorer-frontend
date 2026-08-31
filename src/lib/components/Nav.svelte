@@ -2,33 +2,18 @@
   import { PUBLIC_NETWORK } from "$env/static/public"
   import NavItem from "./NavItem.svelte"
   import SearchBar from "$lib/components/SearchBar.svelte"
-  import { onMount } from "svelte"
+  import { getContext } from "svelte"
 
   let { is_index }: { is_index: boolean } = $props()
 
   const networks: { [key: string]: string } = {
     mainnet: "Mainnet",
-    testnet: "Testnet Beta",
-    canary: "Canary Net",
+    testnet: "Testnet",
   }
 
   let network = networks[PUBLIC_NETWORK] || "Unknown Network"
 
-  let aleoPrice = $state(0)
-  let priceChange24h = $state(0)
-
-  onMount(async () => {
-    try {
-      const response = await fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=aleo&vs_currencies=usd&include_24hr_change=true",
-      )
-      const data = await response.json()
-      aleoPrice = data.aleo.usd
-      priceChange24h = data.aleo.usd_24h_change
-    } catch (error) {
-      console.error("Failed to fetch ALEO price:", error)
-    }
-  })
+  let aleo_price = getContext<{ price: number; change24h: number | null }>("aleo_price")
 
   const blockchain_routes = [
     { name: "Blocks", path: "/blocks" },
@@ -112,6 +97,8 @@
     padding: 1rem;
     align-items: center;
     position: relative;
+    color: black;
+    text-decoration: none;
   }
 
   @keyframes opacity {
@@ -352,10 +339,10 @@
         <img src="/src/lib/assets/images/icons/aleo-logo.svg" class="aleo-logo" alt="Logo" />
         <div
           class="price-tag-data"
-          data-state={priceChange24h !== null && priceChange24h >= 0 ? "positive" : "negative"}
+          data-state={aleo_price.change24h !== null && aleo_price.change24h >= 0 ? "positive" : "negative"}
         >
-          <p class="price-tag-price">${aleoPrice?.toFixed(3)}</p>
-          {#if priceChange24h !== null}
+          <p class="price-tag-price">${aleo_price.price.toFixed(3)}</p>
+          {#if aleo_price.change24h !== null}
             <div class="price-tag-trend">
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -363,7 +350,7 @@
                   fill="currentColor"
                 ></path>
               </svg>
-              <p>{Math.abs(priceChange24h).toFixed(2)}%</p>
+              <p>{Math.abs(aleo_price.change24h).toFixed(2)}%</p>
             </div>
           {/if}
         </div>
@@ -392,7 +379,7 @@
         </div>
       </div>
 
-      <NavItem path="/api/docs" name="Docs" />
+      <a class="nav-link" href="/api/docs">Docs</a>
     </div>
 
     <button class="mobile-menu-btn" onclick={toggleMobileMenu} aria-label="Open menu">
