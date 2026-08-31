@@ -14,7 +14,8 @@
   import Time from "$lib/components/Time.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
-    import TableContainer from "$lib/components/TableContainer.svelte"
+  import TableContainer from "$lib/components/TableContainer.svelte"
+  import { tooltips } from "$lib/tooltips"
 
   let { data: server_data } = $props()
   let { data, address } = $derived(server_data)
@@ -442,32 +443,32 @@
     </div>
   {/if}
   <div class="group">
-    <DetailLine label="Address">
+    <DetailLine label="Address" tooltip={tooltips.address.address}>
       <span class="mono">{data.address}</span>
     </DetailLine>
     {#if data.program_name}
-      <DetailLine label="Program name">
+      <DetailLine label="Program name" tooltip={tooltips.address.programName}>
         <Link href="/program/{data.program_name}">
           <span class="mono">{data.program_name}</span>
         </Link>
       </DetailLine>
     {/if}
     {#if resolved.name}
-      <DetailLine label="Primary ANS name">
+      <DetailLine label="Primary ANS name" tooltip={tooltips.address.publicAnsNames}>
         {resolved.name}
       </DetailLine>
     {/if}
     {#if resolved.tag}
-      <DetailLine label="Address tag">
+      <DetailLine label="Address tag" tooltip={tooltips.address.addressTag}>
         {resolved.tag}
       </DetailLine>
     {/if}
     {#if resolved.link}
-      <DetailLine label="Website">
+      <DetailLine label="Website" tooltip={tooltips.address.website}>
         <Link href={resolved.link} content={resolved.link} external />
       </DetailLine>
     {/if}
-    <DetailLine label="Public credits">
+    <DetailLine label="Public credits" tooltip={tooltips.address.publicBalance}>
       <AleoCredit number={data.public_balance} suffix />
     </DetailLine>
   </div>
@@ -476,7 +477,7 @@
   </div>
   <div class="group">
     {#if data.bond_state}
-      <DetailLine label="Credits staked">
+      <DetailLine label="Credits staked" tooltip={tooltips.address.tokensStaked}>
         {#if data.committee_state}
           <div class="column">
             <AleoCredit number={data.bond_state.amount} suffix />
@@ -487,7 +488,7 @@
         {/if}
       </DetailLine>
       {#if !data.committee_state}
-        <DetailLine label="Bonded to validator">
+        <DetailLine label="Bonded to validator" tooltip={tooltips.address.stakedToValidator}>
           {#if bonded_to && (bonded_to.name || bonded_to.tag)}
             <div class="column">
               <Link href="/address/{data.bond_state.validator}" content={bonded_to.tag || bonded_to.name} />
@@ -500,7 +501,7 @@
           {/if}
         </DetailLine>
       {/if}
-      <DetailLine label="Withdrawal address">
+      <DetailLine label="Withdrawal address" tooltip={tooltips.address.withdrawalAddress}>
         {#if data.withdrawal_address === address}
           Self
         {:else}
@@ -510,7 +511,7 @@
         {/if}
       </DetailLine>
     {/if}
-    <DetailLine label="Lifetime stake reward">
+    <DetailLine label="Lifetime stake reward" tooltip={tooltips.address.lifetimeStakeReward}>
       <AleoCredit number={data.stake_reward} suffix />
     </DetailLine>
   </div>
@@ -540,13 +541,13 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Public credits received">
+    <DetailLine label="Public credits received" tooltip={tooltips.address.publicTokensReceived}>
       <AleoCredit number={data.transfer_in} suffix />
     </DetailLine>
-    <DetailLine label="Public credits sent">
+    <DetailLine label="Public credits sent" tooltip={tooltips.address.publicTokensSent}>
       <AleoCredit number={data.transfer_out} suffix />
     </DetailLine>
-    <DetailLine label="Total fee spent">
+    <DetailLine label="Total fee spent" tooltip={tooltips.address.totalFeeSpent}>
       <AleoCredit number={data.fee} suffix />
     </DetailLine>
   </div>
@@ -555,20 +556,20 @@
   </div>
   {#if data.committee_state}
     <div class="group">
-      <DetailLine label="Credits staked">
+      <DetailLine label="Credits staked" tooltip={tooltips.validator.tokensStakedToValidator}>
         <AleoCredit number={data.delegated} suffix />
       </DetailLine>
-      <DetailLine label="Open for staking">
+      <DetailLine label="Open for staking" tooltip={tooltips.validator.openForStaking}>
         {#if data.committee_state.is_open}
           Yes
         {:else}
           No
         {/if}
       </DetailLine>
-      <DetailLine label="Commission">
+      <DetailLine label="Commission" tooltip={tooltips.validator.commission}>
         {data.committee_state.commission}%
       </DetailLine>
-      <DetailLine label="Uptime in last 24 hours">
+      <DetailLine label="Uptime in last 24 hours" tooltip={tooltips.validator.uptime}>
         <Number number={data.uptime * 100} unit="%" precision={2} />
       </DetailLine>
     </div>
@@ -586,7 +587,7 @@
     </div>
   {/if}
   <div class="group">
-    <DetailLine label="Programs deployed">
+    <DetailLine label="Programs deployed" tooltip={tooltips.address.programsDeployed}>
       <Number number={data.programs.length} />
     </DetailLine>
   </div>
@@ -594,10 +595,10 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Accepted puzzle solutions">
+    <DetailLine label="Accepted puzzle solutions" tooltip={tooltips.address.acceptedPuzzleSolutions}>
       <Number number={data.total_solutions} />
     </DetailLine>
-    <DetailLine label="Lifetime puzzle reward">
+    <DetailLine label="Lifetime puzzle reward" tooltip={tooltips.address.lifetimePuzzleReward}>
       <AleoCredit number={data.total_rewards} suffix />
     </DetailLine>
   </div>

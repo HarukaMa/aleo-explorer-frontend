@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte"
   import Seo from "$lib/components/Seo.svelte"
   import { StatusClass } from "$lib/types"
   import Number from "$lib/components/Number.svelte"
@@ -17,9 +18,27 @@
   import PageHeader from "$lib/components/PageHeader.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
   import Callout from "$lib/components/Callout.svelte"
+  import { tooltips } from "$lib/tooltips"
+  import Decimal from "decimal.js"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
+
+  let aleoPrice = $state(0)
+  let priceChange24h = $state(0)
+
+  onMount(async () => {
+    try {
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=aleo&vs_currencies=usd&include_24hr_change=true",
+      )
+      const data = await response.json()
+      aleoPrice = data.aleo.usd
+      priceChange24h = data.aleo.usd_24h_change
+    } catch (error) {
+      console.error("Failed to fetch ALEO price:", error)
+    }
+  })
 
   $inspect(data)
 
@@ -202,7 +221,6 @@
       cell: (info) => renderComponent(SnippetWrapper, { snippet: status_column, value: info.getValue() }),
     },
   ]
-
 </script>
 
 <style lang="scss">
@@ -331,6 +349,45 @@
       background-image: $lock-icon;
     }
   }
+
+  .transfer-type-badge {
+    height: 1.25rem;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    justify-content: center;
+    padding: 2px 0.75rem;
+    border: 1px solid $grey-100;
+    border-radius: 100px;
+  }
+
+  .transfer-amount-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .amount-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .aleo-logo {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .amount-secondary {
+    font-size: 14px;
+    color: $grey-600;
+    margin-top: 0.25rem;
+    line-height: 1;
+  }
 </style>
 
 <Seo
@@ -387,11 +444,17 @@
     <div class="group">
       <p class="group-title">Transfer details</p>
       <div class="group-content">
-        <DetailLine tooltip="The amount of ALEO credits transferred" label="Transfer amount">
-          <strong class="aleo-token">
-            <AleoToken number={transferDetails.amount} suffix />
-          </strong>
-        </DetailLine>
+        <div class="transfer-amount-display">
+          <div class="amount-primary">
+            {new Decimal(transferDetails.amount).div(1000000).toFixed(2)}
+            <img src="/src/lib/assets/images/icons/aleo-logo.svg" class="aleo-logo" alt="Logo" />
+          </div>
+          {#if aleoPrice > 0}
+            <div class="amount-secondary">
+              ~${(new Decimal(transferDetails.amount).div(1000000).toNumber() * aleoPrice).toFixed(2)}
+            </div>
+          {/if}
+        </div>
         <div class="group-separator"></div>
         <DetailLine tooltip="The sender address" label="From">
           {#if transferDetails.from === null}
@@ -411,6 +474,14 @@
             </Link>
           {/if}
         </DetailLine>
+        <div class="group-separator"></div>
+        <DetailLine tooltip={tooltips.transaction.transferType} label="Transfer Type">
+          <div class="transfer-type-badge">
+            {transferDetails.from === null ? "Private" : "Public"} to {transferDetails.to === null
+              ? "Private"
+              : "Public"}
+          </div>
+        </DetailLine>
       </div>
     </div>
   {/if}
@@ -418,16 +489,16 @@
   <div class="group">
     <p class="group-title">General information</p>
     <div class="group-content">
-      <DetailLine label="Transaction ID" tooltip="Tooltip">
+      <DetailLine label="Transaction ID" tooltip={tooltips.transaction.transactionId}>
         <span class="mono">{data.tx_id}</span>
       </DetailLine>
       {#if state === "Rejected"}
-        <DetailLine tooltip="Tooltip" label="Original transaction ID">
+        <DetailLine label="Original transaction ID">
           <span class="mono">{data.original_txid}</span>
         </DetailLine>
       {/if}
       {#if state !== "Unconfirmed"}
-        <DetailLine tooltip="Tooltip" label="Block">
+        <DetailLine tooltip={tooltips.transaction.block} label="Block">
           {#if data.first_seen < data.block_confirm_time}
             <div class="column">
               <Link href="/block/{data.height}">
@@ -450,14 +521,14 @@
             </Link>
           {/if}
         </DetailLine>
-        <DetailLine tooltip="Tooltip" label="Timestamp">
+        <DetailLine tooltip={tooltips.transaction.timestamp} label="Timestamp">
           {format_time(new Date(data.block_timestamp * 1000), TimeMode.Relative)}
           <!-- @formatter:off -->
           (<Time no_relative timestamp={data.block_timestamp} />)
           <!-- @formatter:on -->
         </DetailLine>
       {:else}
-        <DetailLine tooltip="Tooltip" label="First seen">
+        <DetailLine label="First seen">
           {format_time(new Date(data.first_seen * 1000), TimeMode.Relative)}
           <!-- @formatter:off -->
           (<Time no_relative timestamp={data.first_seen} />)
@@ -465,7 +536,7 @@
         </DetailLine>
       {/if}
       <div class="group-separator"></div>
-      <DetailLine label="Status" tooltip="Tooltip">
+      <DetailLine label="Status" tooltip={tooltips.transaction.status}>
         {#if state === "Accepted"}
           <Status cls={StatusClass.Success}>Accepted</Status>
         {:else if state === "Rejected"}
@@ -480,11 +551,11 @@
         {/if}
       </DetailLine>
       <div class="group-separator"></div>
-      <DetailLine label="Type" tooltip="Tooltip">
+      <DetailLine label="Type" tooltip={tooltips.transaction.type}>
         {type}
       </DetailLine>
       {#if type === "Deploy"}
-        <DetailLine tooltip="Tooltip" label="Program">
+        <DetailLine label="Program">
           {#if state === "Accepted"}
             <Link href="/program/{data.confirmed_transaction.transaction.deployment.program.id}">
               <span class="mono">{data.confirmed_transaction.transaction.deployment.program.id}</span>
@@ -497,7 +568,7 @@
             Not implemented
           {/if}
         </DetailLine>
-        <DetailLine tooltip="Tooltip" label="Edition">
+        <DetailLine label="Edition">
           {#if state === "Accepted"}
             {data.confirmed_transaction.transaction.deployment.edition}
           {:else if state === "Rejected"}
@@ -508,28 +579,28 @@
         </DetailLine>
       {/if}
       {#if state === "Accepted" || state === "Rejected"}
-        <DetailLine tooltip="Tooltip" label="Index">
+        <DetailLine tooltip={tooltips.transaction.index} label="Index">
           {data.confirmed_transaction.index}
         </DetailLine>
       {/if}
       <div class="group-separator"></div>
       {#if fee}
-        <DetailLine tooltip="Tooltip" label="Total fee spent">
+        <DetailLine tooltip={tooltips.transaction.totalFeeSpent} label="Total fee spent">
           <AleoToken number={fee.amount[0] + fee.amount[1]} suffix />
         </DetailLine>
         <div class="group-separator"></div>
-        <DetailLine tooltip="Tooltip" label="Breakdown">
+        <DetailLine tooltip={tooltips.transaction.breakdown} label="Breakdown">
           <div class="fee-breakdown">
             <FeeBreakdown amount={fee.amount[0]} label="Base fee"></FeeBreakdown>
             <FeeBreakdown amount={fee.amount[1]} label="Priority fee"></FeeBreakdown>
           </div>
         </DetailLine>
       {:else}
-        <DetailLine tooltip="Tooltip" label="Total fee spent">
+        <DetailLine tooltip={tooltips.transaction.totalFeeSpent} label="Total fee spent">
           <AleoToken number="10000" suffix />
         </DetailLine>
         <div class="group-separator"></div>
-        <DetailLine tooltip="Tooltip" label="Breakdown">
+        <DetailLine tooltip={tooltips.transaction.breakdown} label="Breakdown">
           <div class="fee-breakdown">
             <FeeBreakdown amount="10000" label="Base fee"></FeeBreakdown>
             <FeeBreakdown amount="0" label="Priority fee"></FeeBreakdown>

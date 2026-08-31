@@ -77,6 +77,7 @@
   svg {
     margin-top: 2.5rem;
     max-width: 790px;
+    width: 100%;
   }
 
   .section-title {
@@ -222,6 +223,8 @@
   .success-card {
     display: flex;
     width: 100%;
+    flex: 1;
+    flex-shrink: 0;
     min-height: 490px;
     justify-content: center;
     padding: 2.5rem 0;
@@ -266,6 +269,12 @@
   .success-card-description {
     line-height: 1.25rem;
     text-align: center;
+  }
+
+  @media (max-width: 767px) {
+    .background-image {
+      display: none;
+    }
   }
 </style>
 
@@ -354,7 +363,14 @@
       </form>
     {/if}
   </div>
-  <svg width="790" height="495" viewBox="0 0 790 495" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    width="790"
+    class="background-image"
+    height="495"
+    viewBox="0 0 790 495"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <g clip-path="url(#clip0_7424_19769)">
       <rect width="790" height="494.781" fill="white"></rect>
       <path opacity="0.05" d="M268.672 -293.57L-134.894 930.188" stroke="black" stroke-width="2"></path>

@@ -23,7 +23,6 @@
   .header {
     display: flex;
     flex-direction: row;
-    margin: 0 -100%;
     margin: 0 calc(50% - 50vw + 1.5rem);
     background-color: $blue-50;
     padding: 1.5rem 1.5rem;
@@ -36,6 +35,10 @@
     > * {
       max-width: 1620px;
       width: 100%;
+    }
+
+    @media (max-width: 767px) {
+      margin: 0 0;
     }
 
     .flex {
