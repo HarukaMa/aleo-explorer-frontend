@@ -243,3 +243,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .wrangler
+
+.omp/mcp.json
+.omp/cache/
