@@ -1,36 +1,25 @@
 <script lang="ts">
-  import type { Component } from "svelte"
   import type { ButtonLinkClass } from "$lib/types"
   import type { MouseEventHandler } from "svelte/elements"
 
   interface Button {
     href?: string
-    action?: MouseEventHandler<any>
+    onclick?: MouseEventHandler<HTMLButtonElement>
     cls: ButtonLinkClass
     disabled?: boolean
-    Content?: string | Component<any>
+    label: string
     icon?: string
     small?: boolean
+    type?: "button" | "submit"
   }
 
-  let { href, action, cls, disabled = false, Content = "", icon, small = false, ...props }: Button = $props()
-
-  let background_image: string | undefined = $state(undefined)
-  let size: string | undefined = $state(undefined)
-  let background_size: string | undefined = $state(undefined)
-  if (icon) {
-    background_image = `var(--${icon})`
-    size = "32px"
-    background_size = "20px"
-  }
-
-  let button_type: "submit" | "button" = href ? "submit" : "button"
+  let { href, onclick, cls, disabled = false, label, icon, small = false, type = "button" }: Button = $props()
 </script>
 
 <style lang="scss">
   @use "/static/styles/variables" as *;
 
-  button {
+  .button {
     all: unset;
     box-sizing: border-box;
     padding: 0.5rem 1rem;
@@ -45,6 +34,17 @@
     cursor: pointer;
     background-repeat: no-repeat;
     background-position: center;
+
+    &:focus-visible {
+      outline: 2px solid $blue-500;
+      outline-offset: 2px;
+    }
+
+    &.icon {
+      width: 32px;
+      height: 32px;
+      background-size: 20px;
+    }
 
     &.small {
       font-weight: normal;
@@ -100,23 +100,19 @@
   }
 </style>
 
-<form>
+{#if href}
+  <a class="button {cls}" class:small {href}>{label}</a>
+{:else}
   <button
-    class={cls}
+    class="button {cls}"
+    class:icon={icon !== undefined}
     class:small
     {disabled}
-    formaction={href}
-    onclick={action}
-    style:background-image={background_image}
-    style:background-size={background_size}
-    style:height={size}
-    style:width={size}
-    type={button_type}
+    {onclick}
+    style:background-image={icon ? `var(--${icon})` : undefined}
+    {type}
+    aria-label={icon ? label : undefined}
   >
-    {#if typeof Content === "string"}
-      {Content}
-    {:else}
-      <Content {...props} />
-    {/if}
+    {#if !icon}{label}{/if}
   </button>
-</form>
+{/if}

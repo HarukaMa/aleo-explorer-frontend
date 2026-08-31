@@ -326,7 +326,7 @@
       <p class="error-message">{error_message}</p>
     {/if}
 
-    <Button cls={ButtonLinkClass.Primary} Content="Estimate Results" action={calculate} />
+    <Button cls={ButtonLinkClass.Primary} label="Estimate Results" onclick={calculate} />
   </div>
 
   <div class="results-section">

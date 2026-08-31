@@ -5,11 +5,7 @@
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Time from "$lib/components/Time.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
-  import {
-    type ColumnDef,
-    type PaginationState,
-    renderComponent,
-  } from "@tanstack/svelte-table"
+  import { type ColumnDef, type PaginationState, renderComponent } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
   import { Highlight } from "svelte-rune-highlight"
   import aleo from "$lib/hljs.aleo.js"
@@ -89,8 +85,8 @@
   let paginated_transition_data = $derived(
     transition_table_data.slice(
       pagination.pageIndex * pagination.pageSize,
-      (pagination.pageIndex + 1) * pagination.pageSize
-    )
+      (pagination.pageIndex + 1) * pagination.pageSize,
+    ),
   )
 </script>
 
@@ -398,7 +394,7 @@
       <div class="source-code">
         <div class="source-code-header">
           <span>Program Source Code (Aleo Instruction)</span>
-          <Button cls={ButtonLinkClass.Ghost} disabled Content="Upload Leo Source" />
+          <Button cls={ButtonLinkClass.Ghost} disabled label="Upload Leo Source" />
         </div>
         <div class="details-line"></div>
         <div class="source-code-body">

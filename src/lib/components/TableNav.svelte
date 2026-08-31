@@ -33,18 +33,23 @@
 
 <div class="table-nav">
   {#if page !== 1}
-    <Button cls={ButtonLinkClass.Ghost} action={() => set_page(1)} icon="first-page-icon" />
-    <Button cls={ButtonLinkClass.Ghost} action={() => set_page(page - 1)} icon="prev-page-icon" />
+    <Button cls={ButtonLinkClass.Ghost} onclick={() => set_page(1)} icon="first-page-icon" label="First page" />
+    <Button
+      cls={ButtonLinkClass.Ghost}
+      onclick={() => set_page(page - 1)}
+      icon="prev-page-icon"
+      label="Previous page"
+    />
   {/if}
   {#each page_options as option}
     {#if option === page}
-      <Button cls={ButtonLinkClass.Secondary} action={() => null} Content={option.toString()} small={true} />
+      <Button cls={ButtonLinkClass.Secondary} label={option.toString()} small />
     {:else}
-      <Button cls={ButtonLinkClass.Ghost} action={() => set_page(option)} Content={option.toString()} small={true} />
+      <Button cls={ButtonLinkClass.Ghost} onclick={() => set_page(option)} label={option.toString()} small />
     {/if}
   {/each}
   {#if page !== total_pages}
-    <Button cls={ButtonLinkClass.Ghost} action={() => set_page(page + 1)} icon="next-page-icon" />
-    <Button cls={ButtonLinkClass.Ghost} action={() => set_page(total_pages)} icon="last-page-icon" />
+    <Button cls={ButtonLinkClass.Ghost} onclick={() => set_page(page + 1)} icon="next-page-icon" label="Next page" />
+    <Button cls={ButtonLinkClass.Ghost} onclick={() => set_page(total_pages)} icon="last-page-icon" label="Last page" />
   {/if}
 </div>

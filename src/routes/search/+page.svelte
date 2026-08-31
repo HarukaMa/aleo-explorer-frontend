@@ -6,7 +6,7 @@
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
   import Link from "$lib/components/Link.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
-    import TableContainer from "$lib/components/TableContainer.svelte"
+  import TableContainer from "$lib/components/TableContainer.svelte"
 
   let { data: server_data } = $props()
   let { query, result, error } = $derived(server_data)
@@ -119,7 +119,6 @@
     ]
   })
 
-
   let program_table_data: TableItem[] = $derived.by(() => {
     if (result.type !== "ans_program") {
       return []
@@ -140,7 +139,6 @@
       },
     ]
   })
-
 </script>
 
 <style lang="scss">
@@ -225,7 +223,7 @@
       <div class="spacer headers-small">{error_title}</div>
       <div class="error-message">{error_message}</div>
       <div class="spacer"></div>
-      <Button cls={ButtonLinkClass.Primary} href="/" Content="Go to homepage"></Button>
+      <Button cls={ButtonLinkClass.Primary} href="/" label="Go to homepage" />
     </div>
   </div>
 {:else}

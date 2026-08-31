@@ -15,7 +15,7 @@
   let result: string | null | undefined = $state(undefined)
   let error: string | undefined = $state(undefined)
 
-  async function search(e) {
+  async function search(e: Event) {
     e.preventDefault()
     const input = document.getElementById(`mapping-${program}-${mapping}`) as HTMLInputElement
     const value = input.value
@@ -32,7 +32,7 @@
         result = undefined
       }
     } catch (e) {
-      error = e.message
+      error = e instanceof Error ? e.message : String(e)
       result = undefined
     }
   }
@@ -119,7 +119,7 @@
           type="text"
         />
       </form>
-      <Button Content="Read" action={search} cls={ButtonLinkClass.Primary} disabled={disabled || undefined} />
+      <Button cls={ButtonLinkClass.Primary} {disabled} label="Read" onclick={search} />
     </div>
     <span class="dim mono">{type}</span>
   </div>

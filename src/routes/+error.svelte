@@ -49,5 +49,5 @@
     {page.error?.message}
   </div>
 
-  <Button Content="Go to homepage" cls={ButtonLinkClass.Primary} href="/"></Button>
+  <Button cls={ButtonLinkClass.Primary} href="/" label="Go to homepage" />
 </div>

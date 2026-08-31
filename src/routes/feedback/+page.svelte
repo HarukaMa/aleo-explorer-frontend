@@ -356,9 +356,9 @@
 
         <Button
           cls={ButtonLinkClass.Primary}
-          Content={isSubmitting ? "Submitting..." : "Submit feedback"}
+          label={isSubmitting ? "Submitting..." : "Submit feedback"}
           disabled={isSubmitting}
-          action={handleSubmit}
+          type="submit"
         />
       </form>
     {/if}

@@ -10,7 +10,7 @@
   import Time from "$lib/components/Time.svelte"
   import Link from "$lib/components/Link.svelte"
   import { browser } from "$app/environment"
-  import ButtonLink from "$lib/components/Button.svelte"
+  import Button from "$lib/components/Button.svelte"
   import { type BlockList, ButtonLinkClass } from "$lib/types"
   import Decimal from "decimal.js"
   import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
@@ -266,5 +266,5 @@
 </div>
 
 <div class="spacer">
-  <ButtonLink Content="See all" cls={ButtonLinkClass.Secondary} href="/blocks" />
+  <Button cls={ButtonLinkClass.Secondary} href="/blocks" label="See all" />
 </div>
