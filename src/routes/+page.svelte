@@ -3,7 +3,7 @@
   import home_bg from "$lib/assets/images/home_bg.svg"
   import SearchBar from "$lib/components/SearchBar.svelte"
   import Number from "$lib/components/Number.svelte"
-  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import { renderComponent, renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
   import Epoch from "$lib/components/Epoch.svelte"
   import AleoCredit from "$lib/components/AleoToken.svelte"
@@ -13,7 +13,7 @@
   import Button from "$lib/components/Button.svelte"
   import { type BlockList, ButtonLinkClass } from "$lib/types"
   import Decimal from "decimal.js"
-  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import { createAppColumnHelper } from "$lib/table"
   import TableContainer from "$lib/components/TableContainer.svelte"
 
   let { data } = $props()
@@ -66,52 +66,41 @@
     })),
   )
 
-  const columns: ColumnDef<BlockList, any>[] = [
-    {
-      accessorKey: "height",
+  const column = createAppColumnHelper<BlockList>()
+  const columns = column.columns([
+    column.accessor("height", {
       header: "Height",
-      cell: (info) =>
-        renderComponent(SnippetWrapper, {
-          snippet: height_column,
-          value: info.getValue(),
-        }),
-    },
-    {
-      accessorKey: "timestamp",
+      cell: (info) => renderSnippet(height_column, info.getValue()),
+    }),
+    column.accessor("timestamp", {
       header: "Timestamp",
       cell: (info) => renderComponent(Time, { timestamp: info.getValue() }),
-    },
-    {
-      accessorKey: "transactions",
+    }),
+    column.accessor("transactions", {
       header: "Transactions",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "proof_target",
+    }),
+    column.accessor("proof_target", {
       header: "Proof target",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "coinbase_target",
+    }),
+    column.accessor("coinbase_target", {
       header: "Coinbase target",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "block_reward",
+    }),
+    column.accessor("block_reward", {
       header: "Block reward",
       cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "puzzle_reward",
+    }),
+    column.accessor("puzzle_reward", {
       header: "Puzzle reward",
       cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "puzzle_solutions",
+    }),
+    column.accessor("puzzle_solutions", {
       header: "Puzzle solutions",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-  ]
+    }),
+  ])
 
   if (browser) {
     let requesting = false
@@ -227,7 +216,7 @@
   description="AleoScan is a powerful Aleo blockchain explorer. Track transactions, blocks, validators, programs, and smart contracts in real-time."
 />
 
-{#snippet height_column(value)}
+{#snippet height_column(value: number)}
   <Link href="/block/{value}">
     <Number number={value} />
   </Link>

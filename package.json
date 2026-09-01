@@ -42,7 +42,7 @@
         "@fontsource-variable/inconsolata": "^5.2.8",
         "@fontsource-variable/montserrat": "^5.2.8",
         "@fontsource-variable/open-sans": "^5.2.7",
-        "@tanstack/svelte-table": "alpha",
+        "@tanstack/svelte-table": "9.2.4",
         "decimal.js": "^10.6.0",
         "svelte-rune-highlight": "^0.5.15"
     }

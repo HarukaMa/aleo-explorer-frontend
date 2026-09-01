@@ -5,11 +5,11 @@
   import DetailLine from "$lib/components/DetailLine.svelte"
   import Time from "$lib/components/Time.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
-  import { type ColumnDef, type PaginationState, renderComponent } from "@tanstack/svelte-table"
+  import { type PaginationState, renderComponent, renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
   import { Highlight } from "svelte-rune-highlight"
   import aleo from "$lib/hljs.aleo.js"
-  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import { createAppColumnHelper } from "$lib/table"
   import Link from "$lib/components/Link.svelte"
   import Status from "$lib/components/Status.svelte"
   import UIAddress from "$lib/components/UIAddress.svelte"
@@ -25,45 +25,39 @@
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
 
-  $inspect(data)
-
   type TransitionList = {
     height: number
     timestamp: number
-    transaction_id: string
+    transition_id: string
     function_name: string
     type: string
   }
 
   let transition_table_data: TransitionList[] = $derived(data.recent_calls)
 
-  const transition_table_columns: ColumnDef<TransitionList, any>[] = [
-    {
-      accessorKey: "height",
+  const transition_column = createAppColumnHelper<TransitionList>()
+  const transition_table_columns = transition_column.columns([
+    transition_column.accessor("height", {
       header: "Height",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: height_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "timestamp",
+      cell: (info) => renderSnippet(height_column, info.getValue()),
+    }),
+    transition_column.accessor("timestamp", {
       header: "Timestamp",
       cell: (info) => renderComponent(Time, { timestamp: info.getValue() }),
-    },
-    {
-      accessorKey: "transition_id",
+    }),
+    transition_column.accessor("transition_id", {
       header: "Transition ID",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: transition_id_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "function_name",
+      cell: (info) => renderSnippet(transition_id_column, info.getValue()),
+    }),
+    transition_column.accessor("function_name", {
       header: "Function called",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: function_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "type",
+      cell: (info) => renderSnippet(function_column, info.getValue()),
+    }),
+    transition_column.accessor("type", {
       header: "Status",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: status_column, value: info.getValue() }),
-    },
-  ]
+      cell: (info) => renderSnippet(status_column, info.getValue()),
+    }),
+  ])
 
   let pagination: PaginationState = $state({
     pageIndex: 0,
@@ -219,23 +213,23 @@
   description="Explore Aleo program {data.program_id}. View contract execution, function calls, and transaction logs."
 />
 
-{#snippet transition_id_column(value)}
+{#snippet transition_id_column(value: string)}
   <div class="mono ellipsis">
     <Link href="/transition/{value}" content={value}></Link>
   </div>
 {/snippet}
 
-{#snippet height_column(value)}
+{#snippet height_column(value: number)}
   <Link href="/block/{value}">
     <Number number={value} />
   </Link>
 {/snippet}
 
-{#snippet function_column(value)}
+{#snippet function_column(value: string)}
   <div class="mono">{value}</div>
 {/snippet}
 
-{#snippet status_column(value)}
+{#snippet status_column(value: string)}
   {#if value.startsWith("Accepted")}
     <Status cls={StatusClass.Success}>Accepted</Status>
   {:else if value.startsWith("Rejected")}

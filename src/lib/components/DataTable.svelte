@@ -1,9 +1,10 @@
-<script lang="ts" generics="TData">
-  import { type ColumnDef, createTable, FlexRender, getCoreRowModel } from "@tanstack/svelte-table"
+<script generics="TData extends RowData" lang="ts">
+  import { FlexRender } from "@tanstack/svelte-table"
+  import { createAppTable, type DataTableColumns } from "$lib/table"
   import type { Snippet } from "svelte"
 
   interface Props {
-    columns: ColumnDef<TData, any>[]
+    columns: DataTableColumns<TData>
     data: TData[]
     isLoading?: boolean
     isError?: boolean
@@ -24,14 +25,13 @@
     class: className,
   }: Props = $props()
 
-  const table = createTable<TData>({
+  const table = createAppTable<TData>({
     get data() {
       return data
     },
     get columns() {
       return columns
     },
-    getCoreRowModel: getCoreRowModel(),
   })
 
   let rows = $derived(table.getRowModel().rows)
@@ -58,30 +58,30 @@
 {:else}
   <div class="table-container">
     <table class={className}>
-    <thead>
+      <thead>
       {#each table.getHeaderGroups() as header_group}
         <tr>
           {#each header_group.headers as header}
             <th>
               {#if !header.isPlaceholder}
-                <FlexRender content={header.column.columnDef.header} context={header.getContext()} />
+                <FlexRender {header} />
               {/if}
             </th>
           {/each}
         </tr>
       {/each}
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
       {#each rows as row}
         <tr>
-          {#each row.getVisibleCells() as cell}
+          {#each row.getAllCells() as cell}
             <td>
-              <FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+              <FlexRender {cell} />
             </td>
           {/each}
         </tr>
       {/each}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
   </div>
 {/if}

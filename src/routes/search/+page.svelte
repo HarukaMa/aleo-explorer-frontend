@@ -1,17 +1,15 @@
 <script lang="ts">
   import { ButtonLinkClass, SearchError } from "$lib/types"
   import Button from "$lib/components/Button.svelte"
-  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import { renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
-  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import { createAppColumnHelper } from "$lib/table"
   import Link from "$lib/components/Link.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
 
   let { data: server_data } = $props()
   let { query, result, error } = $derived(server_data)
-
-  $inspect({ query, result, error })
 
   let search_type = $derived.by(() => {
     if (result.type === "blocks") {
@@ -68,6 +66,7 @@
   type TableItem = {
     value: string
   }
+  const column = createAppColumnHelper<TableItem>()
 
   let table_data: TableItem[] = $derived.by(() => {
     const data = () => {
@@ -90,7 +89,7 @@
     return data().map((value: string) => ({ value }))
   })
 
-  let columns: ColumnDef<TableItem, any>[] = $derived.by(() => {
+  let columns = $derived.by(() => {
     let header = ""
 
     if (result.type === "blocks") {
@@ -106,17 +105,12 @@
     } else if (result.type === "ans_program") {
       header = "ANS"
     }
-    return [
-      {
-        accessorKey: "value",
-        header: header,
-        cell: (info) =>
-          renderComponent(SnippetWrapper, {
-            snippet: data_column,
-            value: info.getValue(),
-          }),
-      },
-    ]
+    return column.columns([
+      column.accessor("value", {
+        header,
+        cell: (info) => renderSnippet(data_column, info.getValue()),
+      }),
+    ])
   })
 
   let program_table_data: TableItem[] = $derived.by(() => {
@@ -126,19 +120,12 @@
     return result.programs.map((value: string) => ({ value }))
   })
 
-  let program_columns: ColumnDef<TableItem, any>[] = $derived.by(() => {
-    return [
-      {
-        accessorKey: "value",
-        header: "Program",
-        cell: (info) =>
-          renderComponent(SnippetWrapper, {
-            snippet: data_column,
-            value: info.getValue(),
-          }),
-      },
-    ]
-  })
+  const program_columns = column.columns([
+    column.accessor("value", {
+      header: "Program",
+      cell: (info) => renderSnippet(data_column, info.getValue()),
+    }),
+  ])
 </script>
 
 <style lang="scss">
@@ -210,7 +197,7 @@
   <PageHeader content={`Search results (${search_type}) - ${query}`} />
 {/if}
 
-{#snippet data_column(value)}
+{#snippet data_column(value: string)}
   <span class="mono"><Link href="{result_link_part}{value}">{value}</Link></span>
 {/snippet}
 

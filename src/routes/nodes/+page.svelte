@@ -1,9 +1,9 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
   import UIAddress from "$lib/components/UIAddress.svelte"
-  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import { renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
-  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import { createAppColumnHelper } from "$lib/table"
   import Number from "$lib/components/Number.svelte"
   import Link from "$lib/components/Link.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
@@ -11,8 +11,6 @@
   import Callout from "$lib/components/Callout.svelte"
 
   let { data } = $props()
-
-  $inspect(data)
 
   let header_data = $derived([
     { name: "Known Nodes", value: data.validators + data.clients + data.provers + data.unknowns },
@@ -23,11 +21,11 @@
   ])
 
   type Node = {
-    ip: string
-    type: string
-    address: string
-    height: number
-    peers: number
+    ip: [string, string]
+    type: number
+    address: string | null
+    height: number | null
+    peers: number | null
     last_update: string
   }
 
@@ -42,39 +40,33 @@
     })),
   )
 
-  const columns: ColumnDef<Node, any>[] = [
-    {
-      accessorKey: "ip",
+  const column = createAppColumnHelper<Node>()
+  const columns = column.columns([
+    column.accessor("ip", {
       header: "IP address",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: ip_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "type",
+      cell: (info) => renderSnippet(ip_column, info.getValue()),
+    }),
+    column.accessor("type", {
       header: "Type",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: type_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "address",
+      cell: (info) => renderSnippet(type_column, info.getValue()),
+    }),
+    column.accessor("address", {
       header: "Address",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "height",
+      cell: (info) => renderSnippet(address_column, info.getValue()),
+    }),
+    column.accessor("height", {
       header: "Height",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: number_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "peers",
+      cell: (info) => renderSnippet(number_column, info.getValue()),
+    }),
+    column.accessor("peers", {
       header: "Peers",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: number_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "last_update",
+      cell: (info) => renderSnippet(number_column, info.getValue()),
+    }),
+    column.accessor("last_update", {
       header: "Last update",
       cell: (info) => info.getValue(),
-    },
-  ]
-
+    }),
+  ])
 </script>
 
 <style lang="scss">
@@ -191,7 +183,7 @@
   </div>
 </div>
 
-{#snippet ip_column(value)}
+{#snippet ip_column(value: [string, string])}
   <div class="ip-cell">
     {#if value[1] === "outgoing"}
       <div class="outgoing-icon"></div>
@@ -204,7 +196,7 @@
   </div>
 {/snippet}
 
-{#snippet type_column(value)}
+{#snippet type_column(value: number)}
   {#if value === 0}
     Client
   {:else if value === 1}
@@ -216,7 +208,7 @@
   {/if}
 {/snippet}
 
-{#snippet address_column(value)}
+{#snippet address_column(value: string | null)}
   {#if !value}
     -
   {:else}
@@ -226,7 +218,7 @@
   {/if}
 {/snippet}
 
-{#snippet number_column(value)}
+{#snippet number_column(value: number | null)}
   {#if !value}
     -
   {:else}

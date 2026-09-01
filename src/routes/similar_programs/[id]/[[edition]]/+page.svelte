@@ -1,36 +1,26 @@
 <script lang="ts">
-  import {
-    type ColumnDef,
-    createTable,
-    getCoreRowModel,
-    type PaginationState,
-    renderComponent,
-    type Updater,
-  } from "@tanstack/svelte-table"
+  import { renderComponent, renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
   import Link from "$lib/components/Link.svelte"
   import Number from "$lib/components/Number.svelte"
   import TableNav from "$lib/components/TableNav.svelte"
-  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import { createAppColumnHelper } from "$lib/table"
   import PageHeader from "$lib/components/PageHeader.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
   import Callout from "$lib/components/Callout.svelte"
 
   let { data } = $props()
 
-  console.log(data.programs)
-
   let programs = $state(data.programs.programs)
-  let total_programs = $state(data.programs.total_programs)
   let total_pages = $state(data.programs.total_pages)
   let id = $state(data.id)
   let edition = $state(data.edition)
 
   type ProgramList = {
     id: string
-    height: number
+    height: number | null
     called: number
-    transaction_id: string
+    transaction_id: string | null
   }
 
   let table_data: ProgramList[] = $derived(
@@ -42,84 +32,37 @@
     })),
   )
 
-  const columns: ColumnDef<ProgramList, any>[] = [
-    {
-      accessorKey: "id",
+  const column = createAppColumnHelper<ProgramList>()
+  const columns = column.columns([
+    column.accessor("id", {
       header: "Program ID",
-      cell: (info) =>
-        renderComponent(SnippetWrapper, {
-          snippet: id_column,
-          value: info.getValue(),
-        }),
-    },
-    {
-      accessorKey: "height",
+      cell: (info) => renderSnippet(id_column, info.getValue()),
+    }),
+    column.accessor("height", {
       header: "Deploy height",
-      cell: (info) =>
-        renderComponent(SnippetWrapper, {
-          snippet: height_column,
-          value: info.getValue(),
-        }),
-    },
-    {
-      accessorKey: "transaction_id",
+      cell: (info) => renderSnippet(height_column, info.getValue()),
+    }),
+    column.accessor("transaction_id", {
       header: "Deployment Transaction ID",
-      cell: (info) =>
-        renderComponent(SnippetWrapper, {
-          snippet: txid_column,
-          value: info.getValue(),
-        }),
-    },
-    {
-      accessorKey: "called",
+      cell: (info) => renderSnippet(txid_column, info.getValue()),
+    }),
+    column.accessor("called", {
       header: "Times called",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-  ]
+    }),
+  ])
 
-  let pagination: PaginationState = $state({
-    pageIndex: data.page - 1,
-    pageSize: 20,
-  })
-
-  const table = createTable<ProgramList>({
-    get data() {
-      return table_data
-    },
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
-    get rowCount() {
-      return total_programs
-    },
-    get pageCount() {
-      return total_pages
-    },
-    get state() {
-      return {
-        pagination,
-      }
-    },
-    onPaginationChange: onPaginationChange,
-  })
-
-  async function onPaginationChange(updaterOrValue: Updater<PaginationState>) {
-    if (updaterOrValue instanceof Function) {
-      updaterOrValue = updaterOrValue(pagination)
-    }
-    pagination = updaterOrValue
-  }
+  let current_page = $state(+data.page)
 
   async function set_page(page: number) {
-    table.setPageIndex(page - 1)
     const response = await fetch(`/api/similar_programs/${id}/${edition || 0}?p=${page}`)
     if (!response.ok) {
       throw new Error("Failed to fetch data")
     }
     const data = await response.json()
     programs = data.programs
-    total_programs = data.total_programs
     total_pages = data.total_pages
+    current_page = page
 
     const current_params = new URLSearchParams(location.search)
     current_params.set("page", page.toString())
@@ -180,13 +123,13 @@
   }
 </style>
 
-{#snippet id_column(value)}
+{#snippet id_column(value: string)}
   <span class="mono ellipsis">
     <Link href="/program/{value}">{value}</Link>
   </span>
 {/snippet}
 
-{#snippet txid_column(value)}
+{#snippet txid_column(value: string | null)}
   {#if value === null}
     -
   {:else}
@@ -196,7 +139,7 @@
   {/if}
 {/snippet}
 
-{#snippet height_column(value)}
+{#snippet height_column(value: number | null)}
   {#if value === null}
     -
   {:else}
@@ -216,6 +159,6 @@
   </DataTable>
 </TableContainer>
 
-{#key pagination}
-  <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
+{#key current_page}
+  <TableNav page={current_page} {set_page} {total_pages} />
 {/key}

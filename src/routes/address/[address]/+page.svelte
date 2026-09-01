@@ -6,9 +6,9 @@
   import UIAddress from "$lib/components/UIAddress.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
   import Decimal from "decimal.js"
-  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import { renderComponent, renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
-  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import { createAppColumnHelper } from "$lib/table"
   import Link from "$lib/components/Link.svelte"
   import Callout from "$lib/components/Callout.svelte"
   import Time from "$lib/components/Time.svelte"
@@ -19,8 +19,6 @@
 
   let { data: server_data } = $props()
   let { data, address } = $derived(server_data)
-
-  $inspect(data)
 
   let resolved = $derived(data.resolved_addresses[address])
 
@@ -50,32 +48,25 @@
     }),
   )
 
-  const transition_table_columns: ColumnDef<TransitionList, any>[] = [
-    {
-      accessorKey: "height",
+  const transition_column = createAppColumnHelper<TransitionList>()
+  const transition_table_columns = transition_column.columns([
+    transition_column.accessor("height", {
       header: "In block",
-      cell: (info) =>
-        renderComponent(SnippetWrapper, {
-          snippet: height_column,
-          value: info.getValue(),
-        }),
-    },
-    {
-      accessorKey: "timestamp",
+      cell: (info) => renderSnippet(height_column, info.getValue()),
+    }),
+    transition_column.accessor("timestamp", {
       header: "Timestamp",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: timestamp_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "transition_id",
+      cell: (info) => renderSnippet(timestamp_column, info.getValue()),
+    }),
+    transition_column.accessor("transition_id", {
       header: "Transition ID",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: transition_id_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "action",
+      cell: (info) => renderSnippet(transition_id_column, info.getValue()),
+    }),
+    transition_column.accessor("action", {
       header: "Function / Program",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
-    },
-  ]
+      cell: (info) => renderSnippet(action_column, info.getValue()),
+    }),
+  ])
 
   type SolutionList = {
     height: number
@@ -107,43 +98,37 @@
     }),
   )
 
-  const solution_table_columns: ColumnDef<SolutionList, any>[] = [
-    {
-      accessorKey: "height",
+  const solution_column = createAppColumnHelper<SolutionList>()
+  const solution_table_columns = solution_column.columns([
+    solution_column.accessor("height", {
       header: "In block",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: height_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "epoch",
+      cell: (info) => renderSnippet(height_column, info.getValue()),
+    }),
+    solution_column.accessor("epoch", {
       header: "Epoch",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "timestamp",
+    }),
+    solution_column.accessor("timestamp", {
       header: "Timestamp",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: timestamp_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "solution_id",
+      cell: (info) => renderSnippet(timestamp_column, info.getValue()),
+    }),
+    solution_column.accessor("solution_id", {
       header: "Solution ID",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: solution_id_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "counter",
+      cell: (info) => renderSnippet(solution_id_column, info.getValue()),
+    }),
+    solution_column.accessor("counter", {
       header: "Counter",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "target",
+    }),
+    solution_column.accessor("target", {
       header: "Target",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: target_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "reward",
+      cell: (info) => renderSnippet(target_column, info.getValue()),
+    }),
+    solution_column.accessor("reward", {
       header: "Reward",
       cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
-    },
-  ]
+    }),
+  ])
 
   type ProgramList = {
     height: number
@@ -163,28 +148,25 @@
     }),
   )
 
-  const program_table_columns: ColumnDef<ProgramList, any>[] = [
-    {
-      accessorKey: "height",
+  const program_column = createAppColumnHelper<ProgramList>()
+  const program_table_columns = program_column.columns([
+    program_column.accessor("height", {
       header: "In block",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: height_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "timestamp",
+      cell: (info) => renderSnippet(height_column, info.getValue()),
+    }),
+    program_column.accessor("timestamp", {
       header: "Timestamp",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: timestamp_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "transaction_id",
+      cell: (info) => renderSnippet(timestamp_column, info.getValue()),
+    }),
+    program_column.accessor("transaction_id", {
       header: "Transaction ID",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: transaction_id_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "program",
+      cell: (info) => renderSnippet(transaction_id_column, info.getValue()),
+    }),
+    program_column.accessor("program", {
       header: "Program ID",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: program_id_column, value: info.getValue() }),
-    },
-  ]
+      cell: (info) => renderSnippet(program_id_column, info.getValue()),
+    }),
+  ])
 
   type DelegatorList = {
     address: string
@@ -203,18 +185,17 @@
     })
   })
 
-  const delegator_table_columns: ColumnDef<DelegatorList, any>[] = [
-    {
-      accessorKey: "address",
+  const delegator_column = createAppColumnHelper<DelegatorList>()
+  const delegator_table_columns = delegator_column.columns([
+    delegator_column.accessor("address", {
       header: "Address",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "amount",
+      cell: (info) => renderSnippet(address_column, info.getValue()),
+    }),
+    delegator_column.accessor("amount", {
       header: "Staked",
       cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
-    },
-  ]
+    }),
+  ])
 </script>
 
 <style lang="scss">
@@ -344,7 +325,7 @@
   description="Check Aleo address {address} details. View public transaction history, and public balance."
 />
 
-{#snippet address_column(value)}
+{#snippet address_column(value: string)}
   <div class="mono ellipsis">
     <Link href="/address/{value}">
       <UIAddress address={value} name_data={data.resolved_addresses} />
@@ -352,17 +333,17 @@
   </div>
 {/snippet}
 
-{#snippet height_column(value)}
+{#snippet height_column(value: number)}
   <Link href="/block/{value}">
     <Number number={value} />
   </Link>
 {/snippet}
 
-{#snippet timestamp_column(value)}
+{#snippet timestamp_column(value: number)}
   <Time timestamp={value} />
 {/snippet}
 
-{#snippet action_column(value)}
+{#snippet action_column(value: { program: string; function: string })}
   <div class="column">
     <span class="mono">{value.function}</span>
     <Link href="/program/{value.program}">
@@ -371,30 +352,30 @@
   </div>
 {/snippet}
 
-{#snippet transition_id_column(value)}
+{#snippet transition_id_column(value: string)}
   <div class="mono ellipsis">
     <Link href="/transition/{value}" content={value}></Link>
   </div>
 {/snippet}
 
-{#snippet solution_id_column(value)}
+{#snippet solution_id_column(value: string)}
   <div class="mono">{value}</div>
 {/snippet}
 
-{#snippet target_column(value)}
+{#snippet target_column(value: { proof: Decimal; sum: Decimal })}
   <Number number={value.proof} />
   <span class="dim">
     / <Number number={value.sum} />
   </span>
 {/snippet}
 
-{#snippet transaction_id_column(value)}
+{#snippet transaction_id_column(value: string)}
   <div class="mono ellipsis">
     <Link href="/transaction/{value}" content={value}></Link>
   </div>
 {/snippet}
 
-{#snippet program_id_column(value)}
+{#snippet program_id_column(value: string)}
   <div class="mono">
     <Link href="/program/{value}" content={value}></Link>
   </div>

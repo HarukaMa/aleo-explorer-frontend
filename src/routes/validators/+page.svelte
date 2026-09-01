@@ -1,10 +1,10 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
   import Decimal from "decimal.js"
-  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import { renderComponent, renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
   import { StatusClass } from "$lib/types"
-  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import { createAppColumnHelper } from "$lib/table"
   import Link from "$lib/components/Link.svelte"
   import AleoCredit from "$lib/components/AleoToken.svelte"
   import Number from "$lib/components/Number.svelte"
@@ -19,8 +19,6 @@
   let data = $state(load_data.validators)
 
   let total_stake = $derived(data.total_stake)
-
-  $inspect(data)
 
   type ValidatorList = {
     rank: number
@@ -44,44 +42,37 @@
     })),
   )
 
-  const columns: ColumnDef<ValidatorList, any>[] = [
-    {
-      accessorKey: "rank",
+  const column = createAppColumnHelper<ValidatorList>()
+  const columns = column.columns([
+    column.accessor("rank", {
       header: "Rank",
       cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: "address",
+    }),
+    column.accessor("address", {
       header: "Address",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "total_staked",
+      cell: (info) => renderSnippet(address_column, info.getValue()),
+    }),
+    column.accessor("total_staked", {
       header: "Total Staked",
       cell: (info) => renderComponent(AleoCredit, { number: info.getValue(), suffix: true }),
-    },
-    {
-      accessorKey: "voting_power",
+    }),
+    column.accessor("voting_power", {
       header: "Voting Power",
       cell: (info) => renderComponent(Number, { number: info.getValue().times(100), precision: 2, unit: "%" }),
-    },
-    {
-      accessorKey: "uptime",
+    }),
+    column.accessor("uptime", {
       header: "Uptime",
       cell: (info) => renderComponent(Number, { number: info.getValue() * 100, precision: 2, unit: "%" }),
-    },
-    {
-      accessorKey: "commission",
+    }),
+    column.accessor("commission", {
       header: "Commission",
       cell: (info) => renderComponent(Number, { number: info.getValue(), unit: "%" }),
-    },
-    {
-      accessorKey: "open",
+    }),
+    column.accessor("open", {
       header: "Open for delegation",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: open_column, value: info.getValue() }),
-    },
-  ]
-
+      cell: (info) => renderSnippet(open_column, info.getValue()),
+    }),
+  ])
 </script>
 
 <style lang="scss">
@@ -175,7 +166,7 @@
   description="Browse Aleo validators. View staking rewards, commission rates, uptime, and delegation stats."
 />
 
-{#snippet address_column(value)}
+{#snippet address_column(value: string)}
   <div class="address-cell">
     {#if data.resolved_addresses[value]?.logo}
       <img
@@ -202,7 +193,7 @@
   </div>
 {/snippet}
 
-{#snippet open_column(value)}
+{#snippet open_column(value: boolean)}
   <div class="right">
     {#if value}
       <Status cls={StatusClass.Success}>Yes</Status>

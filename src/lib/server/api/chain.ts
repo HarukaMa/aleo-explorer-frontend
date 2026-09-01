@@ -1,3 +1,4 @@
+import type Decimal from "decimal.js"
 import { API } from "$lib/server/api/api"
 import type { APIBaseMixin } from "$lib/utils"
 import type { Summary } from "$lib/server/api/explorer"
@@ -7,8 +8,19 @@ type IndexUpdate = {
   recent_blocks: object[]
 }
 
-type Blocks = {
-  blocks: object[]
+export type BlockRow = {
+  height: number
+  timestamp: number
+  transaction_count: number
+  proof_target: number
+  coinbase_target: number
+  block_reward: Decimal.Value
+  coinbase_reward: number
+  partial_solution_count: number
+}
+
+export type Blocks = {
+  blocks: BlockRow[]
   total_blocks: number
   total_pages: number
 }

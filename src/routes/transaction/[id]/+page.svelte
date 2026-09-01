@@ -7,9 +7,9 @@
   import Time from "$lib/components/Time.svelte"
   import { format_time_absolute_relative } from "$lib/time_mode.svelte.js"
   import Tabs from "$lib/components/Tabs.svelte"
-  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import { renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
-  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import { createAppColumnHelper } from "$lib/table"
   import Link from "$lib/components/Link.svelte"
   import Status from "$lib/components/Status.svelte"
   import AleoToken from "$lib/components/AleoToken.svelte"
@@ -26,8 +26,6 @@
   let { data } = $derived(server_data)
 
   let aleo_price = getContext<{ price: number }>("aleo_price")
-
-  $inspect(data)
 
   let state = $derived(data.state)
   let type = $derived(data.type)
@@ -116,7 +114,7 @@
   type TransitionList = {
     index: string
     transition_id: string
-    action: { program: string; function: string }
+    action: { program: string; function: string | undefined }
     status: string
   }
 
@@ -152,8 +150,6 @@
     }
   })
 
-  $inspect(transitions)
-
   let transition_table_data: TransitionList[] = $derived(
     transitions.map((transition: any, index: number) => {
       let display_index = index.toString()
@@ -180,28 +176,25 @@
     }),
   )
 
-  const transition_table_columns: ColumnDef<TransitionList, any>[] = [
-    {
-      accessorKey: "index",
+  const transition_column = createAppColumnHelper<TransitionList>()
+  const transition_table_columns = transition_column.columns([
+    transition_column.accessor("index", {
       header: "Index",
       cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: "transition_id",
+    }),
+    transition_column.accessor("transition_id", {
       header: "Transition ID",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: transition_id_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "action",
+      cell: (info) => renderSnippet(transition_id_column, info.getValue()),
+    }),
+    transition_column.accessor("action", {
       header: "Action",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "status",
+      cell: (info) => renderSnippet(action_column, info.getValue()),
+    }),
+    transition_column.accessor("status", {
       header: "Status",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: status_column, value: info.getValue() }),
-    },
-  ]
+      cell: (info) => renderSnippet(status_column, info.getValue()),
+    }),
+  ])
 </script>
 
 <style lang="scss">
@@ -375,13 +368,13 @@
   description="Explore Aleo transaction {data.tx_id}. View sender, recipient, status, gas fees, and block height."
 />
 
-{#snippet transition_id_column(value)}
+{#snippet transition_id_column(value: string)}
   <div class="mono ellipsis">
     <Link href="/transition/{value}" content={value}></Link>
   </div>
 {/snippet}
 
-{#snippet action_column(value)}
+{#snippet action_column(value: { program: string; function: string | undefined })}
   {#if value.function === undefined}
     <Link href="/program/{value.program}">
       <span class="mono">{value.program}</span>
@@ -396,7 +389,7 @@
   {/if}
 {/snippet}
 
-{#snippet status_column(value)}
+{#snippet status_column(value: string)}
   {#if value?.startsWith("Accepted")}
     <Status cls={StatusClass.Success}>Accepted</Status>
   {:else if value?.startsWith("Rejected")}

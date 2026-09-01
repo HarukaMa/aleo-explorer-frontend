@@ -1,14 +1,7 @@
 <script lang="ts">
   import Seo from "$lib/components/Seo.svelte"
   import { type BlockList } from "$lib/types"
-  import {
-    type ColumnDef,
-    createTable,
-    getCoreRowModel,
-    type PaginationState,
-    renderComponent,
-    type Updater,
-  } from "@tanstack/svelte-table"
+  import { renderComponent, renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
   import Link from "$lib/components/Link.svelte"
   import Time from "$lib/components/Time.svelte"
@@ -16,14 +9,12 @@
   import AleoCredit from "$lib/components/AleoToken.svelte"
   import TableNav from "$lib/components/TableNav.svelte"
   import Decimal from "decimal.js"
-  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import { createAppColumnHelper } from "$lib/table"
   import PageInformation from "$lib/components/PageInformation.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
   import Callout from "$lib/components/Callout.svelte"
 
   let { data } = $props()
-
-  console.log(data.blocks)
 
   let blocks = $state(data.blocks.blocks)
   let total_blocks = $state(data.blocks.total_blocks)
@@ -42,85 +33,43 @@
     })),
   )
 
-  const columns: ColumnDef<BlockList, any>[] = [
-    {
-      accessorKey: "height",
+  const column = createAppColumnHelper<BlockList>()
+  const columns = column.columns([
+    column.accessor("height", {
       header: "Height",
-      cell: (info) =>
-        renderComponent(SnippetWrapper, {
-          snippet: height_column,
-          value: info.getValue(),
-        }),
-    },
-    {
-      accessorKey: "timestamp",
+      cell: (info) => renderSnippet(height_column, info.getValue()),
+    }),
+    column.accessor("timestamp", {
       header: "Timestamp",
       cell: (info) => renderComponent(Time, { timestamp: info.getValue() }),
-    },
-    {
-      accessorKey: "transactions",
+    }),
+    column.accessor("transactions", {
       header: "Transactions",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "proof_target",
+    }),
+    column.accessor("proof_target", {
       header: "Proof target",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "coinbase_target",
+    }),
+    column.accessor("coinbase_target", {
       header: "Coinbase target",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "block_reward",
+    }),
+    column.accessor("block_reward", {
       header: "Block reward",
       cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "puzzle_reward",
+    }),
+    column.accessor("puzzle_reward", {
       header: "Puzzle reward",
       cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "puzzle_solutions",
+    }),
+    column.accessor("puzzle_solutions", {
       header: "Puzzle solutions",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-  ]
+    }),
+  ])
 
-  let pagination: PaginationState = $state({
-    pageIndex: data.page - 1,
-    pageSize: 20,
-  })
-
-  const table = createTable<BlockList>({
-    get data() {
-      return table_data
-    },
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
-    get rowCount() {
-      return total_blocks
-    },
-    get pageCount() {
-      return total_pages
-    },
-    get state() {
-      return {
-        pagination,
-      }
-    },
-    onPaginationChange: onPaginationChange,
-  })
-
-  async function onPaginationChange(updaterOrValue: Updater<PaginationState>) {
-    if (updaterOrValue instanceof Function) {
-      updaterOrValue = updaterOrValue(pagination)
-    }
-    pagination = updaterOrValue
-  }
+  let current_page = $state(+data.page)
 
   let header_data = $derived([
     { name: "Total blocks", value: { component: Number, props: { number: total_blocks } } },
@@ -130,7 +79,6 @@
   ])
 
   async function set_page(page: number) {
-    table.setPageIndex(page - 1)
     const response = await fetch(`/api/blocks?p=${page}`)
     if (!response.ok) {
       throw new Error("Failed to fetch data")
@@ -139,6 +87,7 @@
     blocks = data.blocks
     total_blocks = data.total_blocks
     total_pages = data.total_pages
+    current_page = page
 
     const current_params = new URLSearchParams(location.search)
     current_params.set("page", page.toString())
@@ -224,7 +173,7 @@
   </div>
 {/snippet}
 
-{#snippet height_column(value)}
+{#snippet height_column(value: number)}
   <Link href="/block/{value}">
     <Number number={value} />
   </Link>
@@ -238,8 +187,8 @@
   </DataTable>
 </TableContainer>
 
-{#key pagination}
-  <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
+{#key current_page}
+  <TableNav page={current_page} {set_page} {total_pages} />
 {/key}
 
 <PageInformation

@@ -9,10 +9,10 @@
   import UIAddress from "$lib/components/UIAddress.svelte"
   import Tabs from "$lib/components/Tabs.svelte"
   import Decimal from "decimal.js"
-  import { type ColumnDef, renderComponent } from "@tanstack/svelte-table"
+  import { renderComponent, renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
   import Fee from "$lib/components/Fee.svelte"
-  import SnippetWrapper from "$lib/components/SnippetWrapper.svelte"
+  import { createAppColumnHelper } from "$lib/table"
   import Link from "$lib/components/Link.svelte"
   import Callout from "$lib/components/Callout.svelte"
   import Status from "$lib/components/Status.svelte"
@@ -22,8 +22,6 @@
 
   let { data } = $props()
   let { block, height } = $derived(data)
-
-  $inspect(block)
 
   let ratifications = $derived(block.block.ratifications)
 
@@ -88,8 +86,8 @@
     index: number
     transaction_id: string
     transitions: number
-    action: string
-    fee: string
+    action: { program: string; function: string | undefined }
+    fee: Decimal[]
     type: string
     status: string
   }
@@ -97,7 +95,7 @@
   let transaction_table_data: TransactionList[] = $derived(
     block.block.transactions.map((tx: any, index: number) => {
       let transitions: number, action: { program: string; function: string | undefined }, type: string, status: string
-      let fee: Decimal[] | number[]
+      let fee: Decimal[]
       if (tx.type === "accepted_execute") {
         transitions = tx.transaction.execution.transitions.length
         if (tx.transaction.fee && tx.transaction.fee.transition !== null) {
@@ -155,34 +153,29 @@
     }),
   )
 
-  const transaction_table_columns: ColumnDef<TransactionList, any>[] = [
-    {
-      accessorKey: "index",
+  const transaction_column = createAppColumnHelper<TransactionList>()
+  const transaction_table_columns = transaction_column.columns([
+    transaction_column.accessor("index", {
       header: "Index",
       cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: "transaction_id",
+    }),
+    transaction_column.accessor("transaction_id", {
       header: "Transaction ID",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: transaction_id_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "transitions",
+      cell: (info) => renderSnippet(transaction_id_column, info.getValue()),
+    }),
+    transaction_column.accessor("transitions", {
       header: "Transitions",
       cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: "type",
+    }),
+    transaction_column.accessor("type", {
       header: "Type",
       cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: "action",
+    }),
+    transaction_column.accessor("action", {
       header: "Action",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "fee",
+      cell: (info) => renderSnippet(action_column, info.getValue()),
+    }),
+    transaction_column.accessor("fee", {
       header: "Fee",
       cell: (info) =>
         renderComponent(Fee, {
@@ -190,21 +183,12 @@
           total_priority_fee: info.getValue()[1],
           total_burnt_fee: new Decimal(0),
         }),
-    },
-    {
-      accessorKey: "status",
+    }),
+    transaction_column.accessor("status", {
       header: "Status",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: status_column, value: info.getValue() }),
-    },
-  ]
-
-  const aborted_transaction_table_columns: ColumnDef<string, string>[] = [
-    {
-      accessorKey: "transaction_id",
-      header: "Transaction ID",
-      cell: (info) => info.getValue(),
-    },
-  ]
+      cell: (info) => renderSnippet(status_column, info.getValue()),
+    }),
+  ])
 
   type SolutionList = {
     solution_id: string
@@ -226,33 +210,29 @@
     }),
   )
 
-  const solution_table_columns: ColumnDef<SolutionList, any>[] = [
-    {
-      accessorKey: "solution_id",
+  const solution_column = createAppColumnHelper<SolutionList>()
+  const solution_table_columns = solution_column.columns([
+    solution_column.accessor("solution_id", {
       header: "Solution ID",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: solution_id_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "address",
+      cell: (info) => renderSnippet(solution_id_column, info.getValue()),
+    }),
+    solution_column.accessor("address", {
       header: "Address",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: address_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "counter",
+      cell: (info) => renderSnippet(address_column, info.getValue()),
+    }),
+    solution_column.accessor("counter", {
       header: "Counter",
       cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    },
-    {
-      accessorKey: "target",
+    }),
+    solution_column.accessor("target", {
       header: "Target",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: target_column, value: info.getValue() }),
-    },
-    {
-      accessorKey: "reward",
+      cell: (info) => renderSnippet(target_column, info.getValue()),
+    }),
+    solution_column.accessor("reward", {
       header: "Reward",
       cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
-    },
-  ]
+    }),
+  ])
 
   type AbortedSolutionList = {
     solution_id: string
@@ -266,13 +246,13 @@
     }),
   )
 
-  const aborted_solution_table_columns: ColumnDef<AbortedSolutionList, any>[] = [
-    {
-      accessorKey: "solution_id",
+  const aborted_solution_column = createAppColumnHelper<AbortedSolutionList>()
+  const aborted_solution_table_columns = aborted_solution_column.columns([
+    aborted_solution_column.accessor("solution_id", {
       header: "Solution ID",
-      cell: (info) => renderComponent(SnippetWrapper, { snippet: solution_id_column, value: info.getValue() }),
-    },
-  ]
+      cell: (info) => renderSnippet(solution_id_column, info.getValue()),
+    }),
+  ])
 </script>
 
 <style lang="scss">
@@ -369,17 +349,17 @@
   description="View Aleo block {height} details. Check transactions, validator, block hash and confirmations."
 />
 
-{#snippet transaction_id_column(value)}
+{#snippet transaction_id_column(value: string)}
   <div class="mono ellipsis">
     <Link href="/transaction/{value}" content={value}></Link>
   </div>
 {/snippet}
 
-{#snippet solution_id_column(value)}
+{#snippet solution_id_column(value: string)}
   <div class="mono">{value}</div>
 {/snippet}
 
-{#snippet address_column(value)}
+{#snippet address_column(value: string)}
   <div class="mono ellipsis">
     <Link href="/address/{value}" content={value}>
       <UIAddress address={value} name_data={block.resolved_addresses} />
@@ -387,14 +367,14 @@
   </div>
 {/snippet}
 
-{#snippet target_column(value)}
+{#snippet target_column(value: Decimal)}
   <Number number={value} />
   <span class="dim">
     / <Number number={total_target} />
   </span>
 {/snippet}
 
-{#snippet action_column(value)}
+{#snippet action_column(value: { program: string; function: string | undefined })}
   {#if value.function === undefined}
     <Link href="/program/{value.program}">
       <span class="mono">{value.program}</span>
@@ -409,7 +389,7 @@
   {/if}
 {/snippet}
 
-{#snippet status_column(value)}
+{#snippet status_column(value: string)}
   {#if value === "accepted"}
     <Status cls={StatusClass.Success}>Accepted</Status>
   {:else}
