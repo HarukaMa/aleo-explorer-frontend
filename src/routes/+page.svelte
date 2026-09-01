@@ -2,7 +2,7 @@
   import Seo from "$lib/components/Seo.svelte"
   import home_bg from "$lib/assets/images/home_bg.svg"
   import SearchBar from "$lib/components/SearchBar.svelte"
-  import Number from "$lib/components/Number.svelte"
+  import FormattedNumber from "$lib/components/Number.svelte"
   import { renderComponent, renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
   import Epoch from "$lib/components/Epoch.svelte"
@@ -21,34 +21,51 @@
   let summary = $state(data.summary)
   let recent_blocks = $state(data.recent_blocks)
 
-  $inspect(summary)
+  type SummaryRow =
+    | {
+    name: string
+    kind: "number"
+    value: number
+    precision?: number
+    unit?: string
+  }
+    | {
+    name: string
+    kind: "time" | "epoch"
+    value: number
+  }
 
-  let summary_data = $derived([
+  let summary_data: SummaryRow[][] = $derived([
     [
-      { name: "Latest block", value: { component: Number, props: { number: summary.latest_height, flash: true } } },
-      { name: "Block time", value: { component: Time, props: { timestamp: summary.latest_timestamp, flash: true } } },
-      { name: "Validators", value: { component: Number, props: { number: summary.validators, flash: true } } },
+      { name: "Latest block", kind: "number", value: summary.latest_height },
+      { name: "Block time", kind: "time", value: summary.latest_timestamp },
+      { name: "Validators", kind: "number", value: summary.validators },
       {
         name: "Validator participation rate (5m)",
-        value: {
-          component: Number,
-          props: { number: summary.participation_rate * 100, precision: 2, unit: "%", flash: true },
-        },
+        kind: "number",
+        value: summary.participation_rate * 100,
+        precision: 2,
+        unit: "%",
       },
     ],
     [
       {
         name: "Epoch",
-        value: { component: Epoch, props: { height: summary.latest_height, flash: true } },
+        kind: "epoch",
+        value: summary.latest_height,
       },
-      { name: "Proof target", value: { component: Number, props: { number: summary.proof_target, flash: true } } },
+      { name: "Proof target", kind: "number", value: summary.proof_target },
       {
         name: "Coinbase target",
-        value: { component: Number, props: { number: summary.coinbase_target, flash: true } },
+        kind: "number",
+        value: summary.coinbase_target,
       },
       {
         name: "Puzzle solving rate (15m)",
-        value: { component: Number, props: { number: summary.network_speed, precision: 2, unit: " s/s", flash: true } },
+        kind: "number",
+        value: summary.network_speed,
+        precision: 2,
+        unit: " s/s",
       },
     ],
   ])
@@ -78,15 +95,15 @@
     }),
     column.accessor("transactions", {
       header: "Transactions",
-      cell: (info) => renderComponent(Number, { number: info.getValue() }),
+      cell: (info) => renderComponent(FormattedNumber, { number: info.getValue() }),
     }),
     column.accessor("proof_target", {
       header: "Proof target",
-      cell: (info) => renderComponent(Number, { number: info.getValue() }),
+      cell: (info) => renderComponent(FormattedNumber, { number: info.getValue() }),
     }),
     column.accessor("coinbase_target", {
       header: "Coinbase target",
-      cell: (info) => renderComponent(Number, { number: info.getValue() }),
+      cell: (info) => renderComponent(FormattedNumber, { number: info.getValue() }),
     }),
     column.accessor("block_reward", {
       header: "Block reward",
@@ -98,7 +115,7 @@
     }),
     column.accessor("puzzle_solutions", {
       header: "Puzzle solutions",
-      cell: (info) => renderComponent(Number, { number: info.getValue() }),
+      cell: (info) => renderComponent(FormattedNumber, { number: info.getValue() }),
     }),
   ])
 
@@ -218,7 +235,7 @@
 
 {#snippet height_column(value: number)}
   <Link href="/block/{value}">
-    <Number number={value} />
+    <FormattedNumber number={value} />
   </Link>
 {/snippet}
 
@@ -236,10 +253,12 @@
         {#each column as row}
           <div class="row">
             <div class="row-label">{row.name}</div>
-            {#if row.value instanceof Object}
-              <row.value.component {...row.value.props} />
+            {#if row.kind === "number"}
+              <FormattedNumber number={row.value} precision={row.precision} unit={row.unit} flash />
+            {:else if row.kind === "time"}
+              <Time timestamp={row.value} flash />
             {:else}
-              <div>{row.value}</div>
+              <Epoch height={row.value} flash />
             {/if}
           </div>
         {/each}

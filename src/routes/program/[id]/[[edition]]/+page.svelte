@@ -389,7 +389,6 @@
           hideBorder
           backgroudColor="#f9f9f9"
           --line-number-color="#9e9e9e"
-          class="source-code-highlight"
         />
       </div>
     </div>

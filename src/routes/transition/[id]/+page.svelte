@@ -12,8 +12,6 @@
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
 
-  $inspect(data)
-
   let transition = $derived(data.transition)
 
   let has_finalize = $derived(transition.outputs.at(-1)?.type === "future")
@@ -255,7 +253,11 @@
               </DetailLine>
               {#each Object.entries(output.record_ciphertext.data) as [key, value]}
                 <DetailLine label={key}>
-                  <span class="mono">{Object.values(value)[0]}</span>
+                  <span class="mono">
+                    {typeof value === "object" && value !== null
+                      ? String(Object.values(value)[0] ?? "")
+                      : String(value ?? "")}
+                  </span>
                 </DetailLine>
               {/each}
             </div>

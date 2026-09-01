@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { Snippet } from "svelte"
-  import Number from "$lib/components/Number.svelte"
+  import FormattedNumber from "$lib/components/Number.svelte"
 
   interface PageHeader {
     icon?: string
     title?: string
-    content?: string
+    content?: string | number
     children?: Snippet
     is_number?: boolean
   }
@@ -74,16 +74,19 @@
     {#if children}
       {@render children()}
     {:else}
-      <div
-        class="icon"
-        hidden={icon === undefined || null}
-        style:background-image="url(&quot;{icons[`/src/lib/assets/images/icons/${icon}.svg`]}&quot;)"
-      ></div>
+      {#if icon}
+        <div
+          class="icon"
+          style:background-image="url(&quot;{icons[`/src/lib/assets/images/icons/${icon}.svg`]}&quot;)"
+        ></div>
+      {/if}
       <div class="vert">
-        <div class="title" hidden={title === undefined || null}>{title}</div>
+        {#if title}
+          <div class="title">{title}</div>
+        {/if}
         <div class="id">
-          {#if is_number}
-            <Number number={content} />
+          {#if is_number && content !== undefined}
+            <FormattedNumber number={content} />
           {:else}
             {content}
           {/if}

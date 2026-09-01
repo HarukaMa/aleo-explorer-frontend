@@ -1,12 +1,7 @@
-// minimal placeholder
-import type { LanguageType } from "svelte-rune-highlight/languages"
-
-const aleo: LanguageType<string> = {
+const aleo = {
   name: "aleo",
-  register: function (hljs: any) {
-    return {
-      contains: [],
-    }
-  },
+  register: () => ({
+    contains: [],
+  }),
 }
 export default aleo
