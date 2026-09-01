@@ -6,20 +6,20 @@
 
   let { height, flash = false }: Epoch = $props()
 
-  let last_height = height
+  let last_height = $state<number>()
 
   let epoch = $derived(Math.floor(height / 360))
   let epoch_progress = $derived(height % 360)
 
   let span: HTMLSpanElement
   $effect(() => {
-    if (flash && last_height !== height) {
-      last_height = height
+    if (last_height !== undefined && flash && last_height !== height) {
       span.classList.add("flash")
       setTimeout(() => {
         span.classList.remove("flash")
       }, 600)
     }
+    last_height = height
   })
 </script>
 
