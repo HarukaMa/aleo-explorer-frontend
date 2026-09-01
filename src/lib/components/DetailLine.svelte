@@ -9,8 +9,6 @@
   }
 
   let { label, children, tooltip }: DetailLine = $props()
-
-  let showTooltip = $state(false)
 </script>
 
 <style lang="scss">
@@ -66,7 +64,7 @@
   <div class="left">
     {#if tooltip}
       <div class="tooltip-trigger">
-        <Tooltip>
+        <Tooltip label="More information about {label}">
           <div class="tooltip-icon"></div>
           {#snippet tooltip_snippet()}
             {tooltip}

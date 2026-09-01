@@ -214,6 +214,11 @@ SOFTWARE.
       cursor: pointer;
       text-decoration: underline;
     }
+
+    &:focus-visible {
+      outline: 2px solid $blue-500;
+      outline-offset: 2px;
+    }
   }
 
   #footer-settings-timezone {

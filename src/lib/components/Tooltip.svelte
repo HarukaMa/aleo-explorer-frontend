@@ -3,13 +3,16 @@
   import { arrow, computePosition, flip, offset, shift } from "@floating-ui/dom"
 
   type Props = {
-    children: Snippet // original content
-    tooltip_snippet: Snippet // tooltip content
+    children: Snippet
+    tooltip_snippet: Snippet
+    label: string
   }
 
-  let { children, tooltip_snippet }: Props = $props()
+  let { children, tooltip_snippet, label }: Props = $props()
 
-  let root_element: HTMLDivElement
+  const tooltip_uid = $props.id()
+  const tooltip_id = `${tooltip_uid}-tooltip`
+  let root_element: HTMLButtonElement
   let popup_element: HTMLDivElement
   let arrow_element: HTMLDivElement
   let placement: "top" | "right" | "bottom" | "left" = $state("top")
@@ -46,9 +49,25 @@
   function hide_popup() {
     popup_element.style.display = "none"
   }
+
+  function handle_keydown(event: KeyboardEvent) {
+    if (event.key === "Escape") hide_popup()
+  }
 </script>
 
 <style lang="scss">
+  .content {
+    all: unset;
+    display: flex;
+    border-radius: 0.25rem;
+    cursor: help;
+
+    &:focus-visible {
+      outline: 2px solid #1da1f2;
+      outline-offset: 2px;
+    }
+  }
+
   .tooltip {
     display: none;
     position: absolute;
@@ -75,11 +94,22 @@
   }
 </style>
 
-<div bind:this={root_element} class="content" onmouseenter={show_popup} onmouseleave={hide_popup} role="tooltip">
+<button
+  aria-describedby={tooltip_id}
+  aria-label={label}
+  bind:this={root_element}
+  class="content"
+  onblur={hide_popup}
+  onfocus={show_popup}
+  onkeydown={handle_keydown}
+  onmouseenter={show_popup}
+  onmouseleave={hide_popup}
+  type="button"
+>
   {@render children()}
-</div>
+</button>
 
-<div bind:this={popup_element} class="tooltip">
+<div bind:this={popup_element} class="tooltip" id={tooltip_id} role="tooltip">
   {@render tooltip_snippet()}
   <div bind:this={arrow_element} class="arrow"></div>
 </div>

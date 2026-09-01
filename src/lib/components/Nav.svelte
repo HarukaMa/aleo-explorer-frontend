@@ -92,7 +92,12 @@
     align-items: center;
   }
 
-  .nav-link {
+  .nav-link-dropdown {
+    position: relative;
+  }
+
+  .nav-link,
+  .nav-link-button {
     display: flex;
     gap: 0.25rem;
     padding: 1rem;
@@ -100,6 +105,15 @@
     position: relative;
     color: black;
     text-decoration: none;
+  }
+
+  .nav-link-button {
+    list-style: none;
+    cursor: pointer;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
   }
 
   @keyframes opacity {
@@ -119,19 +133,34 @@
     mask-image: $chevron-icon;
   }
 
-  .nav-link:hover {
+  .nav-link:hover,
+  .nav-link:focus-visible {
+    color: $blue-500;
+  }
+
+  .nav-link-dropdown:hover > .nav-link-button,
+  .nav-link-dropdown[open] > .nav-link-button {
     color: $blue-500;
 
     .chevron {
       background-color: $blue-500;
       transform: rotate(180deg);
     }
+  }
 
-    > .nav-link-menu {
-      color: #000;
-      display: flex;
-      animation: opacity 200ms ease-out;
-    }
+  .nav-link:focus-visible,
+  .nav-link-button:focus-visible,
+  .mobile-menu-btn:focus-visible,
+  .close-btn:focus-visible {
+    outline: 2px solid $blue-500;
+    outline-offset: 2px;
+  }
+
+  .nav-link-dropdown:hover > .nav-link-menu,
+  .nav-link-dropdown[open] > .nav-link-menu {
+    color: #000;
+    display: flex;
+    animation: opacity 200ms ease-out;
   }
 
   .nav-link-menu {
@@ -358,27 +387,31 @@
       </div>
     </div>
     <div class="nav-links">
-      <div class="nav-link">
-        Blockchain
-        <span class="chevron"></span>
+      <details class="nav-link-dropdown">
+        <summary class="nav-link-button">
+          Blockchain
+          <span aria-hidden="true" class="chevron"></span>
+        </summary>
 
         <div class="nav-link-menu">
           {#each blockchain_routes as { name, path }}
             <NavItem {name} {path} />
           {/each}
         </div>
-      </div>
+      </details>
 
-      <div class="nav-link">
-        Proving
-        <span class="chevron"></span>
+      <details class="nav-link-dropdown">
+        <summary class="nav-link-button">
+          Proving
+          <span aria-hidden="true" class="chevron"></span>
+        </summary>
 
         <div class="nav-link-menu">
           {#each proving_routes as { name, path }}
             <NavItem {name} {path} />
           {/each}
         </div>
-      </div>
+      </details>
 
       <a class="nav-link" href="/api/docs">Docs</a>
     </div>

@@ -19,6 +19,12 @@
       border-radius: 0.5rem;
       background: $grey-25;
     }
+
+    &:focus-visible {
+      border-radius: 0.5rem;
+      outline: 2px solid $blue-500;
+      outline-offset: 2px;
+    }
   }
 </style>
 
