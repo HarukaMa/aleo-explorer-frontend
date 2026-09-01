@@ -26,18 +26,6 @@
 
   let bonded_to = $derived(data.resolved_addresses[data.bond_state?.validator])
 
-  let tab_data = $derived.by(() => {
-    let tabs = [
-      { title: "Recent transitions", id: "transitions" },
-      { title: "Accepted solutions", id: "solutions" },
-      { title: "Deployed programs", id: "programs" },
-    ]
-    if (data.delegated > 0) {
-      tabs.splice(0, 0, { title: "Top delegators", id: "delegators" })
-    }
-    return tabs
-  })
-
   type TransitionList = {
     height: number
     timestamp: number
@@ -88,7 +76,6 @@
       cell: (info) => renderComponent(SnippetWrapper, { snippet: action_column, value: info.getValue() }),
     },
   ]
-
 
   type SolutionList = {
     height: number
@@ -158,7 +145,6 @@
     },
   ]
 
-
   type ProgramList = {
     height: number
     program: string
@@ -200,7 +186,6 @@
     },
   ]
 
-
   type DelegatorList = {
     address: string
     amount: string
@@ -230,7 +215,6 @@
       cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
     },
   ]
-
 </script>
 
 <style lang="scss">
@@ -319,7 +303,6 @@
 
   .tab {
     margin-top: 2rem;
-    display: none;
   }
 
   .ellipsis {
@@ -604,64 +587,70 @@
   </div>
 </div>
 
-<Tabs {tab_data}>
-  {#snippet delegators(binds)}
-    <div class="tab" bind:this={binds.delegators}>
-      <TableContainer>
-        <DataTable columns={delegator_table_columns} data={delegator_table_data}>
-          {#snippet emptyState()}
-            <Callout
-              title="No delegators"
-              description="This address has not staked any credits to other addresses."
-              icon="list-icon"
-            />
-          {/snippet}
-        </DataTable>
-      </TableContainer>
-    </div>
-  {/snippet}
-  {#snippet transitions(binds)}
-    <div class="tab" bind:this={binds.transitions}>
-      <TableContainer>
-        <DataTable columns={transition_table_columns} data={transition_table_data}>
-          {#snippet emptyState()}
-            <Callout
-              title="No transitions"
-              description="This address has not publicly appeared in any transition."
-              icon="list-icon"
-            />
-          {/snippet}
-        </DataTable>
-      </TableContainer>
-    </div>
-  {/snippet}
-  {#snippet solutions(binds)}
-    <div class="tab" bind:this={binds.solutions}>
-      <TableContainer>
-        <DataTable columns={solution_table_columns} data={solution_table_data}>
-          {#snippet emptyState()}
-            <Callout
-              title="No solutions"
-              description="This address has not submitted any valid puzzle solutions."
-              icon="list-icon"
-            />
-          {/snippet}
-        </DataTable>
-      </TableContainer>
-    </div>
-  {/snippet}
-  {#snippet programs(binds)}
-    <div class="tab" bind:this={binds.programs}>
-      <TableContainer>
-        <DataTable columns={program_table_columns} data={program_table_data}>
-          {#snippet emptyState()}
-            <Callout title="No programs" description="This address has not deployed any programs." icon="list-icon" />
-          {/snippet}
-        </DataTable>
-      </TableContainer>
-    </div>
-  {/snippet}
-</Tabs>
+{#snippet delegators()}
+  <div class="tab">
+    <TableContainer>
+      <DataTable columns={delegator_table_columns} data={delegator_table_data}>
+        {#snippet emptyState()}
+          <Callout
+            title="No delegators"
+            description="This address has not staked any credits to other addresses."
+            icon="list-icon"
+          />
+        {/snippet}
+      </DataTable>
+    </TableContainer>
+  </div>
+{/snippet}
+{#snippet transitions()}
+  <div class="tab">
+    <TableContainer>
+      <DataTable columns={transition_table_columns} data={transition_table_data}>
+        {#snippet emptyState()}
+          <Callout
+            title="No transitions"
+            description="This address has not publicly appeared in any transition."
+            icon="list-icon"
+          />
+        {/snippet}
+      </DataTable>
+    </TableContainer>
+  </div>
+{/snippet}
+{#snippet solutions()}
+  <div class="tab">
+    <TableContainer>
+      <DataTable columns={solution_table_columns} data={solution_table_data}>
+        {#snippet emptyState()}
+          <Callout
+            title="No solutions"
+            description="This address has not submitted any valid puzzle solutions."
+            icon="list-icon"
+          />
+        {/snippet}
+      </DataTable>
+    </TableContainer>
+  </div>
+{/snippet}
+{#snippet programs()}
+  <div class="tab">
+    <TableContainer>
+      <DataTable columns={program_table_columns} data={program_table_data}>
+        {#snippet emptyState()}
+          <Callout title="No programs" description="This address has not deployed any programs." icon="list-icon" />
+        {/snippet}
+      </DataTable>
+    </TableContainer>
+  </div>
+{/snippet}
+<Tabs
+  tabs={[
+    ...(data.delegated > 0 ? [{ title: "Top delegators", id: "delegators", content: delegators }] : []),
+    { title: "Recent transitions", id: "transitions", content: transitions },
+    { title: "Accepted solutions", id: "solutions", content: solutions },
+    { title: "Deployed programs", id: "programs", content: programs },
+  ]}
+/>
 
 <PageInformation
   title="Address"

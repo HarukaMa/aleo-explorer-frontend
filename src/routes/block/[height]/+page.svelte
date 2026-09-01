@@ -84,12 +84,6 @@
     solution_targets.reduce((acc: Decimal, target: Decimal) => acc.add(target), new Decimal(0)),
   )
 
-  const tab_data = [
-    { title: "Transactions", id: "transactions" },
-    { title: "Block info", id: "block_info" },
-    { title: "Puzzle solutions", id: "solutions" },
-  ]
-
   type TransactionList = {
     index: number
     transaction_id: string
@@ -353,7 +347,6 @@
 
   .tab {
     margin-top: 2rem;
-    display: none;
   }
 
   .ellipsis {
@@ -529,94 +522,99 @@
   </div>
 </div>
 
-<Tabs {tab_data}>
-  {#snippet transactions(binds)}
-    <div class="tab" bind:this={binds.transactions}>
-      {#if block.block.transactions.length === 0 && block.block.aborted_transaction_ids.length === 0}
-        <Callout title="No transactions" description="This block has no transactions." icon="list-icon" />
-      {:else}
-        {#if block.block.transactions.length > 0}
-          <TableContainer>
-            <DataTable columns={transaction_table_columns} data={transaction_table_data} />
-          </TableContainer>
-        {/if}
-        {#if block.block.aborted_transaction_ids.length > 0}
-          <div class="aborted-header">Aborted transactions</div>
-        {/if}
+{#snippet transactions()}
+  <div class="tab">
+    {#if block.block.transactions.length === 0 && block.block.aborted_transaction_ids.length === 0}
+      <Callout title="No transactions" description="This block has no transactions." icon="list-icon" />
+    {:else}
+      {#if block.block.transactions.length > 0}
+        <TableContainer>
+          <DataTable columns={transaction_table_columns} data={transaction_table_data} />
+        </TableContainer>
       {/if}
-    </div>
-  {/snippet}
-  {#snippet block_info(binds)}
-    <div class="tab" bind:this={binds.block_info}>
-      <div class="details">
-        <div class="group">
-          <DetailLine label="Round" tooltip="The iteration used for consensus and block production.">
-            <Number number={block.block.header.metadata.round} />
-          </DetailLine>
-          <DetailLine
-            label="Cumulative weight"
-            tooltip="The total weight of all previous blocks, measuring overall difficulty."
-          >
-            <Number number={block.block.header.metadata.cumulative_weight} />
-          </DetailLine>
-        </div>
-        <div class="group">
-          <div class="details-line"></div>
-        </div>
-        <div class="group">
-          <DetailLine label="Previous block hash" tooltip="The hash of the block immediately before this one.">
-            <span class="mono">{block.block.previous_hash}</span>
-          </DetailLine>
-          <DetailLine
-            label="Previous state root"
-            tooltip="The state root representing the global state before this block."
-          >
-            <span class="mono">{block.block.header.previous_state_root}</span>
-          </DetailLine>
-        </div>
-        <div class="group">
-          <div class="details-line"></div>
-        </div>
-        <div class="group">
-          <DetailLine label="Transactions root" tooltip="The hash of all transactions included in this block.">
-            <span class="mono">{block.block.header.transactions_root}</span>
-          </DetailLine>
-          <DetailLine label="Finalize root" tooltip="The state root marking finalized state for this block.">
-            <span class="mono">{block.block.header.finalize_root}</span>
-          </DetailLine>
-          <DetailLine label="Ratifications root" tooltip="The state root after all ratifications.">
-            <span class="mono">{block.block.header.ratifications_root}</span>
-          </DetailLine>
-          <DetailLine
-            label="Solutions root"
-            tooltip="The state root reflecting all proving solutions submitted for this block."
-          >
-            <span class="mono">{block.block.header.solutions_root}</span>
-          </DetailLine>
-        </div>
+      {#if block.block.aborted_transaction_ids.length > 0}
+        <div class="aborted-header">Aborted transactions</div>
+      {/if}
+    {/if}
+  </div>
+{/snippet}
+{#snippet block_info()}
+  <div class="tab">
+    <div class="details">
+      <div class="group">
+        <DetailLine label="Round" tooltip="The iteration used for consensus and block production.">
+          <Number number={block.block.header.metadata.round} />
+        </DetailLine>
+        <DetailLine
+          label="Cumulative weight"
+          tooltip="The total weight of all previous blocks, measuring overall difficulty."
+        >
+          <Number number={block.block.header.metadata.cumulative_weight} />
+        </DetailLine>
+      </div>
+      <div class="group">
+        <div class="details-line"></div>
+      </div>
+      <div class="group">
+        <DetailLine label="Previous block hash" tooltip="The hash of the block immediately before this one.">
+          <span class="mono">{block.block.previous_hash}</span>
+        </DetailLine>
+        <DetailLine
+          label="Previous state root"
+          tooltip="The state root representing the global state before this block."
+        >
+          <span class="mono">{block.block.header.previous_state_root}</span>
+        </DetailLine>
+      </div>
+      <div class="group">
+        <div class="details-line"></div>
+      </div>
+      <div class="group">
+        <DetailLine label="Transactions root" tooltip="The hash of all transactions included in this block.">
+          <span class="mono">{block.block.header.transactions_root}</span>
+        </DetailLine>
+        <DetailLine label="Finalize root" tooltip="The state root marking finalized state for this block.">
+          <span class="mono">{block.block.header.finalize_root}</span>
+        </DetailLine>
+        <DetailLine label="Ratifications root" tooltip="The state root after all ratifications.">
+          <span class="mono">{block.block.header.ratifications_root}</span>
+        </DetailLine>
+        <DetailLine
+          label="Solutions root"
+          tooltip="The state root reflecting all proving solutions submitted for this block."
+        >
+          <span class="mono">{block.block.header.solutions_root}</span>
+        </DetailLine>
       </div>
     </div>
-  {/snippet}
-  {#snippet solutions(binds)}
-    <div class="tab" bind:this={binds.solutions}>
-      {#if block.solutions.length === 0 && block.block.aborted_solution_ids.length === 0}
-        <Callout title="No solutions" description="This block has no puzzle solutions." icon="list-icon" />
-      {:else}
-        {#if block.solutions.length > 0}
-          <TableContainer>
-            <DataTable columns={solution_table_columns} data={solution_table_data} />
-          </TableContainer>
-        {/if}
-        {#if block.block.aborted_solution_ids.length > 0}
-          <div class="aborted-header">Aborted solutions</div>
-          <TableContainer>
-            <DataTable columns={aborted_solution_table_columns} data={aborted_solution_table_data} />
-          </TableContainer>
-        {/if}
+  </div>
+{/snippet}
+{#snippet solutions()}
+  <div class="tab">
+    {#if block.solutions.length === 0 && block.block.aborted_solution_ids.length === 0}
+      <Callout title="No solutions" description="This block has no puzzle solutions." icon="list-icon" />
+    {:else}
+      {#if block.solutions.length > 0}
+        <TableContainer>
+          <DataTable columns={solution_table_columns} data={solution_table_data} />
+        </TableContainer>
       {/if}
-    </div>
-  {/snippet}
-</Tabs>
+      {#if block.block.aborted_solution_ids.length > 0}
+        <div class="aborted-header">Aborted solutions</div>
+        <TableContainer>
+          <DataTable columns={aborted_solution_table_columns} data={aborted_solution_table_data} />
+        </TableContainer>
+      {/if}
+    {/if}
+  </div>
+{/snippet}
+<Tabs
+  tabs={[
+    { title: "Transactions", id: "transactions", content: transactions },
+    { title: "Block info", id: "block_info", content: block_info },
+    { title: "Puzzle solutions", id: "solutions", content: solutions },
+  ]}
+/>
 
 <PageInformation
   title="Block"

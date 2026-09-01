@@ -16,18 +16,8 @@
 
   let transition = $derived(data.transition)
 
-  let tab_data = $derived.by(() => {
-    let tabs = [
-      { title: "Inputs", id: "input" },
-      { title: "Outputs", id: "output" },
-    ]
-    if (transition.outputs.length > 0 && transition.outputs.at(-1).type === "future") {
-      tabs.push({ title: "Finalize inputs", id: "finalize" })
-    }
-    return tabs
-  })
-
-  let tabs: Tabs
+  let has_finalize = $derived(transition.outputs.at(-1)?.type === "future")
+  let active_tab = $state("input")
 </script>
 
 <style lang="scss">
@@ -82,7 +72,6 @@
 
   .tab {
     margin-top: 2rem;
-    display: none;
   }
 
   .header-xs {
@@ -197,130 +186,136 @@
   </div>
 </div>
 
-<Tabs bind:this={tabs} {tab_data}>
-  {#snippet input(binds)}
-    <div class="tab" bind:this={binds.input}>
-      {#each transition.inputs as input, i}
+{#snippet input()}
+  <div class="tab">
+    {#each transition.inputs as input, i}
+      <div class="header-xs">Input #{i + 1}</div>
+      <div class="details compact">
+        <div class="group">
+          <DetailLine label="Type">
+            {input.type.charAt(0).toUpperCase() + input.type.slice(1).replace("_", " ")}
+            <span class="mono">{data.function_definition.input[i]}</span>
+          </DetailLine>
+          {#if input.type === "public"}
+            <DetailLine label="Plaintext">
+              <span class="mono">{input.plaintext}</span>
+            </DetailLine>
+          {:else if input.type === "private"}
+            <DetailLine label="Ciphertext">
+              <span class="mono">{input.ciphertext}</span>
+            </DetailLine>
+          {:else if input.type === "record"}
+            <DetailLine label="Serial number">
+              <span class="mono">{input.serial_number}</span>
+            </DetailLine>
+            <DetailLine label="Tag">
+              <span class="mono">{input.tag}</span>
+            </DetailLine>
+          {:else if input.type === "external_record"}
+            <DetailLine label="Commitment">
+              <span class="mono">{input.input_commitment}</span>
+            </DetailLine>
+          {:else}
+            Not Implemented
+          {/if}
+        </div>
+        <div class="details-line"></div>
+      </div>
+    {/each}
+  </div>
+{/snippet}
+{#snippet output()}
+  <div class="tab">
+    {#each transition.outputs as output, i}
+      <div class="header-xs">Output #{i + 1}</div>
+      <div class="details compact">
+        <div class="group">
+          <DetailLine label="Type">
+            {output.type.charAt(0).toUpperCase() + output.type.slice(1).replace("_", " ")}
+            <span class="mono">{data.function_definition.output[i]}</span>
+          </DetailLine>
+          {#if output.type === "public"}
+            <DetailLine label="Plaintext">
+              <span class="mono">{output.plaintext}</span>
+            </DetailLine>
+          {:else if output.type === "private"}
+            <DetailLine label="Ciphertext">
+              <span class="mono">{output.ciphertext}</span>
+            </DetailLine>
+          {:else if output.type === "record"}
+            <DetailLine label="Commitment">
+              <span class="mono">{output.commitment}</span>
+            </DetailLine>
+            <DetailLine label="Ciphertext">
+              <span class="mono">{output.record_ciphertext._text}</span>
+            </DetailLine>
+            <div class="record-field">
+              <DetailLine label="owner">
+                <span class="mono">{output.record_ciphertext.owner}</span>
+              </DetailLine>
+              {#each Object.entries(output.record_ciphertext.data) as [key, value]}
+                <DetailLine label={key}>
+                  <span class="mono">{Object.values(value)[0]}</span>
+                </DetailLine>
+              {/each}
+            </div>
+          {:else if output.type === "external_record"}
+            <DetailLine label="Commitment">
+              <span class="mono">{output.commitment}</span>
+            </DetailLine>
+          {:else if output.type === "future"}
+            <DetailLine label="Future">
+              <button class="link" onclick={() => (active_tab = "finalize")}>
+                <span class="mono">{output.future.program_id}/{output.future.function_name}(...)</span>
+              </button>
+            </DetailLine>
+          {:else}
+            Not Implemented
+          {/if}
+        </div>
+        <div class="details-line"></div>
+      </div>
+    {/each}
+  </div>
+{/snippet}
+{#snippet finalize()}
+  {#if transition.outputs.length > 0 && transition.outputs.at(-1).type === "future"}
+    <div class="tab">
+      {#each transition.outputs.at(-1).future.arguments as input, i}
         <div class="header-xs">Input #{i + 1}</div>
         <div class="details compact">
           <div class="group">
             <DetailLine label="Type">
-              {input.type.charAt(0).toUpperCase() + input.type.slice(1).replace("_", " ")}
-              <span class="mono">{data.function_definition.input[i]}</span>
-            </DetailLine>
-            {#if input.type === "public"}
-              <DetailLine label="Plaintext">
-                <span class="mono">{input.plaintext}</span>
-              </DetailLine>
-            {:else if input.type === "private"}
-              <DetailLine label="Ciphertext">
-                <span class="mono">{input.ciphertext}</span>
-              </DetailLine>
-            {:else if input.type === "record"}
-              <DetailLine label="Serial number">
-                <span class="mono">{input.serial_number}</span>
-              </DetailLine>
-              <DetailLine label="Tag">
-                <span class="mono">{input.tag}</span>
-              </DetailLine>
-            {:else if input.type === "external_record"}
-              <DetailLine label="Commitment">
-                <span class="mono">{input.input_commitment}</span>
-              </DetailLine>
-            {:else}
-              Not Implemented
-            {/if}
-          </div>
-          <div class="details-line"></div>
-        </div>
-      {/each}
-    </div>
-  {/snippet}
-  {#snippet output(binds)}
-    <div class="tab" bind:this={binds.output}>
-      {#each transition.outputs as output, i}
-        <div class="header-xs">Output #{i + 1}</div>
-        <div class="details compact">
-          <div class="group">
-            <DetailLine label="Type">
-              {output.type.charAt(0).toUpperCase() + output.type.slice(1).replace("_", " ")}
-              <span class="mono">{data.function_definition.output[i]}</span>
-            </DetailLine>
-            {#if output.type === "public"}
-              <DetailLine label="Plaintext">
-                <span class="mono">{output.plaintext}</span>
-              </DetailLine>
-            {:else if output.type === "private"}
-              <DetailLine label="Ciphertext">
-                <span class="mono">{output.ciphertext}</span>
-              </DetailLine>
-            {:else if output.type === "record"}
-              <DetailLine label="Commitment">
-                <span class="mono">{output.commitment}</span>
-              </DetailLine>
-              <DetailLine label="Ciphertext">
-                <span class="mono">{output.record_ciphertext._text}</span>
-              </DetailLine>
-              <div class="record-field">
-                <DetailLine label="owner">
-                  <span class="mono">{output.record_ciphertext.owner}</span>
-                </DetailLine>
-                {#each Object.entries(output.record_ciphertext.data) as [key, value]}
-                  <DetailLine label={key}>
-                    <span class="mono">{Object.values(value)[0]}</span>
-                  </DetailLine>
-                {/each}
-              </div>
-            {:else if output.type === "external_record"}
-              <DetailLine label="Commitment">
-                <span class="mono">{output.commitment}</span>
-              </DetailLine>
-            {:else if output.type === "future"}
-              <DetailLine label="Future">
-                <button class="link" onclick={() => tabs.set_active("finalize")}>
-                  <span class="mono">{output.future.program_id}/{output.future.function_name}(...)</span>
-                </button>
-              </DetailLine>
-            {:else}
-              Not Implemented
-            {/if}
-          </div>
-          <div class="details-line"></div>
-        </div>
-      {/each}
-    </div>
-  {/snippet}
-  {#snippet finalize(binds)}
-    {#if transition.outputs.length > 0 && transition.outputs.at(-1).type === "future"}
-      <div class="tab" bind:this={binds.finalize}>
-        {#each transition.outputs.at(-1).future.arguments as input, i}
-          <div class="header-xs">Input #{i + 1}</div>
-          <div class="details compact">
-            <div class="group">
-              <DetailLine label="Type">
-                {#if typeof input === "string"}
-                  Plaintext
-                {:else}
-                  Future
-                {/if}
-              </DetailLine>
               {#if typeof input === "string"}
-                <DetailLine label="Plaintext">
-                  <span class="mono">{input}</span>
-                </DetailLine>
+                Plaintext
               {:else}
-                <DetailLine label="Future">
-                  <span class="mono">{input.program_id}/{input.function_name}(...)</span>
-                </DetailLine>
+                Future
               {/if}
-            </div>
-            <div class="details-line"></div>
+            </DetailLine>
+            {#if typeof input === "string"}
+              <DetailLine label="Plaintext">
+                <span class="mono">{input}</span>
+              </DetailLine>
+            {:else}
+              <DetailLine label="Future">
+                <span class="mono">{input.program_id}/{input.function_name}(...)</span>
+              </DetailLine>
+            {/if}
           </div>
-        {/each}
-      </div>
-    {/if}
-  {/snippet}
-</Tabs>
+          <div class="details-line"></div>
+        </div>
+      {/each}
+    </div>
+  {/if}
+{/snippet}
+<Tabs
+  bind:active={active_tab}
+  tabs={[
+    { title: "Inputs", id: "input", content: input },
+    { title: "Outputs", id: "output", content: output },
+    ...(has_finalize ? [{ title: "Finalize inputs", id: "finalize", content: finalize }] : []),
+  ]}
+/>
 
 <PageInformation
   title="Transition"

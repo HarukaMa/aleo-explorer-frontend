@@ -27,13 +27,6 @@
 
   $inspect(data)
 
-  const tab_data = [
-    { title: "Program structure", id: "structure" },
-    { title: "Recent transitions", id: "recent_calls" },
-    { title: "Source code", id: "source_code" },
-    { title: "Read mappings", id: "read_mappings" },
-  ]
-
   type TransitionList = {
     height: number
     timestamp: number
@@ -143,7 +136,6 @@
 
   .tab {
     margin-top: 2rem;
-    display: none;
   }
 
   .ellipsis {
@@ -190,7 +182,6 @@
 
   .tab {
     line-height: 1.25rem;
-    display: none;
   }
 
   .source-code {
@@ -303,134 +294,140 @@
   </div>
 </div>
 
-<Tabs {tab_data}>
-  {#snippet structure(binds)}
-    <div class="tab" bind:this={binds.structure}>
-      <div class="details">
-        <div class="group">
-          <DetailLine label="Imports">
-            {#if data.imports.length === 0}
-              <span class="dim">None</span>
-            {:else}
-              {#each data.imports as i}
-                <Link href="/program/{i}">
-                  <div class="mono">{i}</div>
-                </Link>
-              {/each}
-            {/if}
-          </DetailLine>
-          <div class="details-line"></div>
-          <DetailLine label="Mappings">
-            {#if data.mappings.length === 0}
-              <span class="dim">None</span>
-            {:else}
-              {#each data.mappings as m}
-                <div class="mono">{m.name} ({m.key_type} -> {m.value_type})</div>
-              {/each}
-            {/if}
-          </DetailLine>
-          <div class="details-line"></div>
-          <DetailLine label="Structs">
-            {#if data.structs.length === 0}
-              <span class="dim">None</span>
-            {:else}
-              {#each data.structs as s}
-                <div class="mono">{s}</div>
-              {/each}
-            {/if}
-          </DetailLine>
-          <div class="details-line"></div>
-          <DetailLine label="Records">
-            {#if data.records.length === 0}
-              <span class="dim">None</span>
-            {:else}
-              {#each data.records as r}
-                <div class="mono">{r}</div>
-              {/each}
-            {/if}
-          </DetailLine>
-          <div class="details-line"></div>
-          <DetailLine label="Functions">
-            {#if data.closures.length === 0}
-              <span class="dim">None</span>
-            {:else}
-              {#each data.closures as f}
-                <div class="mono">{f}</div>
-              {/each}
-            {/if}
-          </DetailLine>
-          <div class="details-line"></div>
-          <DetailLine label="Transitions">
-            {#if data.functions.length === 0}
-              <span class="dim">None</span>
-            {:else}
-              {#each data.functions as t}
-                <div class="mono">{t}</div>
-              {/each}
-            {/if}
-          </DetailLine>
-        </div>
-      </div>
-    </div>
-  {/snippet}
-  {#snippet recent_calls(binds)}
-    <div class="tab" bind:this={binds.recent_calls}>
-      {#if transition_table_data.length === 0}
-        <Callout title="No transitions" description="There are no transitions in this program yet." icon="list-icon" />
-      {:else}
-        <TableContainer>
-          {#key pagination}
-            <DataTable columns={transition_table_columns} data={paginated_transition_data} />
-          {/key}
-          {#key pagination}
-            <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
-          {/key}
-        </TableContainer>
-      {/if}
-    </div>
-  {/snippet}
-  {#snippet source_code(binds)}
-    <div class="tab" bind:this={binds.source_code}>
-      <div class="source-code">
-        <div class="source-code-header">
-          <span>Program Source Code (Aleo Instruction)</span>
-          <Button cls={ButtonLinkClass.Ghost} disabled label="Upload Leo Source" />
-        </div>
-        <div class="details-line"></div>
-        <div class="source-code-body">
-          <Highlight
-            language={aleo}
-            code={data.source}
-            numberLine
-            hideBorder
-            backgroudColor="#f9f9f9"
-            --line-number-color="#9e9e9e"
-            class="source-code-highlight"
-          />
-        </div>
-      </div>
-    </div>
-  {/snippet}
-  {#snippet read_mappings(binds)}
-    <div class="tab" bind:this={binds.read_mappings}>
-      {#if data.mappings.length === 0}
-        <Callout title="No mappings" description="This program has no mappings." icon="list-icon" />
-      {:else}
-        <div class="mappings">
-          {#key data.mappings}
-            {#each data.mappings as mapping}
-              <ReadMapping
-                program={data.program_id}
-                mapping={mapping.name}
-                type={mapping.key_type + " -> " + mapping.value_type}
-              />
+{#snippet structure()}
+  <div class="tab">
+    <div class="details">
+      <div class="group">
+        <DetailLine label="Imports">
+          {#if data.imports.length === 0}
+            <span class="dim">None</span>
+          {:else}
+            {#each data.imports as i}
+              <Link href="/program/{i}">
+                <div class="mono">{i}</div>
+              </Link>
             {/each}
-          {/key}
-        </div>
-      {/if}
+          {/if}
+        </DetailLine>
+        <div class="details-line"></div>
+        <DetailLine label="Mappings">
+          {#if data.mappings.length === 0}
+            <span class="dim">None</span>
+          {:else}
+            {#each data.mappings as m}
+              <div class="mono">{m.name} ({m.key_type} -> {m.value_type})</div>
+            {/each}
+          {/if}
+        </DetailLine>
+        <div class="details-line"></div>
+        <DetailLine label="Structs">
+          {#if data.structs.length === 0}
+            <span class="dim">None</span>
+          {:else}
+            {#each data.structs as s}
+              <div class="mono">{s}</div>
+            {/each}
+          {/if}
+        </DetailLine>
+        <div class="details-line"></div>
+        <DetailLine label="Records">
+          {#if data.records.length === 0}
+            <span class="dim">None</span>
+          {:else}
+            {#each data.records as r}
+              <div class="mono">{r}</div>
+            {/each}
+          {/if}
+        </DetailLine>
+        <div class="details-line"></div>
+        <DetailLine label="Functions">
+          {#if data.closures.length === 0}
+            <span class="dim">None</span>
+          {:else}
+            {#each data.closures as f}
+              <div class="mono">{f}</div>
+            {/each}
+          {/if}
+        </DetailLine>
+        <div class="details-line"></div>
+        <DetailLine label="Transitions">
+          {#if data.functions.length === 0}
+            <span class="dim">None</span>
+          {:else}
+            {#each data.functions as t}
+              <div class="mono">{t}</div>
+            {/each}
+          {/if}
+        </DetailLine>
+      </div>
     </div>
-  {/snippet}
-</Tabs>
+  </div>
+{/snippet}
+{#snippet recent_calls()}
+  <div class="tab">
+    {#if transition_table_data.length === 0}
+      <Callout title="No transitions" description="There are no transitions in this program yet." icon="list-icon" />
+    {:else}
+      <TableContainer>
+        {#key pagination}
+          <DataTable columns={transition_table_columns} data={paginated_transition_data} />
+        {/key}
+        {#key pagination}
+          <TableNav page={pagination.pageIndex + 1} {set_page} {total_pages} />
+        {/key}
+      </TableContainer>
+    {/if}
+  </div>
+{/snippet}
+{#snippet source_code()}
+  <div class="tab">
+    <div class="source-code">
+      <div class="source-code-header">
+        <span>Program Source Code (Aleo Instruction)</span>
+        <Button cls={ButtonLinkClass.Ghost} disabled label="Upload Leo Source" />
+      </div>
+      <div class="details-line"></div>
+      <div class="source-code-body">
+        <Highlight
+          language={aleo}
+          code={data.source}
+          numberLine
+          hideBorder
+          backgroudColor="#f9f9f9"
+          --line-number-color="#9e9e9e"
+          class="source-code-highlight"
+        />
+      </div>
+    </div>
+  </div>
+{/snippet}
+{#snippet read_mappings()}
+  <div class="tab">
+    {#if data.mappings.length === 0}
+      <Callout title="No mappings" description="This program has no mappings." icon="list-icon" />
+    {:else}
+      <div class="mappings">
+        {#key data.mappings}
+          {#each data.mappings as mapping}
+            <ReadMapping
+              program={data.program_id}
+              mapping={mapping.name}
+              type={mapping.key_type + " -> " + mapping.value_type}
+            />
+          {/each}
+        {/key}
+      </div>
+    {/if}
+  </div>
+{/snippet}
+<Tabs
+  tabs={[
+    { title: "Program structure", id: "structure", content: structure },
+    { title: "Recent transitions", id: "recent_calls", content: recent_calls },
+    { title: "Source code", id: "source_code", content: source_code },
+    { title: "Read mappings", id: "read_mappings", content: read_mappings },
+  ]}
+/>
 
 <PageInformation
   title="Program"

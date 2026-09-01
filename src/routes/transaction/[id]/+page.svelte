@@ -105,12 +105,6 @@
     return { amount, from, to }
   })
 
-  const tab_data = [
-    { title: "Transitions", id: "transitions" },
-    { title: "Mapping operations", id: "mapping" },
-    // { title: "Finalize call graph", id: "finalize-call" },
-  ]
-
   let fee = $derived.by(() => {
     if (state === "Unconfirmed") {
       return data.transaction.fee
@@ -280,7 +274,6 @@
 
   .tab {
     margin-top: 2rem;
-    display: none;
   }
 
   .ellipsis {
@@ -598,59 +591,63 @@
   </div>
 </div>
 
-<Tabs {tab_data}>
-  {#snippet transitions(binds)}
-    <div class="tab" bind:this={binds.transitions}>
-      <TableContainer>
-        <DataTable columns={transition_table_columns} data={transition_table_data}>
-          {#snippet emptyState()}
-            <Callout title="No transitions" description="This transaction has no transitions." icon="list-icon" />
-          {/snippet}
-        </DataTable>
-      </TableContainer>
-    </div>
-  {/snippet}
-  {#snippet mapping(binds)}
-    <div class="tab" bind:this={binds.mapping}>
-      <div class="mapping-operations">
-        {#if state === "Accepted" || state === "Rejected"}
-          {#each data.mapping_operations as op}
-            <div class="operation">
-              <div class="column">
-                <span class="dim">Program</span>
-                <Link href="/program/{op.program_id}">
-                  <span class="mono">{op.program_id}</span>
-                </Link>
-              </div>
-              <div class="column">
-                <span class="dim">Mapping</span>
-                <span class="mono">{op.mapping_name}[{op.key}]</span>
-              </div>
-              <div class="column">
-                <span class="dim">Before</span>
-                {#if op.limited_tracked}
-                  <Status cls={StatusClass.Warning}>Not tracked</Status>
-                {:else if op.previous_value === null}
-                  <Status cls={StatusClass.Info}>New</Status>
-                {:else}
-                  <span class="mono">{op.previous_value}</span>
-                {/if}
-              </div>
-              <div class="column">
-                <span class="dim">After</span>
-                {#if op.type === "Remove"}
-                  <Status cls={StatusClass.Danger}>Removed</Status>
-                {:else}
-                  <span class="mono">{op.value}</span>
-                {/if}
-              </div>
+{#snippet transitions_panel()}
+  <div class="tab">
+    <TableContainer>
+      <DataTable columns={transition_table_columns} data={transition_table_data}>
+        {#snippet emptyState()}
+          <Callout title="No transitions" description="This transaction has no transitions." icon="list-icon" />
+        {/snippet}
+      </DataTable>
+    </TableContainer>
+  </div>
+{/snippet}
+{#snippet mapping()}
+  <div class="tab">
+    <div class="mapping-operations">
+      {#if state === "Accepted" || state === "Rejected"}
+        {#each data.mapping_operations as op}
+          <div class="operation">
+            <div class="column">
+              <span class="dim">Program</span>
+              <Link href="/program/{op.program_id}">
+                <span class="mono">{op.program_id}</span>
+              </Link>
             </div>
-          {/each}
-        {:else}{/if}
-      </div>
+            <div class="column">
+              <span class="dim">Mapping</span>
+              <span class="mono">{op.mapping_name}[{op.key}]</span>
+            </div>
+            <div class="column">
+              <span class="dim">Before</span>
+              {#if op.limited_tracked}
+                <Status cls={StatusClass.Warning}>Not tracked</Status>
+              {:else if op.previous_value === null}
+                <Status cls={StatusClass.Info}>New</Status>
+              {:else}
+                <span class="mono">{op.previous_value}</span>
+              {/if}
+            </div>
+            <div class="column">
+              <span class="dim">After</span>
+              {#if op.type === "Remove"}
+                <Status cls={StatusClass.Danger}>Removed</Status>
+              {:else}
+                <span class="mono">{op.value}</span>
+              {/if}
+            </div>
+          </div>
+        {/each}
+      {:else}{/if}
     </div>
-  {/snippet}
-</Tabs>
+  </div>
+{/snippet}
+<Tabs
+  tabs={[
+    { title: "Transitions", id: "transitions", content: transitions_panel },
+    { title: "Mapping operations", id: "mapping", content: mapping },
+  ]}
+/>
 
 <PageInformation
   title="Transaction"

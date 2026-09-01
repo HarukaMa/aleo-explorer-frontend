@@ -1,41 +1,44 @@
 <script lang="ts">
   import type { Snippet } from "svelte"
 
-  type TabDescriptor = {
+  type Tab = {
     title: string
     id: string
+    content: Snippet
   }
 
   interface Tabs {
-    tab_data: TabDescriptor[]
+    tabs: Tab[]
     active?: string
   }
 
-  let { tab_data, active, ...tabs }: Tabs = $props()
+  let { tabs, active = $bindable() }: Tabs = $props()
 
-  if (!tab_data || tab_data.length === 0) {
-    throw new Error("Tabs component requires at least one tab")
-  }
+  const tabs_id = $props.id()
 
-  let active_tab = $state(active || tab_data[0].id)
+  let selected = $derived(tabs.find((tab) => tab.id === active) ?? tabs[0])
 
-  let snippets: Snippet<[{ [key: string]: HTMLElement }]>[] = $derived(Object.values(tabs))
-
-  let tab_binds: { [key: string]: HTMLElement } = $state({})
-
-  $effect(() => {
-    if (!tab_data.map(({ id }) => id).includes(active_tab)) {
-      active_tab = tab_data[0].id
+  function handle_keydown(event: KeyboardEvent & { currentTarget: HTMLButtonElement }, index: number) {
+    let next_index: number
+    switch (event.key) {
+      case "ArrowLeft":
+        next_index = (index - 1 + tabs.length) % tabs.length
+        break
+      case "ArrowRight":
+        next_index = (index + 1) % tabs.length
+        break
+      case "Home":
+        next_index = 0
+        break
+      case "End":
+        next_index = tabs.length - 1
+        break
+      default:
+        return
     }
-    const other_tabs = Object.entries(tab_binds).filter(([id, _]) => id !== active_tab)
-    for (const [_, bind] of other_tabs) {
-      bind.style.display = "none"
-    }
-    tab_binds[active_tab].style.display = "block"
-  })
-
-  export function set_active(id: string) {
-    active_tab = id
+    event.preventDefault()
+    active = tabs[next_index].id
+    event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("[role=\"tab\"]")[next_index]?.focus()
   }
 </script>
 
@@ -60,11 +63,17 @@
     border: none;
     padding: 0.5rem 1rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: color 0.2s,
+    background-color 0.2s;
     font-size: 0.875rem;
     font-weight: 600;
     font-family: "Open Sans Variable", system-ui;
     color: black;
+
+    &:focus-visible {
+      outline: 2px solid $blue-500;
+      outline-offset: 2px;
+    }
 
     &.active {
       color: $blue-500;
@@ -74,16 +83,36 @@
   }
 </style>
 
-<div class="tabs">
-  <div class="tab-titles">
-    {#each tab_data as tab}
-      <button class:active={active_tab === tab.id} onclick={() => (active_tab = tab.id)}>
-        {tab.title}
-      </button>
-    {/each}
+{#if selected}
+  <div class="tabs">
+    <div class="tab-titles" role="tablist" aria-label="Details">
+      {#each tabs as tab, index}
+        <button
+          type="button"
+          role="tab"
+          id="{tabs_id}-tab-{tab.id}"
+          aria-controls="{tabs_id}-panel-{tab.id}"
+          aria-selected={selected.id === tab.id}
+          tabindex={selected.id === tab.id ? 0 : -1}
+          class:active={selected.id === tab.id}
+          onclick={() => (active = tab.id)}
+          onkeydown={(event) => handle_keydown(event, index)}
+        >
+          {tab.title}
+        </button>
+      {/each}
+    </div>
   </div>
-</div>
 
-{#each snippets as tab}
-  {@render tab(tab_binds)}
-{/each}
+  {#each tabs as tab}
+    <div
+      id="{tabs_id}-panel-{tab.id}"
+      role="tabpanel"
+      aria-labelledby="{tabs_id}-tab-{tab.id}"
+      tabindex="0"
+      hidden={selected.id !== tab.id}
+    >
+      {@render tab.content()}
+    </div>
+  {/each}
+{/if}
