@@ -27,9 +27,7 @@
     }, 1000)
   })
 
-  let form: HTMLFormElement | undefined
-
-  async function handleSubmit(event: Event) {
+  async function handleSubmit(event: SubmitEvent) {
     event.preventDefault()
 
     if (!content.trim()) {
@@ -40,7 +38,7 @@
     isSubmitting = true
     errorMessage = ""
 
-    const formData = new FormData(form)
+    const formData = new FormData(event.currentTarget as HTMLFormElement)
 
     try {
       const response = await fetch("/api/feedback", {
@@ -108,13 +106,6 @@
       align-items: flex-start;
     }
 
-    &.success {
-      background-color: $green-50;
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-    }
-
     &.alert {
       background-color: $red-50;
       display: flex;
@@ -136,19 +127,6 @@
     background-color: $yellow-600;
     mask-image: $alert-icon;
     background-repeat: no-repeat;
-  }
-
-  .success-icon {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-    background-color: $green-500;
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
-    mask-size: contain;
-    -webkit-mask-size: contain;
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
   }
 
   .alert-icon {
@@ -326,7 +304,7 @@
         </p>
       </div>
 
-      <form onsubmit={handleSubmit} bind:this={form}>
+      <form onsubmit={handleSubmit}>
         <div class="form-group">
           <label class="label" for="contact">Email</label>
           <input

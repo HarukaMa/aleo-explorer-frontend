@@ -8,8 +8,6 @@
   }
 
   let { color, children, link }: Chip = $props()
-
-  console.log(color)
 </script>
 
 <style lang="scss">

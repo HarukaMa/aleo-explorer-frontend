@@ -16,7 +16,7 @@
 
   let { data: load_data } = $props()
 
-  let data = $state(load_data.validators)
+  let data = $derived(load_data.validators)
 
   let total_stake = $derived(data.total_stake)
 
@@ -78,30 +78,6 @@
 <style lang="scss">
   @use "/static/styles/variables" as *;
 
-  div.header {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    background-color: $blue-50;
-    padding: 1.5rem 1.5rem;
-    border-radius: 1rem;
-    box-sizing: border-box;
-    gap: 2.5rem;
-    align-items: center;
-    justify-content: center;
-
-    > * {
-      max-width: 1620px;
-      width: 100%;
-    }
-
-    .title {
-      padding-left: 1rem;
-      font-size: 1.375rem;
-      font-weight: 600;
-      font-family: "Montserrat Variable", sans-serif;
-    }
-  }
   .address-cell {
     display: flex;
     gap: 0.5rem;
@@ -146,10 +122,6 @@
       font-family: "Inconsolata Variable", monospace;
       font-size: 0.8rem;
     }
-  }
-
-  .no-website {
-    color: $grey-400;
   }
 
   .address-name {

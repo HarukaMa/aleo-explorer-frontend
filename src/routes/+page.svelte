@@ -18,8 +18,8 @@
 
   let { data } = $props()
 
-  let summary = $state(data.summary)
-  let recent_blocks = $state(data.recent_blocks)
+  let summary = $derived(data.summary)
+  let recent_blocks = $derived(data.recent_blocks)
 
   type SummaryRow =
     | {
@@ -123,18 +123,26 @@
     let requesting = false
     const interval = setInterval(async () => {
       if (requesting || document.hidden) return
+
+      const first_block = table_data[0]
+      if (first_block === undefined) return
+
       requesting = true
-      const response = await fetch(
-        "/api/index_update?" + new URLSearchParams({ last_block: table_data[0].height.toString() }),
-      )
-      requesting = false
-      if (!response.ok) {
-        console.error("Failed to fetch new data")
-        return
+      try {
+        const response = await fetch(
+          "/api/index_update?" + new URLSearchParams({ last_block: first_block.height.toString() }),
+        )
+        if (!response.ok) {
+          throw new Error(`Index update failed with status ${response.status}`)
+        }
+        const new_data: { summary: typeof summary; recent_blocks: typeof recent_blocks } = await response.json()
+        summary = new_data.summary
+        recent_blocks = new_data.recent_blocks.concat(recent_blocks).slice(0, 10)
+      } catch (error) {
+        console.error("Failed to update home data", error)
+      } finally {
+        requesting = false
       }
-      const new_data = await response.json()
-      summary = new_data.summary
-      recent_blocks = new_data.recent_blocks.concat(recent_blocks).slice(0, 10)
     }, 5000)
     $effect(() => {
       return () => clearInterval(interval)

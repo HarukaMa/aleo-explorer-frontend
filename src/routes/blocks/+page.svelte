@@ -19,10 +19,10 @@
 
   let { data }: { data: PageData } = $props()
 
-  let blocks = $state(data.blocks.blocks)
-  let total_blocks = $state(data.blocks.total_blocks)
-  let total_pages = $state(data.blocks.total_pages)
-  let current_page = $state(+data.page)
+  let blocks = $derived(data.blocks.blocks)
+  let total_blocks = $derived(data.blocks.total_blocks)
+  let total_pages = $derived(data.blocks.total_pages)
+  let current_page = $derived(+data.page)
 
   let table_data: BlockList[] = $derived(
     blocks.map((block) => ({

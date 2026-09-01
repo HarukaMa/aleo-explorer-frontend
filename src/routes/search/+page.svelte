@@ -131,14 +131,6 @@
 <style lang="scss">
   @use "/static/styles/variables" as *;
 
-  div.header {
-    .search-title {
-      font-size: 1.375rem;
-      font-weight: 600;
-      font-family: "Montserrat Variable", sans-serif;
-    }
-  }
-
   .error-container {
     display: flex;
     justify-content: center;

@@ -13,9 +13,9 @@
 
   let { data } = $props()
 
-  let programs = $state(data.programs.programs)
-  let total_programs = $state(data.programs.total_programs)
-  let total_pages = $state(data.programs.total_pages)
+  let programs = $derived(data.programs.programs)
+  let total_programs = $derived(data.programs.total_programs)
+  let total_pages = $derived(data.programs.total_pages)
 
   type ProgramList = {
     id: string
@@ -60,7 +60,7 @@
     }),
   ])
 
-  let current_page = $state(+data.page)
+  let current_page = $derived(+data.page)
 
   async function set_page(page: number) {
     const response = await fetch(`/api/programs?p=${page}`)
@@ -79,58 +79,6 @@
     history.replaceState({}, "", new_url)
   }
 </script>
-
-<style lang="scss">
-  @use "/static/styles/variables" as *;
-
-  div.header {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    background-color: $blue-50;
-    padding: 1.5rem 1.5rem;
-    border-radius: 1rem;
-    box-sizing: border-box;
-    gap: 2.5rem;
-    align-items: center;
-    justify-content: center;
-
-    > * {
-      max-width: 1620px;
-      width: 100%;
-    }
-
-    .title {
-      padding-left: 1rem;
-      font-size: 1.375rem;
-      font-weight: 600;
-      font-family: "Montserrat Variable", sans-serif;
-    }
-
-    .info {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-column-gap: 1rem;
-
-      .info-data {
-        display: flex;
-        flex-direction: column;
-
-        .info-data-title {
-          font-family: "Open Sans Variable", system-ui;
-          font-size: 0.875rem;
-          line-height: 1.25rem;
-        }
-
-        .info-data-value {
-          font-weight: 600;
-          font-size: 1.125rem;
-          line-height: 1.5rem;
-        }
-      }
-    }
-  }
-</style>
 
 <Seo
   title="Aleo Programs List | AleoScan - Aleo Blockchain Explorer"

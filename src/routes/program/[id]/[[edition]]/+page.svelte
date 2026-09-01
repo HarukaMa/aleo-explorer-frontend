@@ -103,31 +103,6 @@
     background-color: $grey-100;
   }
 
-  .column {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .secondary {
-    font-size: 0.75rem;
-    line-height: 0.875rem;
-    color: $grey-600;
-  }
-
-  #validator-toggle {
-    color: $blue-600;
-    cursor: pointer;
-  }
-
-  #validator-list {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-top: 0.5rem;
-  }
-
   .tab {
     margin-top: 2rem;
   }
@@ -136,42 +111,6 @@
     max-width: 30vw;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .aborted-header {
-    font-size: 1rem;
-    font-family: "Montserrat Variable", sans-serif;
-    font-weight: 600;
-    line-height: 1.25rem;
-    margin-top: 1rem;
-  }
-
-  .fee-breakdown {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .mapping-operations {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .operation {
-    display: grid;
-    padding: 1.5rem;
-    grid-row-gap: 1rem;
-    grid-column-gap: 0.5rem;
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: auto;
-    border-radius: 1rem;
-    border: 1px solid $grey-100;
-    word-break: break-all;
-
-    .column :nth-child(2) {
-      line-height: 1.25rem;
-    }
   }
 
   .tab {

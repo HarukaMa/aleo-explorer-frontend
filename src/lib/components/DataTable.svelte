@@ -1,4 +1,4 @@
-<script generics="TData extends RowData" lang="ts">
+<script generics="TData extends import('@tanstack/svelte-table').RowData" lang="ts">
   import { FlexRender } from "@tanstack/svelte-table"
   import { createAppTable, type DataTableColumns } from "$lib/table"
   import type { Snippet } from "svelte"

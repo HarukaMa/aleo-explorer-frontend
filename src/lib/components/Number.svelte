@@ -10,7 +10,7 @@
 
   let { number, precision = 0, unit, flash = false }: Number = $props()
 
-  let prev_number = $state<number | Decimal | bigint | string>(number)
+  let prev_number = $state<number | Decimal | bigint | string>()
 
   let integer_part = $derived.by(() => {
     if (typeof number === "bigint") {
@@ -69,13 +69,13 @@
 
   let span: HTMLSpanElement
   $effect(() => {
-    if (flash && prev_number !== number) {
-      prev_number = number
+    if (prev_number !== undefined && flash && prev_number !== number) {
       span.classList.add("flash")
       setTimeout(() => {
         span.classList.remove("flash")
       }, 600)
     }
+    prev_number = number
   })
   const integer_parts = $derived(
     integer_part

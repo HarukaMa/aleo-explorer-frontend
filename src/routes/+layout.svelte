@@ -15,25 +15,23 @@
 
   let is_index = $derived($page.url.pathname === "/")
 
-  let stored_time_mode: TimeMode
-  if (browser) {
-    const storage_value = getCookie("time_display") || localStorage.getItem("time_display")
-    if (storage_value !== null && ["UTC", "Local", "Relative"].includes(storage_value)) {
-      // @ts-expect-error
-      stored_time_mode = TimeMode[storage_value]
-    } else {
-      stored_time_mode = TimeMode.UTC
-    }
-  } else {
-    if (data.time_display !== undefined && ["UTC", "Local", "Relative"].includes(data.time_display)) {
-      // @ts-expect-error
-      stored_time_mode = TimeMode[data.time_display]
-    } else {
-      stored_time_mode = TimeMode.UTC
+  function get_time_mode(value: string | undefined) {
+    switch (value) {
+      case "Local":
+        return TimeMode.Local
+      case "Relative":
+        return TimeMode.Relative
+      default:
+        return TimeMode.UTC
     }
   }
 
-  let time_mode = current_time_mode(stored_time_mode)
+  function initial_time_mode() {
+    const value = browser ? getCookie("time_display") || localStorage.getItem("time_display") : data.time_display
+    return get_time_mode(value ?? undefined)
+  }
+
+  let time_mode = current_time_mode(initial_time_mode())
 
   onMount(() => {
     const interval = setInterval(() => {
@@ -42,14 +40,14 @@
     return () => clearInterval(interval)
   })
 
-  let plausible_opt_out_value: boolean
-  if (browser) {
-    plausible_opt_out_value = (getCookie("plausible_opt_out") || localStorage.getItem("plausible_opt_out")) === "true"
-  } else {
-    plausible_opt_out_value = data.plausible_opt_out === "true"
+  function initial_plausible_opt_out() {
+    const value = browser
+      ? getCookie("plausible_opt_out") || localStorage.getItem("plausible_opt_out")
+      : data.plausible_opt_out
+    return value === "true"
   }
 
-  let plausible_opt_out = $state(plausible_opt_out_value)
+  let plausible_opt_out = $state(initial_plausible_opt_out())
 
   let aleo_price: { price: number; change24h: number | null } = $state({ price: 0, change24h: 0 })
 

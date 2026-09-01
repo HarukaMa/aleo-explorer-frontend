@@ -258,25 +258,6 @@
 <style lang="scss">
   @use "/static/styles/variables" as *;
 
-  div.header {
-    .block-icon {
-      height: 32px;
-      width: 32px;
-      background-image: $block-icon;
-    }
-
-    .block-num {
-      font-size: 1.375rem;
-      font-weight: 600;
-      font-family: "Montserrat Variable", sans-serif;
-    }
-
-    .block-title {
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
-  }
-
   .details {
     margin-top: 2.5rem;
     display: flex;

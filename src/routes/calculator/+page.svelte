@@ -9,9 +9,9 @@
 
   let { data } = $props()
 
-  let proof_target = $state(data.proof_target.toString())
+  let proof_target = $derived(data.proof_target.toString())
   let solution_rate = $state("")
-  let avg_reward = data.avg_reward
+  let avg_reward = $derived(data.avg_reward)
 
   let result = $state<{
     days: number
@@ -79,16 +79,6 @@
   .form-section {
     flex: 1;
     width: 100%;
-  }
-
-  .disclaimer {
-    font-size: 0.875rem;
-    line-height: 1.5;
-    margin-bottom: 2rem;
-
-    @media (max-width: 768px) {
-      margin-top: 0;
-    }
   }
 
   .form-group {
@@ -239,40 +229,6 @@
     font-size: 0.875rem;
     line-height: 1.5;
     margin: 0;
-  }
-
-  .info-footer {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    border: 1px solid $grey-100;
-    border-radius: 1rem;
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-
-  .info-icon {
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3E%3Cpath fill='%239e9e9e' d='M3 5v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2zm8 2h2v2h-2V7zm0 4h2v6h-2v-6z'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-  }
-
-  .info-content {
-    font-size: 0.875rem;
-    line-height: 1.5;
-  }
-
-  .info-title {
-    font-weight: 600;
-    margin-right: 0.25rem;
-  }
-
-  .placeholder {
-    color: $grey-300;
-    font-style: italic;
   }
 
   .callout-wrapper {

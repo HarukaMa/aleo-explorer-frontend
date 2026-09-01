@@ -64,10 +64,6 @@
     z-index: 100;
     width: max-content;
     max-width: 15rem;
-
-    &.visible {
-      display: block;
-    }
   }
 
   .arrow {

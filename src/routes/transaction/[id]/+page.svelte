@@ -252,19 +252,6 @@
     color: $grey-600;
   }
 
-  #validator-toggle {
-    color: $blue-600;
-    cursor: pointer;
-  }
-
-  #validator-list {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-top: 0.5rem;
-  }
-
   .tab {
     margin-top: 2rem;
   }
@@ -273,14 +260,6 @@
     max-width: 30vw;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .aborted-header {
-    font-size: 1rem;
-    font-family: "Montserrat Variable", sans-serif;
-    font-weight: 600;
-    line-height: 1.25rem;
-    margin-top: 1rem;
   }
 
   .fee-breakdown {

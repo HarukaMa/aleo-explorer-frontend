@@ -11,8 +11,8 @@
 
   let { href, children, content, external = false, secondary = false }: Link = $props()
 
-  let target = external ? "_blank" : undefined
-  let rel = external ? "nofollow" : undefined
+  let target = $derived(external ? "_blank" : undefined)
+  let rel = $derived(external ? "nofollow" : undefined)
 </script>
 
 <style lang="scss">
@@ -33,7 +33,7 @@
   }
 </style>
 
-<a class={[{secondary}]} {href} {rel} {target}>
+<a class={[{ secondary }]} {href} {rel} {target}>
   {#if children}
     {@render children()}
   {:else}
