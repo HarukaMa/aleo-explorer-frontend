@@ -408,7 +408,7 @@
           {/if}
         </div>
         <div class="group-separator"></div>
-        <DetailLine tooltip="The sender address" label="From">
+        <DetailLine tooltip="The sender address when it is public. Private senders are hidden." label="From">
           {#if transferDetails.from === null}
             {@render privateIndicator()}
           {:else}
@@ -417,7 +417,7 @@
             </Link>
           {/if}
         </DetailLine>
-        <DetailLine tooltip="The recipient address" label="To">
+        <DetailLine tooltip="The recipient address when it is public. Private recipients are hidden." label="To">
           {#if transferDetails.to === null}
             {@render privateIndicator()}
           {:else}

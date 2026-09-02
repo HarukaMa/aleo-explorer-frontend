@@ -394,7 +394,7 @@
       (<Time no_relative timestamp={block.block.header.metadata.timestamp} />)
       <!-- @formatter:on -->
     </DetailLine>
-    <DetailLine label="Epoch" tooltip="The consensus period in which the block was produced.">
+    <DetailLine label="Epoch" tooltip="The zero-based 360-block puzzle epoch containing this block.">
       <div class="column">
         <span>{Math.floor(block.block.header.metadata.height / 360)}</span>
         <span class="secondary">{block.block.header.metadata.height % 360} / 360</span>
@@ -405,7 +405,10 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Validators" tooltip="Entities responsible for validating and adding the block.">
+    <DetailLine
+      label="Validators"
+      tooltip="The committee at this block. Red entries were absent from its quorum subdag."
+    >
       {block.all_validators.length}
       <a id="validator-toggle" onclick={toggle_validators} onkeydown={toggle_validators} role="button" tabindex="0"
         >(Show validators)</a
@@ -428,15 +431,15 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Proof target" tooltip="The difficulty needed to generate a valid puzzle solution.">
+    <DetailLine label="Proof target" tooltip="The solution proof target calculated for the next block.">
       <Number number={block.block.header.metadata.proof_target}></Number>
     </DetailLine>
-    <DetailLine label="Coinbase target" tooltip="The total difficulty limit for a puzzle reward cycle.">
+    <DetailLine label="Coinbase target" tooltip="The puzzle reward target calculated for the next block.">
       <Number number={block.block.header.metadata.coinbase_target}></Number>
     </DetailLine>
     <DetailLine
       label="Cumulative proof target"
-      tooltip="The total difficulty of solutions in the current puzzle reward cycle."
+      tooltip="Accepted solution target accumulated during the current reward cycle."
     >
       <div class="column">
         <Number number={block.block.header.metadata.cumulative_proof_target}></Number>
@@ -457,10 +460,13 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Block reward" tooltip="The reward given to validators for processing the block.">
+    <DetailLine
+      label="Block reward"
+      tooltip="Issuance, one-third of coinbase rewards, and priority fees distributed to stakers."
+    >
       <AleoCredit number={rewards.block} suffix={true}></AleoCredit>
     </DetailLine>
-    <DetailLine label="Puzzle reward" tooltip="The reward for solving the cryptographic proving puzzle.">
+    <DetailLine label="Puzzle reward" tooltip="Two-thirds of the coinbase reward, split by accepted solution target.">
       <AleoCredit number={rewards.puzzle} suffix={true}></AleoCredit>
     </DetailLine>
   </div>
@@ -468,7 +474,10 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine label="Total fee" tooltip="The sum of all transaction fees included in the block.">
+    <DetailLine
+      label="Total fee"
+      tooltip="The sum of base and priority fees paid by confirmed transactions in this block."
+    >
       <div class="column">
         <AleoCredit number={total_fee.base.add(total_fee.priority)} suffix={true}></AleoCredit>
         <span class="secondary">
@@ -508,7 +517,7 @@
         </DetailLine>
         <DetailLine
           label="Cumulative weight"
-          tooltip="The total weight of all previous blocks, measuring overall difficulty."
+          tooltip="The cumulative target of accepted puzzle solutions through this block."
         >
           <Number number={block.block.header.metadata.cumulative_weight} />
         </DetailLine>
@@ -531,19 +540,19 @@
         <div class="details-line"></div>
       </div>
       <div class="group">
-        <DetailLine label="Transactions root" tooltip="The hash of all transactions included in this block.">
+        <DetailLine label="Transactions root" tooltip="The Merkle root of the confirmed transaction IDs in this block.">
           <span class="mono">{block.block.header.transactions_root}</span>
         </DetailLine>
-        <DetailLine label="Finalize root" tooltip="The state root marking finalized state for this block.">
+        <DetailLine
+          label="Finalize root"
+          tooltip="Commitment to transaction finalize IDs and ratified finalize operations."
+        >
           <span class="mono">{block.block.header.finalize_root}</span>
         </DetailLine>
-        <DetailLine label="Ratifications root" tooltip="The state root after all ratifications.">
+        <DetailLine label="Ratifications root" tooltip="The Merkle root of the ratification IDs in this block.">
           <span class="mono">{block.block.header.ratifications_root}</span>
         </DetailLine>
-        <DetailLine
-          label="Solutions root"
-          tooltip="The state root reflecting all proving solutions submitted for this block."
-        >
+        <DetailLine label="Solutions root" tooltip="Accumulator commitment to included solutions, or zero when empty.">
           <span class="mono">{block.block.header.solutions_root}</span>
         </DetailLine>
       </div>
