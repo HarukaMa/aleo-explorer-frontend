@@ -103,13 +103,8 @@
     return { amount, from, to }
   })
 
-  let fee = $derived.by(() => {
-    if (state === "Unconfirmed") {
-      return data.transaction.fee
-    } else {
-      return data.confirmed_transaction.transaction.fee
-    }
-  })
+  let split_fee = $derived(new Decimal(data.split_fee))
+  let total_fee_spent = $derived(new Decimal(data.total_fee).add(split_fee))
 
   type TransitionList = {
     index: string
@@ -536,29 +531,43 @@
         </DetailLine>
       {/if}
       <div class="group-separator"></div>
-      {#if fee}
-        <DetailLine tooltip={tooltips.transaction.totalFeeSpent} label="Total fee spent">
-          <AleoToken number={fee.amount[0] + fee.amount[1]} suffix />
-        </DetailLine>
-        <div class="group-separator"></div>
-        <DetailLine tooltip={tooltips.transaction.breakdown} label="Breakdown">
-          <div class="fee-breakdown">
-            <FeeBreakdown amount={fee.amount[0]} label="Base fee"></FeeBreakdown>
-            <FeeBreakdown amount={fee.amount[1]} label="Priority fee"></FeeBreakdown>
-          </div>
-        </DetailLine>
-      {:else}
-        <DetailLine tooltip={tooltips.transaction.totalFeeSpent} label="Total fee spent">
-          <AleoToken number="10000" suffix />
-        </DetailLine>
-        <div class="group-separator"></div>
-        <DetailLine tooltip={tooltips.transaction.breakdown} label="Breakdown">
-          <div class="fee-breakdown">
-            <FeeBreakdown amount="10000" label="Base fee"></FeeBreakdown>
-            <FeeBreakdown amount="0" label="Priority fee"></FeeBreakdown>
-          </div>
-        </DetailLine>
-      {/if}
+      <DetailLine label="Total fee spent" tooltip={tooltips.transaction.totalFeeSpent}>
+        <AleoToken number={total_fee_spent} suffix />
+      </DetailLine>
+      <div class="group-separator"></div>
+      <DetailLine label="Breakdown" tooltip={tooltips.transaction.breakdown}>
+        <div class="fee-breakdown">
+          {#if state === "Accepted" && type === "Execute"}
+            <FeeBreakdown label="Base fee">
+              <FeeBreakdown amount={data.storage_cost} label="Storage cost"></FeeBreakdown>
+              {#if data.finalize_costs.length > 1}
+                <FeeBreakdown label="Finalize costs">
+                  {#each data.finalize_costs as cost, index}
+                    <FeeBreakdown amount={cost} label="Transition #{index + 1}"></FeeBreakdown>
+                  {/each}
+                </FeeBreakdown>
+              {:else}
+                <FeeBreakdown amount={data.finalize_cost} label="Finalize cost"></FeeBreakdown>
+              {/if}
+              <FeeBreakdown amount={data.burnt_fee} label="Burnt credits"></FeeBreakdown>
+            </FeeBreakdown>
+          {:else if state === "Accepted" && type === "Deploy"}
+            <FeeBreakdown label="Base fee">
+              <FeeBreakdown amount={data.storage_cost} label="Storage cost"></FeeBreakdown>
+              <FeeBreakdown amount={data.synthesis_cost} label="Synthesis cost"></FeeBreakdown>
+              <FeeBreakdown amount={data.constructor_cost} label="Constructor cost"></FeeBreakdown>
+              <FeeBreakdown amount={data.namespace_cost} label="Namespace cost"></FeeBreakdown>
+              <FeeBreakdown amount={data.burnt_fee} label="Burnt credits"></FeeBreakdown>
+            </FeeBreakdown>
+          {:else}
+            <FeeBreakdown amount={data.base_fee} label="Base fee"></FeeBreakdown>
+          {/if}
+          <FeeBreakdown amount={data.priority_fee} label="Priority fee"></FeeBreakdown>
+          {#if split_fee.gt(0)}
+            <FeeBreakdown amount={split_fee} label="Split fee"></FeeBreakdown>
+          {/if}
+        </div>
+      </DetailLine>
     </div>
   </div>
 </div>

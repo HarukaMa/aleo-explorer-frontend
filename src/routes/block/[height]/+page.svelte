@@ -42,26 +42,18 @@
   })
 
   let total_fee = $derived.by(() => {
-    let total_base_fee = new Decimal(0)
-    let total_priority_fee = new Decimal(0)
-    for (let tx of block.block.transactions) {
-      if (tx.type === "accepted_execute") {
-        if (tx.transaction.fee !== null) {
-          const fee = tx.transaction.fee
-          total_base_fee = total_base_fee.add(fee.amount[0])
-          total_priority_fee = total_priority_fee.add(fee.amount[1])
-        }
-      } else {
-        const fee = tx.transaction.fee
-        total_base_fee = total_base_fee.add(fee.amount[0])
-        total_priority_fee = total_priority_fee.add(fee.amount[1])
-      }
+    let base = new Decimal(0)
+    let priority = new Decimal(0)
+    let burnt = new Decimal(0)
+    let split = new Decimal(0)
+    for (const tx of block.block.transactions) {
+      const fee = block.fee_breakdowns[tx.transaction.id]
+      base = base.add(fee.minimum_fee)
+      priority = priority.add(fee.priority_fee)
+      burnt = burnt.add(fee.burnt_fee)
+      split = split.add(fee.split_fee)
     }
-    return {
-      base: total_base_fee,
-      priority: total_priority_fee,
-      burnt: new Decimal(0),
-    }
+    return { base, priority, burnt, split }
   })
 
   let validator_showing = $state(false)
@@ -82,29 +74,83 @@
     solution_targets.reduce((acc: Decimal, target: Decimal) => acc.add(target), new Decimal(0)),
   )
 
+  type BlockTransition = {
+    program_id: string
+    function_name: string
+  }
+
+  type BlockFee = {
+    transition: unknown | null
+    amount: [Decimal.Value, Decimal.Value]
+  }
+
+  type BlockTransaction =
+    | {
+    type: "accepted_execute"
+    transaction: {
+      id: string
+      execution: { transitions: BlockTransition[] }
+      fee: BlockFee | null
+    }
+  }
+    | {
+    type: "accepted_deploy"
+    transaction: {
+      id: string
+      deployment: { program: { id: string } }
+      fee: BlockFee
+    }
+  }
+    | {
+    type: "rejected_execute"
+    transaction: { id: string; fee: BlockFee }
+    rejected: { execution: { transitions: BlockTransition[] } }
+  }
+    | {
+    type: "rejected_deploy"
+    transaction: { id: string; fee: BlockFee }
+    rejected: { deployment: { program: { id: string } } }
+  }
+
+  function get_last_transition(transitions: BlockTransition[]) {
+    const transition = transitions.at(-1)
+    if (!transition) throw new Error("Execution has no transitions")
+    return transition
+  }
+
+  type FeeAmounts = {
+    base: Decimal
+    priority: Decimal
+    burnt: Decimal
+    split: Decimal
+  }
+
   type TransactionList = {
     index: number
     transaction_id: string
     transitions: number
     action: { program: string; function: string | undefined }
-    fee: Decimal[]
+    fee: FeeAmounts
     type: string
     status: string
   }
 
   let transaction_table_data: TransactionList[] = $derived(
-    block.block.transactions.map((tx: any, index: number) => {
+    block.block.transactions.map((tx: BlockTransaction, index: number) => {
+      const breakdown = block.fee_breakdowns[tx.transaction.id]
+      const fee = {
+        base: new Decimal(breakdown.minimum_fee),
+        priority: new Decimal(breakdown.priority_fee),
+        burnt: new Decimal(breakdown.burnt_fee),
+        split: new Decimal(breakdown.split_fee),
+      }
       let transitions: number, action: { program: string; function: string | undefined }, type: string, status: string
-      let fee: Decimal[]
       if (tx.type === "accepted_execute") {
         transitions = tx.transaction.execution.transitions.length
+        const action_transition = get_last_transition(tx.transaction.execution.transitions)
         if (tx.transaction.fee && tx.transaction.fee.transition !== null) {
           transitions += 1
-          fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
-        } else {
-          fee = [new Decimal(10000), new Decimal(0)]
         }
-        const action_transition = tx.transaction.execution.transitions.at(-1)
         action = {
           program: action_transition.program_id,
           function: action_transition.function_name,
@@ -115,40 +161,36 @@
           program: tx.transaction.deployment.program.id,
           function: undefined,
         }
-        fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
       } else if (tx.type === "rejected_execute") {
         transitions = 1
-        const action_transition = tx.rejected.execution.transitions.at(-1)
+        const action_transition = get_last_transition(tx.rejected.execution.transitions)
         action = {
           program: action_transition.program_id,
           function: action_transition.function_name,
         }
-        fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
       } else if (tx.type === "rejected_deploy") {
         transitions = 1
         action = {
           program: tx.rejected.deployment.program.id,
           function: undefined,
         }
-        fee = tx.transaction.fee.amount.map((x: number) => new Decimal(x))
       } else {
         transitions = 0
         action = {
           program: "",
           function: "",
         }
-        fee = [new Decimal(0), new Decimal(0)]
       }
       ;[status, type] = tx.type.split("_")
       type = type.charAt(0).toUpperCase() + type.slice(1)
       return {
-        index: index,
+        index,
         transaction_id: tx.transaction.id,
-        transitions: transitions,
-        action: action,
-        fee: fee,
-        type: type,
-        status: status,
+        transitions,
+        action,
+        fee,
+        type,
+        status,
       }
     }),
   )
@@ -179,9 +221,10 @@
       header: "Fee",
       cell: (info) =>
         renderComponent(Fee, {
-          total_base_fee: info.getValue()[0],
-          total_priority_fee: info.getValue()[1],
-          total_burnt_fee: new Decimal(0),
+          total_base_fee: info.getValue().base,
+          total_priority_fee: info.getValue().priority,
+          total_burnt_fee: info.getValue().burnt,
+          total_split_fee: info.getValue().split,
         }),
     }),
     transaction_column.accessor("status", {
@@ -474,17 +517,18 @@
     <div class="details-line"></div>
   </div>
   <div class="group">
-    <DetailLine
-      label="Total fee"
-      tooltip="The sum of base and priority fees paid by confirmed transactions in this block."
-    >
+    <DetailLine label="Total fee" tooltip="The total fees spent by confirmed transactions in this block.">
       <div class="column">
-        <AleoCredit number={total_fee.base.add(total_fee.priority)} suffix={true}></AleoCredit>
+        <AleoCredit
+          number={total_fee.base.add(total_fee.priority).add(total_fee.burnt).add(total_fee.split)}
+          suffix={true}
+        ></AleoCredit>
         <span class="secondary">
           <Fee
             total_base_fee={total_fee.base}
             total_burnt_fee={total_fee.burnt}
             total_priority_fee={total_fee.priority}
+            total_split_fee={total_fee.split}
           />
         </span>
       </div>

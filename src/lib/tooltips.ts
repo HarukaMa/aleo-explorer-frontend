@@ -24,8 +24,8 @@ export const tooltips = {
     status: "Whether the transaction was accepted, rejected, aborted, or remains unconfirmed.",
     type: "The transaction variant. Transfers are Execute transactions.",
     index: "The position of this transaction within the block.",
-    totalFeeSpent: "The base fee plus priority fee paid by this transaction.",
-    breakdown: "The base-fee and priority-fee components of this transaction's fee.",
+    totalFeeSpent: "The explicit transaction fee plus any credits.aleo/split fee.",
+    breakdown: "The costs that make up this transaction's total fee.",
     transferType: "The public and private visibility of the transfer.",
   },
   address: {

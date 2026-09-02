@@ -532,7 +532,7 @@
   {/if}
   <div class="group">
     <DetailLine label="Programs deployed" tooltip={tooltips.address.programsDeployed}>
-      <Number number={data.programs.length} />
+      <Number number={data.total_programs} />
     </DetailLine>
   </div>
   <div class="group">

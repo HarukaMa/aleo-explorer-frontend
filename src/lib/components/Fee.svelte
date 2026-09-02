@@ -6,9 +6,10 @@
     total_base_fee: Decimal
     total_priority_fee: Decimal
     total_burnt_fee: Decimal
+    total_split_fee: Decimal
   }
 
-  let { total_base_fee, total_priority_fee, total_burnt_fee }: Fee = $props()
+  let { total_base_fee, total_priority_fee, total_burnt_fee, total_split_fee }: Fee = $props()
 </script>
 
 <AleoCredit number={total_base_fee}></AleoCredit> base
@@ -21,4 +22,9 @@
   +
   <AleoCredit number={total_burnt_fee}></AleoCredit>
   burnt
+{/if}
+{#if total_split_fee.gt(0)}
+  +
+  <AleoCredit number={total_split_fee}></AleoCredit>
+  split
 {/if}
