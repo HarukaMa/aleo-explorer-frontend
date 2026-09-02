@@ -15,7 +15,9 @@
     align-items: center;
     align-self: stretch;
     gap: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
     border-bottom: 1px solid $grey-200;
+    border-left: 1px solid $grey-200;
   }
 
   .group,
@@ -30,9 +32,7 @@
   }
 
   .group-items {
-    margin-left: 0.5rem;
     padding-left: 0.75rem;
-    border-left: 1px solid $grey-200;
   }
 
   .label {
