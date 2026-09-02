@@ -15,39 +15,45 @@
     align-items: center;
     align-self: stretch;
     gap: 0.5rem;
-    border-bottom-left-radius: 0.5rem;
     border-bottom: 1px solid $grey-200;
+  }
+
+  .group,
+  .group-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .group {
+    margin-bottom: 0.25rem;
+  }
+
+  .group-items {
+    margin-left: 0.5rem;
+    padding-left: 0.75rem;
     border-left: 1px solid $grey-200;
   }
 
-  .cell.group {
-    flex-direction: column;
-    padding: 0;
-    align-items: stretch;
-    gap: 0.25rem;
-    border: 0;
-  }
-
   .label {
-    //width: 8.75rem;
     width: 5.5rem;
     color: $grey-600;
   }
-
-  .group-label {
-    padding-right: 0.5rem;
-    color: $grey-600;
-    font-size: 0.75rem;
-    text-align: right;
-  }
 </style>
 
-<div class="cell" class:group={children}>
-  {#if children}
-    {@render children()}
-    <div class="group-label">{label}</div>
-  {:else}
+{#if children}
+  <div class="group">
+    <div class="cell">
+      <div class="label">{label}</div>
+      <AleoToken number={amount ?? "0"} suffix />
+    </div>
+    <div class="group-items">
+      {@render children()}
+    </div>
+  </div>
+{:else}
+  <div class="cell">
     <div class="label">{label}</div>
-    <AleoToken number={amount ? amount : "0"} suffix />
-  {/if}
-</div>
+    <AleoToken number={amount ?? "0"} suffix />
+  </div>
+{/if}

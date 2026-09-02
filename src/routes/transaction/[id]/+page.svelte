@@ -538,10 +538,10 @@
       <DetailLine label="Breakdown" tooltip={tooltips.transaction.breakdown}>
         <div class="fee-breakdown">
           {#if state === "Accepted" && type === "Execute"}
-            <FeeBreakdown label="Base fee">
+            <FeeBreakdown amount={data.base_fee} label="Base fee">
               <FeeBreakdown amount={data.storage_cost} label="Storage cost"></FeeBreakdown>
               {#if data.finalize_costs.length > 1}
-                <FeeBreakdown label="Finalize costs">
+                <FeeBreakdown amount={data.finalize_cost} label="Finalize costs">
                   {#each data.finalize_costs as cost, index}
                     <FeeBreakdown amount={cost} label="Transition #{index + 1}"></FeeBreakdown>
                   {/each}
@@ -552,7 +552,7 @@
               <FeeBreakdown amount={data.burnt_fee} label="Burnt credits"></FeeBreakdown>
             </FeeBreakdown>
           {:else if state === "Accepted" && type === "Deploy"}
-            <FeeBreakdown label="Base fee">
+            <FeeBreakdown amount={data.base_fee} label="Base fee">
               <FeeBreakdown amount={data.storage_cost} label="Storage cost"></FeeBreakdown>
               <FeeBreakdown amount={data.synthesis_cost} label="Synthesis cost"></FeeBreakdown>
               <FeeBreakdown amount={data.constructor_cost} label="Constructor cost"></FeeBreakdown>
