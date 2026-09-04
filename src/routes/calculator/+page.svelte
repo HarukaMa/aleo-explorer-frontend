@@ -256,7 +256,7 @@
       <div class="input-wrapper">
         <input class="input" type="text" id="proof_target" bind:value={proof_target} onkeydown={handleKeydown} />
       </div>
-      <p class="helper-text">Set the target difficulty level for which the prover should aim to find a solution.</p>
+      <p class="helper-text">Set the network proof target to calculate against.</p>
     </div>
 
     <div class="form-group">
@@ -273,8 +273,7 @@
         <span class="input-suffix">s/s</span>
       </div>
       <p class="helper-text">
-        Enter the solution rate of your prover in solutions per second (s/s). This is the speed at which your prover is
-        capable of processing.
+        Enter the solution rate of your prover in solutions per second (s/s).
       </p>
     </div>
 
