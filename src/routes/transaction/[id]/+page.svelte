@@ -199,6 +199,16 @@
       ? program_url(program_id, null, { height, transaction_index })
       : program_url(program_id)
   }
+
+  function mapping_program_url(program_id: string) {
+    if (type === "Deploy" && state === "Accepted") {
+      const deployment = data.confirmed_transaction.transaction.deployment
+      if (program_id === deployment.program.id) {
+        return program_url(program_id, deployment.edition)
+      }
+    }
+    return execution_program_url(program_id)
+  }
 </script>
 
 <style lang="scss">
@@ -612,7 +622,7 @@
           <div class="operation">
             <div class="column">
               <span class="dim">Program</span>
-              <Link href={execution_program_url(op.program_id)}>
+              <Link href={mapping_program_url(op.program_id)}>
                 <span class="mono">{op.program_id}</span>
               </Link>
             </div>
