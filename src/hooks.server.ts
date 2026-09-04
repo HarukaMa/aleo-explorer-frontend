@@ -16,8 +16,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   if (pathname === "/program" && searchParams.has("id")) {
     const id = searchParams.get("id")
-    const edition = searchParams.get("edition") || "1"
-    redirect(301, `/program/${id}/${edition}`)
+    const edition = searchParams.get("edition")
+    redirect(301, `/program/${id}${edition === null ? "" : `/${edition}`}`)
   }
 
   if (pathname === "/transaction" && searchParams.has("id")) {

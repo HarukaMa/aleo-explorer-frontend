@@ -16,6 +16,7 @@
   import PageHeader from "$lib/components/PageHeader.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
   import { tooltips } from "$lib/tooltips"
+  import { program_url } from "$lib/utils"
 
   let { data: server_data } = $props()
   let { data, address } = $derived(server_data)
@@ -31,6 +32,7 @@
     action: {
       program: string
       function: string
+      edition: number
     }
   }
 
@@ -43,6 +45,7 @@
         action: {
           program: ts.program_id,
           function: ts.function_name,
+          edition: ts.program_edition,
         },
       }
     }),
@@ -133,6 +136,7 @@
   type ProgramList = {
     height: number
     program: string
+    edition: number
     timestamp: number
     transaction_id: string
   }
@@ -142,6 +146,7 @@
       return {
         height: program.height,
         program: program.program_id,
+        edition: program.edition,
         timestamp: program.timestamp,
         transaction_id: program.transaction_id,
       }
@@ -164,7 +169,7 @@
     }),
     program_column.accessor("program", {
       header: "Program ID",
-      cell: (info) => renderSnippet(program_id_column, info.getValue()),
+      cell: (info) => renderSnippet(program_id_column, info.row.original),
     }),
   ])
 
@@ -323,10 +328,10 @@
   <Time timestamp={value} />
 {/snippet}
 
-{#snippet action_column(value: { program: string; function: string })}
+{#snippet action_column(value: { program: string; function: string; edition: number })}
   <div class="column">
     <span class="mono">{value.function}</span>
-    <Link href="/program/{value.program}">
+    <Link href={program_url(value.program, value.edition)}>
       <span class="secondary mono">{value.program}</span>
     </Link>
   </div>
@@ -355,9 +360,9 @@
   </div>
 {/snippet}
 
-{#snippet program_id_column(value: string)}
+{#snippet program_id_column(value: ProgramList)}
   <div class="mono">
-    <Link href="/program/{value}" content={value}></Link>
+    <Link href={program_url(value.program, value.edition)} content={value.program}></Link>
   </div>
 {/snippet}
 

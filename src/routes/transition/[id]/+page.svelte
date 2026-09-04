@@ -8,6 +8,7 @@
   import PageInformation from "$lib/components/PageInformation.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
   import { tooltips } from "$lib/tooltips"
+  import { program_url } from "$lib/utils"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -160,7 +161,7 @@
   </div>
   <div class="group">
     <DetailLine label="Program ID" tooltip={tooltips.transition.programId}>
-      <Link href="/program/{transition.program_id}">
+      <Link href={program_url(transition.program_id, data.program_edition)}>
         <span class="mono">{transition.program_id}</span>
       </Link>
     </DetailLine>

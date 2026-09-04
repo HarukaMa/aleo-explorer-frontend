@@ -109,8 +109,13 @@ export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
       return await super.get("/programs", params)
     }
 
-    public async program(this: API, id: string, edition: string | null): Promise<any> {
-      return await super.get(`/program/${id}/${edition || 0}`)
+    public async program(
+      this: API,
+      id: string,
+      edition: string | null,
+      context: Record<string, string> = {},
+    ): Promise<any> {
+      return await super.get(`/program/${id}${edition === null ? "" : `/${edition}`}`, context)
     }
 
     public async ans(this: API, name: string): Promise<string> {
@@ -131,13 +136,8 @@ export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
       edition: string | null,
       page: string | number | null,
     ): Promise<any> {
-      let params
-      if (page) {
-        params = { p: page.toString() }
-      } else {
-        params = {}
-      }
-      return await super.get(`/similar_programs/${id}/${edition || 0}`, params)
+      const params: Record<string, string> = page ? { p: page.toString() } : {}
+      return await super.get(`/similar_programs/${id}${edition === null ? "" : `/${edition}`}`, params)
     }
 
     public async calc(this: API): Promise<any> {

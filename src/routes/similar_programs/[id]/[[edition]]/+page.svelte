@@ -8,6 +8,7 @@
   import PageHeader from "$lib/components/PageHeader.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
   import Callout from "$lib/components/Callout.svelte"
+  import { program_url } from "$lib/utils"
 
   let { data } = $props()
 
@@ -18,6 +19,7 @@
 
   type ProgramList = {
     id: string
+    edition: number
     height: number | null
     called: number
     transaction_id: string | null
@@ -26,6 +28,7 @@
   let table_data: ProgramList[] = $derived(
     programs.map((program: any) => ({
       id: program.program_id,
+      edition: program.edition,
       height: program.height,
       called: program.called,
       transaction_id: program.transaction_id,
@@ -36,7 +39,7 @@
   const columns = column.columns([
     column.accessor("id", {
       header: "Program ID",
-      cell: (info) => renderSnippet(id_column, info.getValue()),
+      cell: (info) => renderSnippet(id_column, info.row.original),
     }),
     column.accessor("height", {
       header: "Deploy height",
@@ -55,7 +58,7 @@
   let current_page = $derived(+data.page)
 
   async function set_page(page: number) {
-    const response = await fetch(`/api/similar_programs/${id}/${edition || 0}?p=${page}`)
+    const response = await fetch(`/api/similar_programs/${id}/${edition}?p=${page}`)
     if (!response.ok) {
       throw new Error("Failed to fetch data")
     }
@@ -71,9 +74,9 @@
   }
 </script>
 
-{#snippet id_column(value: string)}
+{#snippet id_column(value: ProgramList)}
   <span class="mono ellipsis">
-    <Link href="/program/{value}">{value}</Link>
+    <Link href={program_url(value.id, value.edition)}>{value.id}</Link>
   </span>
 {/snippet}
 

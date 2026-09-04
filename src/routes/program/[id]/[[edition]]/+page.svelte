@@ -21,6 +21,8 @@
   import PageInformation from "$lib/components/PageInformation.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
   import { tooltips } from "$lib/tooltips"
+  import { goto } from "$app/navigation"
+  import { program_url } from "$lib/utils"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -75,6 +77,10 @@
       (pagination.pageIndex + 1) * pagination.pageSize,
     ),
   )
+
+  function select_edition(event: Event) {
+    goto(program_url(data.program_id, (event.currentTarget as HTMLSelectElement).value))
+  }
 </script>
 
 <style lang="scss">
@@ -145,6 +151,15 @@
     gap: 2rem;
     max-width: 40rem;
   }
+
+  .edition-select {
+    padding: 0.375rem 0.625rem;
+    border: 1px solid $grey-100;
+    border-radius: 0.5rem;
+    background: white;
+    color: inherit;
+    font: inherit;
+  }
 </style>
 
 <Seo
@@ -185,6 +200,13 @@
     <DetailLine label="Program ID" tooltip={tooltips.program.programId}>
       <span class="mono">{data.program_id}</span>
     </DetailLine>
+    <DetailLine label="Edition">
+      <select aria-label="Program edition" class="edition-select" onchange={select_edition} value={data.edition}>
+        {#each data.editions as edition}
+          <option value={edition}>{edition}{edition === data.latest_edition ? " (latest)" : ""}</option>
+        {/each}
+      </select>
+    </DetailLine>
     <DetailLine label="Program address" tooltip={tooltips.program.programAddress}>
       <Link href="/address/{data.address}">
         <UIAddress address={data.address} name_data={{}} />
@@ -219,7 +241,7 @@
       {#if data.similar_count === 0}
         0
       {:else}
-        <Link href="/similar_programs/{data.program_id}">
+        <Link href="/similar_programs/{data.program_id}/{data.edition}">
           <Number number={data.similar_count} />
         </Link>
       {/if}
@@ -235,9 +257,9 @@
           {#if data.imports.length === 0}
             <span class="dim">None</span>
           {:else}
-            {#each data.imports as i}
-              <Link href="/program/{i}">
-                <div class="mono">{i}</div>
+            {#each data.imports as imported}
+              <Link href={program_url(imported.program_id, imported.edition)}>
+                <div class="mono">{imported.program_id}</div>
               </Link>
             {/each}
           {/if}

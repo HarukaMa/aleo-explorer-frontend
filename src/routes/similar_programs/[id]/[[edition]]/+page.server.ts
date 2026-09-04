@@ -8,11 +8,12 @@ export const load: PageServerLoad = async ({ url, params }) => {
   const page = url.searchParams.get("page") || 1
   const { id, edition } = params
   try {
+    const programs = await API.instance.similar_programs(id, edition ?? null, page)
     return {
       page,
-      programs: await API.instance.similar_programs(id, edition || null, page),
+      programs,
       id,
-      edition,
+      edition: programs.edition,
     }
   } catch (err) {
     console.log(err)

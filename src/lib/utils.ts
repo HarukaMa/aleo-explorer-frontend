@@ -35,3 +35,17 @@ export function server_timing(
 export function app_error_from_api_error(err: APIError): App.Error {
   return { error: "Explorer API error", message: err.message }
 }
+
+export function program_url(
+  program_id: string,
+  edition?: string | number | null,
+  context?: { height: string | number; transaction_index: string | number },
+) {
+  const path = `/program/${encodeURIComponent(program_id)}${edition == null ? "" : `/${edition}`}`
+  return context
+    ? `${path}?${new URLSearchParams({
+      height: context.height.toString(),
+      transaction_index: context.transaction_index.toString(),
+    })}`
+    : path
+}

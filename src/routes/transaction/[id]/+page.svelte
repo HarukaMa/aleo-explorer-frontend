@@ -21,6 +21,7 @@
   import { tooltips } from "$lib/tooltips"
   import Decimal from "decimal.js"
   import aleo_logo from "$lib/assets/images/icons/aleo-logo.svg"
+  import { program_url } from "$lib/utils"
 
   let { data: server_data } = $props()
   let { data } = $derived(server_data)
@@ -190,6 +191,14 @@
       cell: (info) => renderSnippet(status_column, info.getValue()),
     }),
   ])
+
+  function execution_program_url(program_id: string) {
+    const height = data.height
+    const transaction_index = data.confirmed_transaction?.index
+    return typeof height === "number" && typeof transaction_index === "number"
+      ? program_url(program_id, null, { height, transaction_index })
+      : program_url(program_id)
+  }
 </script>
 
 <style lang="scss">
@@ -350,13 +359,13 @@
 
 {#snippet action_column(value: { program: string; function: string | undefined })}
   {#if value.function === undefined}
-    <Link href="/program/{value.program}">
+    <Link href={execution_program_url(value.program)}>
       <span class="mono">{value.program}</span>
     </Link>
   {:else}
     <div class="column">
       <span class="mono">{value.function}</span>
-      <Link href="/program/{value.program}">
+      <Link href={execution_program_url(value.program)}>
         <span class="secondary mono">{value.program}</span>
       </Link>
     </div>
@@ -504,15 +513,27 @@
       {#if type === "Deploy"}
         <DetailLine label="Program">
           {#if state === "Accepted"}
-            <Link href="/program/{data.confirmed_transaction.transaction.deployment.program.id}">
+            <Link
+              href={program_url(
+                data.confirmed_transaction.transaction.deployment.program.id,
+                data.confirmed_transaction.transaction.deployment.edition,
+              )}
+            >
               <span class="mono">{data.confirmed_transaction.transaction.deployment.program.id}</span>
             </Link>
           {:else if state === "Rejected"}
-            <Link href="/program/{data.confirmed_transaction.rejected.deployment.program.id}">
+            <Link
+              href={program_url(
+                data.confirmed_transaction.rejected.deployment.program.id,
+                data.confirmed_transaction.rejected.deployment.edition,
+              )}
+            >
               <span class="mono">{data.confirmed_transaction.rejected.deployment.program.id}</span>
             </Link>
           {:else}
-            Not implemented
+            <Link href={program_url(data.program_info.program_id, data.program_info.edition)}>
+              <span class="mono">{data.program_info.program_id}</span>
+            </Link>
           {/if}
         </DetailLine>
         <DetailLine label="Edition">
@@ -521,7 +542,7 @@
           {:else if state === "Rejected"}
             {data.confirmed_transaction.rejected.deployment.edition}
           {:else}
-            Not implemented
+            {data.program_info.edition}
           {/if}
         </DetailLine>
       {/if}
@@ -591,7 +612,7 @@
           <div class="operation">
             <div class="column">
               <span class="dim">Program</span>
-              <Link href="/program/{op.program_id}">
+              <Link href={execution_program_url(op.program_id)}>
                 <span class="mono">{op.program_id}</span>
               </Link>
             </div>

@@ -19,6 +19,7 @@
   import PageInformation from "$lib/components/PageInformation.svelte"
   import PageHeader from "$lib/components/PageHeader.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
+  import { program_url } from "$lib/utils"
 
   let { data } = $props()
   let { block, height } = $derived(data)
@@ -86,6 +87,7 @@
 
   type BlockTransaction =
     | {
+    index: number
     type: "accepted_execute"
     transaction: {
       id: string
@@ -94,22 +96,25 @@
     }
   }
     | {
+    index: number
     type: "accepted_deploy"
     transaction: {
       id: string
-      deployment: { program: { id: string } }
+      deployment: { edition: number; program: { id: string } }
       fee: BlockFee
     }
   }
     | {
+    index: number
     type: "rejected_execute"
     transaction: { id: string; fee: BlockFee }
     rejected: { execution: { transitions: BlockTransition[] } }
   }
     | {
+    index: number
     type: "rejected_deploy"
     transaction: { id: string; fee: BlockFee }
-    rejected: { deployment: { program: { id: string } } }
+    rejected: { deployment: { edition: number; program: { id: string } } }
   }
 
   function get_last_transition(transitions: BlockTransition[]) {
@@ -129,14 +134,14 @@
     index: number
     transaction_id: string
     transitions: number
-    action: { program: string; function: string | undefined }
+    action: { program: string; function: string | undefined; edition: number | null; transaction_index: number }
     fee: FeeAmounts
     type: string
     status: string
   }
 
   let transaction_table_data: TransactionList[] = $derived(
-    block.block.transactions.map((tx: BlockTransaction, index: number) => {
+    block.block.transactions.map((tx: BlockTransaction) => {
       const breakdown = block.fee_breakdowns[tx.transaction.id]
       const fee = {
         base: new Decimal(breakdown.minimum_fee),
@@ -144,7 +149,14 @@
         burnt: new Decimal(breakdown.burnt_fee),
         split: new Decimal(breakdown.split_fee),
       }
-      let transitions: number, action: { program: string; function: string | undefined }, type: string, status: string
+      let transitions = 0
+      let action: TransactionList["action"] = {
+        program: "",
+        function: "",
+        edition: null,
+        transaction_index: tx.index,
+      }
+      let [status, type] = tx.type.split("_")
       if (tx.type === "accepted_execute") {
         transitions = tx.transaction.execution.transitions.length
         const action_transition = get_last_transition(tx.transaction.execution.transitions)
@@ -154,12 +166,16 @@
         action = {
           program: action_transition.program_id,
           function: action_transition.function_name,
+          edition: null,
+          transaction_index: tx.index,
         }
       } else if (tx.type === "accepted_deploy") {
         transitions = 1
         action = {
           program: tx.transaction.deployment.program.id,
           function: undefined,
+          edition: tx.transaction.deployment.edition,
+          transaction_index: tx.index,
         }
       } else if (tx.type === "rejected_execute") {
         transitions = 1
@@ -167,24 +183,21 @@
         action = {
           program: action_transition.program_id,
           function: action_transition.function_name,
+          edition: null,
+          transaction_index: tx.index,
         }
       } else if (tx.type === "rejected_deploy") {
         transitions = 1
         action = {
           program: tx.rejected.deployment.program.id,
           function: undefined,
-        }
-      } else {
-        transitions = 0
-        action = {
-          program: "",
-          function: "",
+          edition: tx.rejected.deployment.edition,
+          transaction_index: tx.index,
         }
       }
-      ;[status, type] = tx.type.split("_")
       type = type.charAt(0).toUpperCase() + type.slice(1)
       return {
-        index,
+        index: tx.index,
         transaction_id: tx.transaction.id,
         transitions,
         action,
@@ -296,6 +309,15 @@
       cell: (info) => renderSnippet(solution_id_column, info.getValue()),
     }),
   ])
+
+  function action_program_url(action: TransactionList["action"]) {
+    return action.edition === null
+      ? program_url(action.program, null, {
+        height,
+        transaction_index: action.transaction_index,
+      })
+      : program_url(action.program, action.edition)
+  }
 </script>
 
 <style lang="scss">
@@ -398,15 +420,15 @@
   </span>
 {/snippet}
 
-{#snippet action_column(value: { program: string; function: string | undefined })}
+{#snippet action_column(value: TransactionList["action"])}
   {#if value.function === undefined}
-    <Link href="/program/{value.program}">
+    <Link href={action_program_url(value)}>
       <span class="mono">{value.program}</span>
     </Link>
   {:else}
     <div class="column">
       <span class="mono">{value.function}</span>
-      <Link secondary href="/program/{value.program}">
+      <Link secondary href={action_program_url(value)}>
         <span class="secondary mono">{value.program}</span>
       </Link>
     </div>
