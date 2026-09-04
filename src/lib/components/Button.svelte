@@ -101,7 +101,16 @@
 </style>
 
 {#if href}
-  <a class="button {cls}" class:small {href}>{label}</a>
+  <a
+    class="button {cls}"
+    class:icon={icon !== undefined}
+    class:small
+    {href}
+    style:background-image={icon ? `var(--${icon})` : undefined}
+    aria-label={icon ? label : undefined}
+  >
+    {#if !icon}{label}{/if}
+  </a>
 {:else}
   <button
     class="button {cls}"

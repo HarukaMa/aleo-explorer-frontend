@@ -1,6 +1,6 @@
 <script lang="ts">
+  import type { PageData } from "./$types"
   import Seo from "$lib/components/Seo.svelte"
-  import { type BlockList } from "$lib/types"
   import { renderComponent, renderSnippet } from "@tanstack/svelte-table"
   import DataTable from "$lib/components/DataTable.svelte"
   import Link from "$lib/components/Link.svelte"
@@ -10,122 +10,158 @@
   import TableNav from "$lib/components/TableNav.svelte"
   import Decimal from "decimal.js"
   import { createAppColumnHelper } from "$lib/table"
+  import PageHeader from "$lib/components/PageHeader.svelte"
   import PageInformation from "$lib/components/PageInformation.svelte"
   import TableContainer from "$lib/components/TableContainer.svelte"
   import Callout from "$lib/components/Callout.svelte"
+  import Status from "$lib/components/Status.svelte"
+  import { StatusClass } from "$lib/types"
 
-  let { data } = $props()
+  let { data }: { data: PageData } = $props()
 
-  let blocks = $derived(data.blocks.blocks)
-  let total_blocks = $derived(data.blocks.total_blocks)
-  let total_pages = $derived(data.blocks.total_pages)
+  type TransactionList = {
+    transaction_id: string
+    timestamp: number
+    height: number | null
+    transitions: number
+    fee: Decimal
+    type: "Deploy" | "Execute" | "Fee"
+    status: "Accepted" | "Rejected" | "Unconfirmed"
+  }
 
-  let table_data: BlockList[] = $derived(
-    blocks.map((block: any) => ({
-      height: block.height,
-      timestamp: block.timestamp,
-      transactions: block.transaction_count,
-      proof_target: block.proof_target,
-      coinbase_target: block.coinbase_target,
-      block_reward: new Decimal(block.block_reward),
-      puzzle_reward: new Decimal(Math.floor((block.coinbase_reward * 2) / 3)),
-      puzzle_solutions: block.partial_solution_count,
+  let scope = $derived(data.transactions.scope)
+  let total_pages = $derived(data.transactions.total_pages)
+  let current_page = $derived(+data.page)
+  let table_data: TransactionList[] = $derived(
+    data.transactions.transactions.map((transaction) => ({
+      ...transaction,
+      fee: new Decimal(transaction.fee),
     })),
   )
 
-  const column = createAppColumnHelper<BlockList>()
-  const columns = column.columns([
-    column.accessor("height", {
-      header: "Height",
-      cell: (info) => renderSnippet(height_column, info.getValue()),
-    }),
-    column.accessor("timestamp", {
-      header: "Timestamp",
-      cell: (info) => renderComponent(Time, { timestamp: info.getValue() }),
-    }),
-    column.accessor("transactions", {
-      header: "Transactions",
-      cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    }),
-    column.accessor("proof_target", {
-      header: "Proof target",
-      cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    }),
-    column.accessor("coinbase_target", {
-      header: "Coinbase target",
-      cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    }),
-    column.accessor("block_reward", {
-      header: "Block reward",
-      cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
-    }),
-    column.accessor("puzzle_reward", {
-      header: "Puzzle reward",
-      cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
-    }),
-    column.accessor("puzzle_solutions", {
-      header: "Puzzle solutions",
-      cell: (info) => renderComponent(Number, { number: info.getValue() }),
-    }),
+  const column = createAppColumnHelper<TransactionList>()
+  const transaction_id_definition = column.accessor("transaction_id", {
+    header: "Transaction ID",
+    cell: (info) => renderSnippet(transaction_id_column, info.getValue()),
+  })
+  const timestamp_definition = column.accessor("timestamp", {
+    header: "Timestamp",
+    cell: (info) => renderComponent(Time, { timestamp: info.getValue() }),
+  })
+  const height_definition = column.accessor("height", {
+    header: "Height",
+    cell: (info) => renderSnippet(height_column, info.getValue()),
+  })
+  const transitions_definition = column.accessor("transitions", {
+    header: "Transitions",
+    cell: (info) => renderComponent(Number, { number: info.getValue() }),
+  })
+  const fee_definition = column.accessor("fee", {
+    header: "Fee",
+    cell: (info) => renderComponent(AleoCredit, { number: info.getValue() }),
+  })
+  const type_definition = column.accessor("type", {
+    header: "Type",
+    cell: (info) => info.getValue(),
+  })
+  const status_definition = column.accessor("status", {
+    header: "Status",
+    cell: (info) => renderSnippet(status_column, info.getValue()),
+  })
+
+  const confirmed_columns = column.columns([
+    transaction_id_definition,
+    timestamp_definition,
+    height_definition,
+    transitions_definition,
+    fee_definition,
+    type_definition,
+    status_definition,
   ])
-
-  let current_page = $derived(+data.page)
-
-  let header_data = $derived([
-    { name: "Total blocks", value: { component: Number, props: { number: total_blocks } } },
-    { name: "Total pages", value: { component: Number, props: { number: total_pages } } },
-    { name: "placeholder 1", value: "placeholder 1" },
-    { name: "placeholder 2", value: "placeholder 2" },
+  const pending_columns = column.columns([
+    transaction_id_definition,
+    timestamp_definition,
+    transitions_definition,
+    fee_definition,
+    type_definition,
+    status_definition,
   ])
-
-  async function set_page(page: number) {
-    const response = await fetch(`/api/blocks?p=${page}`)
-    if (!response.ok) {
-      throw new Error("Failed to fetch data")
-    }
-    const data = await response.json()
-    blocks = data.blocks
-    total_blocks = data.total_blocks
-    total_pages = data.total_pages
-    current_page = page
-
-    const current_params = new URLSearchParams(location.search)
-    current_params.set("page", page.toString())
-    const new_url = `${location.pathname}?${current_params.toString()}`
-    history.replaceState({}, "", new_url)
-  }
+  let columns = $derived(scope === "confirmed" ? confirmed_columns : pending_columns)
 </script>
+
+<style lang="scss">
+  @use "/static/styles/variables" as *;
+
+  .scope-tabs {
+    display: inline-flex;
+    margin-top: 3rem;
+  }
+
+  .scope-tabs a {
+    padding: 0.75rem 1rem;
+    color: black;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:focus-visible {
+      outline: 2px solid $blue-500;
+      outline-offset: 2px;
+    }
+
+    &.active {
+      color: $blue-500;
+      background-color: $blue-50;
+      border-radius: 0.5rem;
+    }
+  }
+</style>
 
 <Seo
   title="Aleo Transaction List | AleoScan - Aleo Blockchain Explorer"
-  description="Track the latest Aleo transactions. View transaction hash, sender, recipient, gas fees, and block confirmations."
+  description="Browse confirmed and pending Aleo transactions with timestamps, block heights, transition counts, fees, types, and statuses."
 />
 
-{#snippet before_container()}
-  <div class="header">
-    <div class="title">Blocks</div>
-    <!--    <div class="info">-->
-    <!--      {#each header_data as data}-->
-    <!--        <div class="info-data">-->
-    <!--          <div class="info-data-title">{data.name}</div>-->
-    <!--          <div class="info-data-value">-->
-    <!--            {#if data.value instanceof Object}-->
-    <!--              <data.value.component {...data.value.props} />-->
-    <!--            {:else}-->
-    <!--              {data.value}-->
-    <!--            {/if}-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      {/each}-->
-    <!--    </div>-->
-  </div>
+{#snippet transaction_id_column(value: string)}
+  <span class="mono ellipsis">
+    <Link href="/transaction/{value}">{value}</Link>
+  </span>
 {/snippet}
 
-{#snippet height_column(value: number)}
-  <Link href="/block/{value}">
-    <Number number={value} />
-  </Link>
+{#snippet height_column(value: number | null)}
+  {#if value === null}
+    -
+  {:else}
+    <Link href="/block/{value}">
+      <Number number={value} />
+    </Link>
+  {/if}
 {/snippet}
+
+{#snippet status_column(value: TransactionList["status"])}
+  {#if value === "Accepted"}
+    <Status cls={StatusClass.Success}>Accepted</Status>
+  {:else if value === "Rejected"}
+    <Status cls={StatusClass.Danger}>Rejected</Status>
+  {:else}
+    <Status cls={StatusClass.Info}>Unconfirmed</Status>
+  {/if}
+{/snippet}
+
+<PageHeader content="Transactions" />
+
+<nav aria-label="Transaction scope" class="scope-tabs">
+  <a
+    aria-current={scope === "confirmed" ? "page" : undefined}
+    class:active={scope === "confirmed"}
+    href="/transactions?scope=confirmed">Confirmed</a
+  >
+  <a
+    aria-current={scope === "pending" ? "page" : undefined}
+    class:active={scope === "pending"}
+    href="/transactions?scope=pending">Pending</a
+  >
+</nav>
 
 <TableContainer>
   <DataTable {columns} data={table_data}>
@@ -135,9 +171,11 @@
   </DataTable>
 </TableContainer>
 
-{#key current_page}
-  <TableNav page={current_page} {set_page} {total_pages} />
-{/key}
+<TableNav
+  page={current_page}
+  page_href={(page_number) => `/transactions?scope=${scope}&page=${page_number}`}
+  {total_pages}
+/>
 
 <PageInformation
   title="Transaction"

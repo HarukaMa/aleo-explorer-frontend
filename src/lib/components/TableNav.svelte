@@ -4,11 +4,12 @@
 
   type TableNav = {
     page: number
-    set_page: (page: number) => void
+    set_page?: (page: number) => void
+    page_href?: (page: number) => string
     total_pages: number
   }
 
-  let { page, set_page, total_pages }: TableNav = $props()
+  let { page, set_page, page_href, total_pages }: TableNav = $props()
 
   let page_options = $derived.by(() => {
     let options = []
@@ -33,10 +34,17 @@
 
 <div class="table-nav">
   {#if page !== 1}
-    <Button cls={ButtonLinkClass.Ghost} onclick={() => set_page(1)} icon="first-page-icon" label="First page" />
     <Button
       cls={ButtonLinkClass.Ghost}
-      onclick={() => set_page(page - 1)}
+      href={page_href?.(1)}
+      onclick={() => set_page?.(1)}
+      icon="first-page-icon"
+      label="First page"
+    />
+    <Button
+      cls={ButtonLinkClass.Ghost}
+      href={page_href?.(page - 1)}
+      onclick={() => set_page?.(page - 1)}
       icon="prev-page-icon"
       label="Previous page"
     />
@@ -45,11 +53,29 @@
     {#if option === page}
       <Button cls={ButtonLinkClass.Secondary} label={option.toString()} small />
     {:else}
-      <Button cls={ButtonLinkClass.Ghost} onclick={() => set_page(option)} label={option.toString()} small />
+      <Button
+        cls={ButtonLinkClass.Ghost}
+        href={page_href?.(option)}
+        onclick={() => set_page?.(option)}
+        label={option.toString()}
+        small
+      />
     {/if}
   {/each}
   {#if page !== total_pages}
-    <Button cls={ButtonLinkClass.Ghost} onclick={() => set_page(page + 1)} icon="next-page-icon" label="Next page" />
-    <Button cls={ButtonLinkClass.Ghost} onclick={() => set_page(total_pages)} icon="last-page-icon" label="Last page" />
+    <Button
+      cls={ButtonLinkClass.Ghost}
+      href={page_href?.(page + 1)}
+      onclick={() => set_page?.(page + 1)}
+      icon="next-page-icon"
+      label="Next page"
+    />
+    <Button
+      cls={ButtonLinkClass.Ghost}
+      href={page_href?.(total_pages)}
+      onclick={() => set_page?.(total_pages)}
+      icon="last-page-icon"
+      label="Last page"
+    />
   {/if}
 </div>

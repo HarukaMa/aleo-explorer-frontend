@@ -25,6 +25,25 @@ export type Blocks = {
   total_pages: number
 }
 
+export type TransactionScope = "confirmed" | "pending"
+
+export type TransactionRow = {
+  transaction_id: string
+  timestamp: number
+  height: number | null
+  transitions: number
+  fee: Decimal.Value
+  type: "Deploy" | "Execute" | "Fee"
+  status: "Accepted" | "Rejected" | "Unconfirmed"
+}
+
+export type Transactions = {
+  scope: TransactionScope
+  transactions: TransactionRow[]
+  total_transactions: number
+  total_pages: number
+}
+
 export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
   return class extends Base {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,6 +71,10 @@ export function APIChain<TBase extends APIBaseMixin>(Base: TBase) {
         params = {}
       }
       return await super.get("/blocks", params)
+    }
+
+    public async transactions(this: API, scope: TransactionScope, page: string | number): Promise<Transactions> {
+      return await super.get("/transactions", { scope, p: page.toString() })
     }
 
     public async block(this: API, height: string | number): Promise<any> {
