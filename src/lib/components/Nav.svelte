@@ -35,6 +35,15 @@
   function closeMobileMenu() {
     mobileMenuOpen = false
   }
+
+  function closeDesktopMenus(event: MouseEvent) {
+    const clickedMenu = event.target instanceof Element ? event.target.closest(".nav-link-dropdown") : null
+    for (const menu of document.querySelectorAll<HTMLDetailsElement>(".nav-link-dropdown[open]")) {
+      if (menu !== clickedMenu) {
+        menu.open = false
+      }
+    }
+  }
 </script>
 
 <style lang="scss">
@@ -355,6 +364,8 @@
     height: 14px;
   }
 </style>
+
+<svelte:window onclick={closeDesktopMenus} />
 
 <nav>
   <div class="nav-main">
